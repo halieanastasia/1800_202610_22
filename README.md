@@ -66,8 +66,7 @@ elmo-hikes/
 
 
 ## Contributors
-- **Your Name** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
-- **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
+- Winston - BCIT CST Student, sometimes funny. Funny joke: When does a joke become a dad joke? When it becomes apparent.
 
 ---
 
