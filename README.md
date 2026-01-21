@@ -62,16 +62,10 @@ elmo-hikes/
 
 ## Contributors
 
-<<<<<<< HEAD
 - Suzy- BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Fall in love with cats
-- Thien - BCIT CST Student, new to codes and program. Fun fact: Like cooking
+- **Thien** - BCIT CST Student, new to codes and program. Fun fact: Like cooking
 - Winston - BCIT CST Student, sometimes funny. Funny joke: When does a joke become a dad joke? When it becomes apparent.
-=======
-- **Your Name** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
-- **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
-
 - **Halie** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
->>>>>>> 27263f1cd316f475303f6e29c973f7eef3acd3e1
 
 ---
 
