@@ -1,1 +1,17 @@
+.footer {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.footer-container h3 {
+  margin-bottom: 10px;
+}
+
+.footer-container p {
+  margin: 5px 0;
+  font-size: 14px;
+}
 
