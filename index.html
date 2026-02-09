@@ -22,6 +22,100 @@
 
     <!--Navbar: Halie-->
     <!--Welcome banner: Thien-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to our team BBY 22</title>
+  <style>
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75)),
+                  url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000') center/cover no-repeat;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Intro Rust', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.05;
+      font-weight: 700;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+    }
+
+    .hero p {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      margin-bottom: 2.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary {
+      font-family: 'Intro Rust', serif;
+      background: #e11d48;
+      color: white;
+      padding: 16px 40px;
+      border-radius: 999px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #be123c;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /*  MEDIA QUERIES */
+
+    @media (max-width: 700px) {
+      .hero {
+        height: 70vh;         
+        min-height: 500px;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;     
+        margin-bottom: 1.2rem;
+        padding: 0 10px;       
+      }
+
+      .btn-primary {
+        padding: 14px 32px;    
+        font-size: 1.1rem;      
+      }
+
+      .hero-content {
+        padding: 0 15px;        
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to team BBY 22</h1>
+      <a href="#project" class="btn-primary"> -This is our group project-</a>
+    </div>
+  </section>
+</body>
     <!--Call to action: Winston-->
     <!--Footer Suzy-->
 
@@ -31,6 +125,5 @@
 
   <!-- Link to scripts of your own -->
   <script type="module" src="./src/main.js"></script>
-</body>
-
+  </body>
 </html>
