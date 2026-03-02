@@ -22,8 +22,10 @@
     <!-- Your HTML Layout go here -->
     <!------------------------------>
 
-    <!--Navbar: Halie-->
+    <!--Header-->
     <header class="header">Logo</header>
+
+    <!--Navbar-->
     <nav class="menu-container">
       <ul class="menu">
         <li class="menu-item-left">
@@ -53,7 +55,7 @@
       </ul>
     </nav>
 
-    <!--Welcome banner: Thien-->
+    <!--Welcome banner-->
     <section class="hero">
       <div class="hero-content">
         <h1>Welcome to team BBY 22</h1>
@@ -61,10 +63,17 @@
       </div>
     </section>
 
-    <!--Call to action: Winston-->
+    <!--Call to action-->
     <button type="button" class="btn btn-primary">Sign up</button>
 
-    <script type="module" src="./src/main.js"></script>
+    <!--Restaurant button (Temporary)-->
+    <input
+      type="button"
+      value="Restaurant"
+      onclick="window.location.href = './restaurant-skeleton.html'"
+    />
+
+    <!--Footer-->
     <footer class="footer">
       <div class="footer-container">
         <h3>Logo</h3>
@@ -79,5 +88,8 @@
         <p>© 2026 Team-22. All rights reserved.</p>
       </div>
     </footer>
+
+    <!--Last element should be the script element-->
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>

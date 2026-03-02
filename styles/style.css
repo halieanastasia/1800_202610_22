@@ -159,3 +159,20 @@
   margin: 5px 0;
   font-size: 14px;
 }
+
+/***********************************************************/
+/************************Restaurant Page CSS****************/
+/***********************************************************/
+/*Add to its own css file? if it gets to crowded in the main one*/
+
+.restaurant-container {
+  border: 4px solid black;
+}
+
+.restaurant-img img {
+  width: 100%;
+}
+
+.restaurant-info {
+  padding: 2%;
+}
