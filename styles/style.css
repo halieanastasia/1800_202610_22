@@ -21,11 +21,65 @@
   .hero-content {
     padding: 0 15px;
   }
+
+  .nav-items p {
+    display: none;
+  }
+}
+
+.header {
+  background-color: grey;
+  font-size: 40px;
+  text-align: center;
 }
 
 /***********************************************************/
 /************************Nav Bar CSS*************************/
 /***********************************************************/
+
+.menu-container {
+  background-color: grey;
+  padding: 1%;
+}
+.menu {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  padding: 1%;
+}
+
+.menu li {
+  display: block;
+  padding: 5%;
+  margin: auto;
+
+  height: 100%;
+  width: 75%;
+
+  text-align: center;
+  color: black;
+  /*border: 4px solid black;*/
+}
+
+.nav-items {
+  text-decoration: none;
+  color: black;
+}
+
+.nav-items img {
+  display: block;
+  margin: auto;
+
+  object-fit: contain;
+  width: 30%;
+  min-width: 35px;
+}
+
+.menu-item-left {
+}
+
+.menu-item-right {
+}
 
 /***********************************************************/
 /************************Hero CSS*************************/
