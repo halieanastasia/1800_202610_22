@@ -1,4 +1,16 @@
 /***********************************************************/
+/************************Color Scheme***********************/
+/***********************************************************/
+:root {
+  --cream: #fffcd9; /*Maybe keep*/
+  --lightgreen: #b3d3bb;
+  --darkgreen: #143a2f;
+  --lightblue: #91aae6;
+  --darkblue: #24548f;
+  --darkred: #5a1b1c;
+}
+
+/***********************************************************/
 /************************Media Rules*************************/
 /***********************************************************/
 @media (max-width: 700px) {
@@ -27,8 +39,20 @@
   }
 }
 
+/***********************************************************/
+/************************Body CSS************************/
+/***********************************************************/
+body {
+  background-color: var(--lightgreen);
+  color: var(--darkblue);
+}
+
+/***********************************************************/
+/************************Header CSS************************/
+/***********************************************************/
 .header {
-  background-color: grey;
+  background-color: var(--darkblue);
+  color: var(--lightblue);
   font-size: 40px;
   text-align: center;
 }
@@ -38,7 +62,7 @@
 /***********************************************************/
 
 .menu-container {
-  background-color: grey;
+  background-color: var(--darkblue);
   padding: 1%;
 }
 .menu {
@@ -57,13 +81,13 @@
   width: 75%;
 
   text-align: center;
-  color: black;
+  color: var(--lightblue);
   /*border: 4px solid black;*/
 }
 
 .nav-items {
   text-decoration: none;
-  color: black;
+  color: var(--lightblue);
 }
 
 .nav-items img {
@@ -123,8 +147,9 @@
 
 .btn-primary {
   font-family: "Intro Rust", serif;
-  background: #e11d48;
-  color: white;
+  background: var(--darkblue);
+  color: var(--lightgreen);
+  border: 4px solid var(--darkred);
   padding: 16px 40px;
   border-radius: 999px;
   font-size: 1.25rem;
@@ -135,7 +160,9 @@
 }
 
 .btn-primary:hover {
-  background: #be123c;
+  background: var(--lightgreen);
+  color: var(--darkred);
+  border: 4px solid var(--darkblue);
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
@@ -166,7 +193,6 @@
 /*Add to its own css file? if it gets to crowded in the main one*/
 
 .restaurant-container {
-  border: 4px solid black;
 }
 
 .restaurant-img img {
@@ -174,5 +200,20 @@
 }
 
 .restaurant-info {
-  padding: 2%;
+  padding: 3%;
+}
+
+/***********************************************************/
+/************************Temporary CSS****************/
+/***********************************************************/
+#temp-button {
+  background: var(--darkblue);
+  color: var(--lightgreen);
+  border: 4px solid var(--darkred);
+}
+
+#temp-button:hover {
+  background: var(--lightgreen);
+  color: var(--darkred);
+  border: 4px solid var(--darkblue);
 }
