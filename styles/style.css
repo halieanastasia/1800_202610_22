@@ -2,12 +2,9 @@
 /************************Color Scheme***********************/
 /***********************************************************/
 :root {
-  --cream: #fffcd9; /*Maybe keep*/
+  --cream: #fffef0; /*Maybe keep*/
   --lightgreen: #b3d3bb;
   --darkgreen: #143a2f;
-  --lightblue: #91aae6;
-  --darkblue: #24548f;
-  --darkred: #5a1b1c;
 }
 
 /***********************************************************/
@@ -44,15 +41,15 @@
 /***********************************************************/
 body {
   background-color: var(--lightgreen);
-  color: var(--darkblue);
+  color: var(--darkgreen);
 }
 
 /***********************************************************/
 /************************Header CSS************************/
 /***********************************************************/
 .header {
-  background-color: var(--darkblue);
-  color: var(--lightblue);
+  background-color: var(--darkgreen);
+  color: var(--lightgreen);
   font-size: 40px;
   text-align: center;
 }
@@ -62,7 +59,7 @@ body {
 /***********************************************************/
 
 .menu-container {
-  background-color: var(--darkblue);
+  background-color: var(--darkgreen);
   padding: 1%;
 }
 .menu {
@@ -81,13 +78,13 @@ body {
   width: 75%;
 
   text-align: center;
-  color: var(--lightblue);
+  color: var(--lightgreen);
   /*border: 4px solid black;*/
 }
 
 .nav-items {
   text-decoration: none;
-  color: var(--lightblue);
+  color: var(--lightgreen);
 }
 
 .nav-items img {
@@ -147,9 +144,9 @@ body {
 
 .btn-primary {
   font-family: "Intro Rust", serif;
-  background: var(--darkblue);
+  background: var(--darkgreen);
   color: var(--lightgreen);
-  border: 4px solid var(--darkred);
+  border: 4px solid var(--darkgreen);
   padding: 16px 40px;
   border-radius: 999px;
   font-size: 1.25rem;
@@ -161,8 +158,8 @@ body {
 
 .btn-primary:hover {
   background: var(--lightgreen);
-  color: var(--darkred);
-  border: 4px solid var(--darkblue);
+  color: var(--darkgreen);
+  border: 4px solid var(--darkgreen);
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
@@ -225,7 +222,7 @@ body {
 .login-container p {
   text-align: center;
   font-size: 14px;
-  color: var(--darkred);
+  color: var(--darkgreen);
   margin-bottom: 25px;
 }
 
@@ -266,7 +263,7 @@ body {
 
 .form-options a {
   text-decoration: none;
-  color: var(--darkblue);
+  color: var(--darkgreen);
 }
 
 .form-options a:hover {
@@ -278,9 +275,9 @@ body {
   padding: 14px;
   border: none;
   border-radius: 6px;
-  background: var(--darkblue);
+  background: var(--darkgreen);
   color: var(--lightgreen);
-  border: 4px solid var(--darkred);
+  border: 4px solid var(--darkgreen);
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
@@ -288,8 +285,8 @@ body {
 
 .login-btn:hover {
   background: var(--lightgreen);
-  color: var(--darkred);
-  border: 4px solid var(--darkblue);
+  color: var(--darkgreen);
+  border: 4px solid var(--darkgreen);
 }
 
 .signup-link {
@@ -299,7 +296,7 @@ body {
 }
 
 .signup-link a {
-  color: var(--darkblue);
+  color: var(--darkgreen);
   text-decoration: none;
 }
 
@@ -392,13 +389,13 @@ body {
 /************************Temporary CSS****************/
 /***********************************************************/
 #temp-button {
-  background: var(--darkblue);
+  background: var(--darkgreen);
   color: var(--lightgreen);
-  border: 4px solid var(--darkred);
+  border: 4px solid var(--darkgreen);
 }
 
 #temp-button:hover {
   background: var(--lightgreen);
-  color: var(--darkred);
-  border: 4px solid var(--darkblue);
+  color: var(--darkgreen);
+  border: 4px solid var(--darkgreen);
 }
