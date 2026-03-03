@@ -1,4 +1,16 @@
 /***********************************************************/
+/************************Color Scheme***********************/
+/***********************************************************/
+:root {
+  --cream: #fffcd9; /*Maybe keep*/
+  --lightgreen: #b3d3bb;
+  --darkgreen: #143a2f;
+  --lightblue: #91aae6;
+  --darkblue: #24548f;
+  --darkred: #5a1b1c;
+}
+
+/***********************************************************/
 /************************Media Rules*************************/
 /***********************************************************/
 @media (max-width: 700px) {
@@ -27,8 +39,20 @@
   }
 }
 
+/***********************************************************/
+/************************Body CSS************************/
+/***********************************************************/
+body {
+  background-color: var(--lightgreen);
+  color: var(--darkblue);
+}
+
+/***********************************************************/
+/************************Header CSS************************/
+/***********************************************************/
 .header {
-  background-color: grey;
+  background-color: var(--darkblue);
+  color: var(--lightblue);
   font-size: 40px;
   text-align: center;
 }
@@ -38,7 +62,7 @@
 /***********************************************************/
 
 .menu-container {
-  background-color: grey;
+  background-color: var(--darkblue);
   padding: 1%;
 }
 .menu {
@@ -57,13 +81,13 @@
   width: 75%;
 
   text-align: center;
-  color: black;
+  color: var(--lightblue);
   /*border: 4px solid black;*/
 }
 
 .nav-items {
   text-decoration: none;
-  color: black;
+  color: var(--lightblue);
 }
 
 .nav-items img {
@@ -123,8 +147,9 @@
 
 .btn-primary {
   font-family: "Intro Rust", serif;
-  background: #e11d48;
-  color: white;
+  background: var(--darkblue);
+  color: var(--lightgreen);
+  border: 4px solid var(--darkred);
   padding: 16px 40px;
   border-radius: 999px;
   font-size: 1.25rem;
@@ -135,7 +160,9 @@
 }
 
 .btn-primary:hover {
-  background: #be123c;
+  background: var(--lightgreen);
+  color: var(--darkred);
+  border: 4px solid var(--darkblue);
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
@@ -166,7 +193,6 @@
 /*Add to its own css file? if it gets to crowded in the main one*/
 
 .restaurant-container {
-  border: 4px solid black;
 }
 
 .restaurant-img img {
@@ -174,5 +200,205 @@
 }
 
 .restaurant-info {
-  padding: 2%;
+  padding: 3%;
+}
+
+/***********************************************************/
+/************************Login Page CSS*********************/
+/***********************************************************/
+
+.login-container {
+  background-color: var(--lightgreen);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 26px;
+}
+
+.login-container p {
+  text-align: center;
+  font-size: 14px;
+  color: var(--darkred);
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.form-group input:focus {
+  border-color: var(--darkgreen);
+  outline: none;
+  box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-options a {
+  text-decoration: none;
+  color: var(--darkblue);
+}
+
+.form-options a:hover {
+  text-decoration: underline;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--darkblue);
+  color: var(--lightgreen);
+  border: 4px solid var(--darkred);
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background: var(--lightgreen);
+  color: var(--darkred);
+  border: 4px solid var(--darkblue);
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.signup-link a {
+  color: var(--darkblue);
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/***********************************************************/
+/************************Sign Up Page CSS*******************/
+/***********************************************************/
+.signup-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.signup-container h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 26px;
+}
+
+.signup-container p {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #2a5298;
+  outline: none;
+  box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff4d4d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.signup-btn:hover {
+  background-color: #cc0000;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #2a5298;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/***********************************************************/
+/************************Temporary CSS****************/
+/***********************************************************/
+#temp-button {
+  background: var(--darkblue);
+  color: var(--lightgreen);
+  border: 4px solid var(--darkred);
+}
+
+#temp-button:hover {
+  background: var(--lightgreen);
+  color: var(--darkred);
+  border: 4px solid var(--darkblue);
 }

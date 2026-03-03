@@ -1,70 +1,73 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My BCIT Project</title>
+    <meta name="comp1800 team 22" content="My 1800 App" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My BCIT Project</title>
-  <meta name="comp1800 team 22" content="My 1800 App" />
-</head>
+  <body>
+    <!-- NavBar: Halie -->
+    <div id="navbar-placeholder"></div>
 
-<body>
-  <!-- NavBar: Halie -->
-  <div id="navbar-placeholder"></div>
+    <!-- ===== Page Content ===== -->
+    <div class="container mt-4">
+      <!-- Welcome banner: Thien -->
+      <div class="mb-4">
+        <h1>Welcome to 1800 Project</h1>
+        <p>This is the Sprint 1 homepage layout.</p>
+      </div>
 
-  <!-- ===== Page Content ===== -->
-  <div class="container mt-4">
-    <!-- Welcome banner: Thien -->
-    <div class="mb-4">
-      <h1>Welcome to 1800 Project</h1>
-      <p>This is the Sprint 1 homepage layout.</p>
-    </div>
+      <!-- Call to action: Winston -->
+      <div class="mb-4">
+        <button class="btn btn-primary">Get Started</button>
+      </div>
 
-    <!-- Call to action: Winston -->
-    <div class="mb-4">
-      <button class="btn btn-primary">Get Started</button>
-    </div>
+      <div class="mb-4">
+        <button class="btn-primary" id="signup-redirect-btn">Sign up</button>
+      </div>
 
-    <div class="mb-4">
-      <button class="btn-primary" id="signup-redirect-btn">Sign up</button>
-    </div>
+      <button id="open-modal-btn" class="btn">Want to host an event?</button>
 
-    <button id="open-modal-btn" class="btn">Want to host an event?</button>
+      <dialog id="signup-dialog">
+        <h2>Create an Account</h2>
 
-    <dialog id="signup-dialog">
-      <h2>Create an Account</h2>
+        <form id="signup-form">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required />
+          </div>
 
-      <form id="signup-form">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" required>
-        </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required />
+          </div>
 
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" required>
-        </div>
+          <button type="submit" class="btn">Submit</button>
+        </form>
 
-        <button type="submit" class="btn">Submit</button>
+        <button id="close-modal-btn" class="btn btn-close">Close</button>
+      </dialog>
+
+      <form>
+        <input
+          id="temp-button"
+          type="button"
+          value="Restaurant"
+          onclick="window.location.href = './restaurant-skeleton.html'"
+        />
       </form>
 
-      <button id="close-modal-btn" class="btn btn-close">Close</button>
-    </dialog>
+      <!-- Footer: Suzy -->
+      <footer class="mt-5 pt-3 border-top">
+        <p class="text-muted">&copy; 2026 Team 22 - BCIT</p>
+      </footer>
+    </div>
 
-    <form>
-      <input type="button" value="Restaurant" onclick="window.location.href = './restaurant-skeleton.html'" />
-    </form>
+    <!-- Vite entry point -->
+    <script type="module" src="/src/main.js"></script>
 
-    <!-- Footer: Suzy -->
-    <footer class="mt-5 pt-3 border-top">
-      <p class="text-muted">&copy; 2026 Team 22 - BCIT</p>
-    </footer>
-  </div>
-
-  <!-- Vite entry point -->
-  <script type="module" src="/src/main.js"></script>
-
-  <script src="/src/signup.js"></script>
-</body>
-
+    <script src="/src/signup.js"></script>
+  </body>
 </html>
