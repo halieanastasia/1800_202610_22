@@ -1,196 +1,105 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Login Watching Party Finder</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+      * {
+        box-sizing: border-box;
+      }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-            background:
-                linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                url("images/party.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+          url("images/party.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
+      /* Tablet adjustments */
+      @media (max-width: 768px) {
         .login-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+          padding: 30px;
         }
 
         .login-container h2 {
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 26px;
+          font-size: 22px;
+        }
+      }
+
+      /* Mobile adjustments */
+      @media (max-width: 480px) {
+        body {
+          padding: 15px;
         }
 
-        .login-container p {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 25px;
+        .login-container {
+          padding: 25px 20px;
         }
 
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        .form-group input:focus {
-            border-color: #2a5298;
-            outline: none;
-            box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .form-options a {
-            text-decoration: none;
-            color: #2a5298;
-        }
-
-        .form-options a:hover {
-            text-decoration: underline;
+        .login-container h2 {
+          font-size: 20px;
         }
 
         .login-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            background-color: #ff4d4d;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
+          padding: 12px;
+          font-size: 15px;
         }
-
-        .login-btn:hover {
-            background-color: #cc0000;
-        }
-
-        .signup-link {
-            text-align: center;
-            margin-top: 18px;
-            font-size: 14px;
-        }
-
-        .signup-link a {
-            color: #2a5298;
-            text-decoration: none;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Tablet adjustments */
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 30px;
-            }
-
-            .login-container h2 {
-                font-size: 22px;
-            }
-        }
-
-        /* Mobile adjustments */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-
-            .login-container {
-                padding: 25px 20px;
-            }
-
-            .login-container h2 {
-                font-size: 20px;
-            }
-
-            .login-btn {
-                padding: 12px;
-                font-size: 15px;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="login-container">
-        <h2>Watching Party Finder</h2>
-        <p>Find the best places to watch the big game in Vancouver</p>
+      <h2>Watching Party Finder</h2>
+      <p>Find the best places to watch the big game in Vancouver</p>
 
-        <form action="dashboard.html" method="POST">
-
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-
-            <div class="form-options">
-                <label>
-                    <input type="checkbox" name="remember"> Remember Me
-                </label>
-                <a href="#">Forgot Password?</a>
-            </div>
-
-            <button type="submit" class="login-btn">Login</button>
-
-        </form>
-
-        <div class="signup-link">
-            Don’t have an account? <a href="signup.html">Sign up</a>
+      <form action="dashboard.html" method="POST">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
         </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <div class="form-options">
+          <label> <input type="checkbox" name="remember" /> Remember Me </label>
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <div class="signup-link">
+        Don’t have an account? <a href="signup.html">Sign up</a>
+      </div>
     </div>
 
-</body>
-
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
