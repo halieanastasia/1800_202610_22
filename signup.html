@@ -1,120 +1,51 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Sign Up for Watching Party Member</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-      * {
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up for Watching Party Member</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
 
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        min-height: 100vh;
-        padding: 20px;
+<body class="auth-page">
+  <div class="signup-container">
+    <h2>Create Account</h2>
+    <p>Join the Watching Party and never miss the big match in Vancouver</p>
 
-        background:
-          linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-          url("images/party.jpg");
-
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      /* Tablet */
-      @media (max-width: 768px) {
-        .signup-container {
-          padding: 30px;
-        }
-      }
-
-      /* Mobile */
-      @media (max-width: 480px) {
-        .signup-container {
-          padding: 25px 20px;
-        }
-
-        .signup-container h2 {
-          font-size: 20px;
-        }
-
-        .signup-btn {
-          padding: 12px;
-          font-size: 15px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="signup-container">
-      <h2>Create Account</h2>
-      <p>Join the Watching Party and never miss the big match in Vancouver</p>
-
-      <form action="dashboard.html" method="POST">
-        <div class="form-group">
-          <label for="fullname">Full Name</label>
-          <input
-            type="text"
-            id="fullname"
-            name="fullname"
-            placeholder="Enter your full name"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Create a password"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirm">Confirm Password</label>
-          <input
-            type="password"
-            id="confirm"
-            name="confirm"
-            placeholder="Confirm your password"
-            required
-          />
-        </div>
-
-        <button type="submit" class="signup-btn">Sign Up</button>
-      </form>
-
-      <div class="login-link">
-        Already have an account? <a href="login.html">Login</a>
+    <form action="dashboard.html" method="POST">
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required />
       </div>
 
-      <div>
-        <a class="home-button" href="index.html">Home</a>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
       </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a password" required />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" name="confirm" placeholder="Confirm your password" required />
+      </div>
+
+      <button type="submit" class="signup-btn">Sign Up</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login</a>
     </div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+    <div>
+      <a class="home-button" href="index.html">Home</a>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
