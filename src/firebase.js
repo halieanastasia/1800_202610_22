@@ -8,12 +8,12 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBFiJCpRVD0CmOZFRhX3te9PQsFUUwuoJs",
-    authDomain: "team-bby22.firebaseapp.com",
-    projectId: "team-bby22",
-    storageBucket: "team-bby22.firebasestorage.app",
-    messagingSenderId: "825394620035",
-    appId: "1:825394620035:web:1e61b266c8703e951f9db6"
+  apiKey: "AIzaSyBFiJCpRVD0CmOZFRhX3te9PQsFUUwuoJs",
+  authDomain: "team-bby22.firebaseapp.com",
+  projectId: "team-bby22",
+  storageBucket: "team-bby22.firebasestorage.app",
+  messagingSenderId: "825394620035",
+  appId: "1:825394620035:web:1e61b266c8703e951f9db6",
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
