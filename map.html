@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>My BCIT Project</title>
+    <title>Map</title>
     <meta name="comp1800 template" content="My 1800 App" />
 
     <!-- Required meta tags -->
@@ -9,8 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Web Components for shared navbar and footer layout -->
-    <script type="module" src="/src/components/site-navbar.js"></script>
-    <script type="module" src="/src/components/site-footer.js"></script>
+    <script type="module" src="/src/navbar.js"></script>
   </head>
 
   <body>
@@ -19,17 +18,29 @@
     <!------------------------------>
 
     <!-- our own navbar goes here -->
-    <site-navbar></site-navbar>
+    <div id="navbar-placeholder"></div>
 
-    <!-- Main content goes here -->
+    <main class="container mt-4 mb-4">
+      <h2>Map View Holder</h2>
+      <div id="map" style="width: 100%; height: 400px"></div>
+
+      <div>
+        <div class="card"></div>
+        <div class="card-body">
+          <h5 class="card-title">Need Suggestion?</h5>
+          <p class="card-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit...
+          </p>
+        </div>
+      </div>
+    </main>
 
     <!-- our own footer goes here -->
-    <site-footer></site-footer>
 
     <!---------------------------------------------->
     <!-- Your own JavaScript scripts go here      -->
     <!---------------------------------------------->
 
-    <script type="module" src="/src/app.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
