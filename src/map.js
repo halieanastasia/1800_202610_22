@@ -32,13 +32,16 @@ function showMap() {
   // Add controls (zoom, rotation, etc.) shown in top-right corner of map
   addControls(map);
 
-  // Once the map loads, we can add the user location and hike markers, etc.
+  // Once the map loads, we can add the user location and restaurant markers, etc.
   // We wait for the "load" event to ensure the map is fully initialized before we try to add sources/layers.
   map.once("load", async () => {
     // Choose either the built-in geolocate control or the manual pin method
     // addGeolocationControl(map);
     await addGeolocationControl(map);
     console.log("map loaded, placed user pin!");
+
+    await showRestaurants(map);
+    await zoomToAll(map);
   });
 
   function addControls(map) {
@@ -70,16 +73,12 @@ function addGeolocationControl(map) {
 // ------------------------------------------------------------
 async function getRestaurants() {
   // Fetch all documents from the "restaurant" collection in Firestore
-  const snapshot = await getDocs(collection(db, "restaurant"));
+  const restaurants = await getDocs(collection(db, "restaurants"));
 
   // Convert Firestore documents to plain JavaScript objects
   // And returns a new array (list of the documents, json format)
-  // Equivalent to doing this:
-  //   const hikes = [];
-  //   for (const doc of snapshot.docs) {
-  //       hikes.push(doc.data());
-
-  return snapshot.docs.map((doc) => doc.data());
+  console.log("getting restaurants");
+  return restaurants.docs.map((doc) => doc.data());
 }
 
 // ------------------------------------------------------------
@@ -87,14 +86,15 @@ async function getRestaurants() {
 // It also stores the restaurant data in a global variable for later use (e.g., zooming).
 // ------------------------------------------------------------
 async function showRestaurants(map) {
-  // Fetch hike data from Firestore
-  const snapshot = await getRestaurants();
+  // Fetch restaurant data from Firestore
+  const restaurants = await getRestaurants();
 
   // Loop through each restaurant document and add a green pin to the map
-  snapshot.forEach((doc) => {
+  restaurants.forEach((doc) => {
     // Store restaurant data in global variable (array)
     // for later use (e.g., zooming to all points)
     appState.restaurants.push(doc);
+    console.log("adding restaurant");
 
     // create green pin
     const el = document.createElement("div");
@@ -106,7 +106,7 @@ async function showRestaurants(map) {
 
     // new layer with markers, add to map
     new maplibregl.Marker({ element: el })
-      .setLngLat([doc.lng, doc.lat])
+      .setLngLat([doc.location.longitude, doc.location.latitude])
       .addTo(map);
   });
 }
@@ -123,8 +123,8 @@ async function zoomToAll(map) {
   console.log("User location:", appState.userLngLat);
   bounds.extend(appState.userLngLat);
 
-  // hikes locations
-  console.log("Hikes data:", appState.restaurants);
+  // restaurant locations
+  console.log("Restaurant data:", appState.restaurants);
   appState.restaurants.forEach((post) => {
     console.log(
       `Adding post to bounds: ${post.name} at [${post.lng}, ${post.lat}]`,
