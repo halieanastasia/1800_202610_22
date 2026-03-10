@@ -4,7 +4,6 @@ import "../styles/style.css";
 import { seedRestaurants } from "./restaurants.js";
 import "./navbar.js";
 
-<<<<<<< HEAD
 function sayHello() { }
 // document.addEventListener('DOMContentLoaded', sayHello);
 
@@ -40,6 +39,4 @@ setTimeout(() => {
     window.location.href = 'index.html';
   }, 600);   // wait for fade to finish
 }, 2000);    // show for 2 seconds, then fade then redirect
-=======
 seedRestaurants();
->>>>>>> 3cdb67c8e99ced0fa93a5fc23b6085c6ec86a735
