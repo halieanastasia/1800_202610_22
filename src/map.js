@@ -21,11 +21,11 @@ const appState = {
 // ------------------------------------------------------------
 function showMap() {
   // Initialize MapLibre
-  // Centered at BCIT
+  // Centered at Vancouver
   const map = new maplibregl.Map({
     container: "map",
     style: `https://api.maptiler.com/maps/streets/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
-    center: [-123.00163752324765, 49.25324576104826],
+    center: [-123.1244189912157, 49.28304910906851],
     zoom: 10,
   });
 
@@ -67,26 +67,25 @@ function addGeolocationControl(map) {
 }
 
 // ------------------------------------------------------------
-// This function fetches restaurant data (converted to JSON)
-// from Firestore and adds green pins to the map.
-// It assumes each restaurant document has "lat" and "lng" fields.
+// Gets the restaurant data from Firestore.
+// It assumes each restaurant entry has a "lat" and "lng" fields.
 // ------------------------------------------------------------
 async function getRestaurants() {
-  // Fetch all documents from the "restaurant" collection in Firestore
+  // Get all documents from the "restaurant" collection in Firestore
   const restaurants = await getDocs(collection(db, "restaurants"));
 
-  // Convert Firestore documents to plain JavaScript objects
-  // And returns a new array (list of the documents, json format)
+  // Convert Firestore documents (restaurants) to plain JavaScript objects
+  // And returns an array containing the documents (restaurants) in json format)
   console.log("getting restaurants");
   return restaurants.docs.map((doc) => doc.data());
 }
 
 // ------------------------------------------------------------
-// This function takes the restaurant data and adds green pins to the map.
+// Takes the restaurant data and adds location pins to the map.
 // It also stores the restaurant data in a global variable for later use (e.g., zooming).
 // ------------------------------------------------------------
 async function showRestaurants(map) {
-  // Fetch restaurant data from Firestore
+  // Store restaurant data from Firestore database in the "restaurants" array
   const restaurants = await getRestaurants();
 
   // Loop through each restaurant document and add a green pin to the map
@@ -96,7 +95,7 @@ async function showRestaurants(map) {
     appState.restaurants.push(doc);
     console.log("adding restaurant");
 
-    // create green pin
+    // create the location pin
     const el = document.createElement("div");
     el.style.width = "16px";
     el.style.height = "16px";
