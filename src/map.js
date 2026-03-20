@@ -128,7 +128,7 @@ async function zoomToAll(map) {
     console.log(
       `Adding post to bounds: ${post.name} at [${post.lng}, ${post.lat}]`,
     );
-    bounds.extend([post.lng, post.lat]);
+    bounds.extend([post.location.longitude, post.location.latitude]);
   });
 
   map.fitBounds(bounds, {
