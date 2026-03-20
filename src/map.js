@@ -1,4 +1,4 @@
-import maplibregl from "maplibre-gl";
+import maplibregl, { restoreNow } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 // Add this to the top of your JS file
@@ -13,6 +13,7 @@ import { collection, getDocs } from "firebase/firestore";
 const appState = {
   restaurants: [],
   userLngLat: null,
+  currentRestaurant: {},
 };
 
 // ------------------------------------------------------------
@@ -107,8 +108,18 @@ async function showRestaurants(map) {
     new maplibregl.Marker({ element: el })
       .setLngLat([doc.location.longitude, doc.location.latitude])
       .addTo(map);
+
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      console.log("Clicked restaurant: ", doc.name);
+    });
   });
 }
+
+//TODO On click update update appState with a currentRestaurant object
+// Modify restaurant.js to load the data for the currently selected restaurant
+// Right now it shows the first restaurant in the restaurant array
+// Then navigate the user to the page
 
 // ------------------------------------------------------------
 // This function calculates the bounding box that includes both the user location and all restaurant locations,

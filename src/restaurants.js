@@ -1,5 +1,10 @@
 import { db } from "./firebase.js";
-import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 
 function addRestaurantData() {
   const restoRef = collection(db, "restaurants");
@@ -15,7 +20,7 @@ function addRestaurantData() {
       city: "Vancouver",
       rating: 4.5,
       operation_hours: { open: "11:30 AM", close: "11:00 PM" },
-      last_updated: serverTimestamp()
+      last_updated: serverTimestamp(),
     },
     {
       name: "Chambar Restaurant",
@@ -27,7 +32,7 @@ function addRestaurantData() {
       city: "Vancouver",
       rating: 4.5,
       operation_hours: { open: "4:30 PM", close: "11:30 PM" },
-      last_updated: serverTimestamp()
+      last_updated: serverTimestamp(),
     },
     {
       name: "Trattoria by Italian Kitchen",
@@ -39,8 +44,8 @@ function addRestaurantData() {
       city: "Burnaby",
       rating: 4.7,
       operation_hours: { open: "11:30 AM", close: "11:00 PM" },
-      last_updated: serverTimestamp()
-    }
+      last_updated: serverTimestamp(),
+    },
   ];
 
   sampleRestaurants.forEach((resto) => {
