@@ -11,7 +11,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.getElementById("restaurantForm")
-.addEventListener("submit", async (e) => {
+  .addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
@@ -24,23 +24,23 @@ document.getElementById("restaurantForm")
 
     try {
 
-        await addDoc(collection(db, "restaurants"), {
-            name: name,
-            address: address,
-            city: city,
-            event: event,
-            capacity: capacity,
-            description: description,
-            createdAt: new Date()
-        });
+      await addDoc(collection(db, "restaurants"), {
+        name: name,
+        address: address,
+        city: city,
+        event: event,
+        capacity: capacity,
+        description: description,
+        createdAt: new Date()
+      });
 
-        alert("Location added successfully!");
+      alert("Location added successfully!");
 
     } catch (error) {
-        console.error("Error adding location:", error);
+      console.error("Error adding location:", error);
     }
 
-});
+  });
 
 
 const form = document.getElementById('restaurantForm');
@@ -56,7 +56,7 @@ form.addEventListener('submit', async (e) => {
   // Hide toast and redirect after 2.5 seconds
   setTimeout(() => {
     toast.classList.remove('show');
-    
+
     // Redirect to index.html
     window.location.href = 'index.html';
   }, 2500);   // 2.5 seconds for visible time

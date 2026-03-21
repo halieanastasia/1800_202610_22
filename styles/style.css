@@ -488,7 +488,7 @@ body {
 
 /* Success banner when update new location on top right corner  */
 #success-toast {
-  visibility: hidden;          
+  display: none;          
   min-width: 250px;
   margin-left: -125px;         
   
@@ -509,7 +509,7 @@ body {
 }
 
 #success-toast.show {
-  visibility: visible;
+  display: block;
   opacity: 1;
 }
  #success-toast {
