@@ -551,3 +551,16 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.map-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 15px;
+  border-radius: 8px;
+
+  z-index: 1000;
+  margin: 0;
+}
