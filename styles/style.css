@@ -2,7 +2,8 @@
 /************************Color Scheme***********************/
 /***********************************************************/
 :root {
-  --cream: #fffef0; /*Maybe keep*/
+  --cream: #fffef0;
+  /*Maybe keep*/
   --lightgreen: #b3d3bb;
   --darkgreen: #143a2f;
 }
@@ -62,6 +63,7 @@ body {
   background-color: var(--darkgreen);
   margin: 0px;
 }
+
 .menu {
   list-style-type: none;
   display: grid;
@@ -96,11 +98,9 @@ body {
   min-width: 35px;
 }
 
-.menu-item-left {
-}
+.menu-item-left {}
 
-.menu-item-right {
-}
+.menu-item-right {}
 
 /***********************************************************/
 /************************Hero CSS*************************/
@@ -111,8 +111,7 @@ body {
   min-height: 400px;
   background:
     linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75)),
-    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000")
-      center/cover no-repeat;
+    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000") center/cover no-repeat;
   color: white;
   display: flex;
   align-items: center;
@@ -189,8 +188,7 @@ body {
 /***********************************************************/
 /*Add to its own css file? if it gets to crowded in the main one*/
 
-.restaurant-container {
-}
+.restaurant-container {}
 
 .restaurant-img img {
   width: 100%;
@@ -441,6 +439,7 @@ body {
 
 /* Tablet */
 @media (max-width: 768px) {
+
   .login-container,
   .signup-container {
     padding: 30px;
@@ -449,6 +448,7 @@ body {
 
 /* Mobile */
 @media (max-width: 480px) {
+
   .login-container,
   .signup-container {
     padding: 25px 20px;
@@ -488,7 +488,7 @@ body {
 
 /* Success banner when update new location on top right corner  */
 #success-toast {
-  display: none;          
+  display: none;
   visibility: hidden;
   min-width: 250px;
   margin-left: -125px;
@@ -515,8 +515,10 @@ body {
   display: block;
   opacity: 1;
 }
+
 #success-toast {
-  transition: opacity 0.6s ease; /*fading effect*/
+  transition: opacity 0.6s ease;
+  /*fading effect*/
 }
 
 /***********************************************************/
@@ -563,4 +565,41 @@ body {
 
   z-index: 1000;
   margin: 0;
+}
+
+#add-event-btn {
+  position: absolute;
+  /* Positioned bottom-left above your 'Home' icon */
+  bottom: 85px;
+  left: 20px;
+
+  z-index: 1000;
+
+  /* Typography & Sizing */
+  font-weight: 600;
+  font-size: 16px;
+  height: 50px;
+  /* Slightly shorter for a sleeker pill look */
+
+  /* Center text and add some horizontal space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Optional: Match the dark green from your navbar for a themed look */
+  background-color: #0d3b32;
+  border: none;
+  color: white;
+}
+
+#add-event-btn:hover {
+  background-color: #155e51;
+  /* Slightly lighter green on hover */
+  transform: translateY(-2px);
+  /* Tiny lift effect */
+  transition: all 0.2s ease;
+}
+
+#add-event-btn:active {
+  transform: scale(0.95);
 }
