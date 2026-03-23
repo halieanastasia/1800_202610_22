@@ -1,24 +1,23 @@
-const openBtn = document.getElementById("open-modal-btn");
-const closeBtn = document.getElementById("close-modal-btn");
-const dialog = document.getElementById("signup-dialog");
+const signupForm = document.getElementById("signup-form");
+const homeBtn = document.getElementById("go-home-btn");
 
-openBtn.addEventListener("click", () => {
-  dialog.showModal();
-});
+if (signupForm) {
+  signupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-closeBtn.addEventListener("click", () => {
-  dialog.close();
-});
+    const name = document.getElementById("signup-name")?.value.trim();
+    const email = document.getElementById("signup-email")?.value.trim();
+    const password = document.getElementById("signup-password")?.value.trim();
 
-const form = document.getElementById("signup-form");
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  console.log("Form submitted!");
-  dialog.close();
-});
-const redirectBtn = document.getElementById("signup-redirect-btn");
+    console.log("Signup form submitted:", { name, email, password });
 
-redirectBtn.addEventListener("click", () => {
-  // window.location.href changes the current URL of the browser
-  window.location.href = "signup.html";
-});
+    alert("Signup submitted successfully.");
+    window.location.href = "./index.html";
+  });
+}
+
+if (homeBtn) {
+  homeBtn.addEventListener("click", () => {
+    window.location.href = "./index.html";
+  });
+}

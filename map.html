@@ -1,93 +1,115 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <title>FIFA Spot Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="comp1800 team 22" content="Restaurant map page" />
+  </head>
 
-<head>
-  <title>Map</title>
-  <meta name="comp1800 template" content="My 1800 App" />
+  <body id="map-body">
+    <div id="navbar-placeholder"></div>
 
-  <!-- Required meta tags -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <main class="map-layout">
+      <section class="map-sidebar">
+        <h1 class="page-title">Find Restaurants</h1>
+        <p class="page-subtitle">
+          Search restaurants, filter by tag, and find places near an address or your current location.
+        </p>
 
-  <!-- Web Components for shared navbar and footer layout -->
-  <script type="module" src="./src/navbar.js"></script>
-</head>
+        <div class="search-panel">
+          <label for="restaurant-search-input" class="search-label">
+            Restaurant search
+          </label>
+          <input
+            id="restaurant-search-input"
+            type="text"
+            class="search-input"
+            placeholder="e.g. sushi, pub, sports bar"
+          />
 
-<body id="map-body">
-  <!------------------------------>
-  <!-- Your HTML Layout go here -->
-  <!------------------------------>
+          <label for="place-search-input" class="search-label">
+            Address / place search
+          </label>
+          <input
+            id="place-search-input"
+            type="text"
+            class="search-input"
+            placeholder="e.g. BCIT Burnaby, Vancouver"
+          />
 
-  <!-- our own navbar goes here -->
-  <!-- our own footer goes here -->
-  <div id="map-page" style="position: relative;">
-    <div id="map"></div>
+          <div class="search-actions">
+            <button id="search-btn" class="btn btn-primary" type="button">
+              Search
+            </button>
+            <button id="use-my-location-btn" class="btn btn-outline-light" type="button">
+              Use My Location
+            </button>
+            <button id="reset-btn" class="btn btn-outline-light" type="button">
+              Reset
+            </button>
+          </div>
 
-    <button type="button" id="add-event-btn" class="btn btn-primary rounded-pill shadow" data-bs-toggle="modal"
-      data-bs-target="#eventModal">
-      Add an Event
-    </button>
-    <h2 class="map-title">Restaurants Streaming FIFA Games</h2>
-    <div id="navbar-placeholder" class="map-navbar"></div>
-  </div>
-  <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add FIFA Stream Event</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="distance-filter">
+            <label class="search-label">Quick distance filters</label>
+            <div class="quick-distance-buttons">
+              <button type="button" class="quick-distance-btn" data-distance="1">1 km</button>
+              <button type="button" class="quick-distance-btn" data-distance="3">3 km</button>
+              <button type="button" class="quick-distance-btn" data-distance="5">5 km</button>
+            </div>
+          </div>
+
+          <div class="distance-filter">
+            <label for="distance-range-input" class="search-label">
+              Distance radius (km)
+            </label>
+            <input
+              id="distance-range-input"
+              type="number"
+              class="distance-number-input"
+              min="1"
+              max="50"
+              step="1"
+              value="1"
+              placeholder="Enter distance in km"
+            />
+            <small id="distance-helper-text" class="distance-helper-text">
+              Click “Use My Location” to start with a 1 km radius.
+            </small>
+          </div>
+
+          <div class="search-actions">
+            <button id="show-all-btn" class="btn btn-outline-light" type="button">
+              Show All
+            </button>
+          </div>
         </div>
-        <div class="modal-body">
-          <form id="event-form">
-            <div class="mb-3">
-              <label class="form-label">Restaurant Name</label>
-              <input type="text" class="form-control" id="rest-name" placeholder="Enter name" required>
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" id="event-desc" rows="3"
-                placeholder="Special deals, screen size, etc."></textarea>
-            </div>
+        <div class="tag-panel">
+          <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
+            Filter by tag
+            <span id="tag-toggle-icon">▼</span>
+          </button>
 
-            <div class="mb-3">
-              <label class="form-label">Time & Date</label>
-              <input type="datetime-local" class="form-control" id="event-time" required>
-            </div>
-
-            <div class="row">
-              <div class="col-6 mb-3">
-                <label class="form-label">Capacity</label>
-                <input type="number" class="form-control" id="capacity" placeholder="e.g. 50">
-              </div>
-              <div class="col-6 mb-3">
-                <label class="form-label">Parking</label>
-                <select class="form-select" id="parking">
-                  <option value="Available">Available</option>
-                  <option value="Street Only">Street Only</option>
-                  <option value="None">None</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="kids-friendly">
-              <label class="form-check-label">Kids Welcome?</label>
-            </div>
-
-            <button type="submit" class="btn btn-success w-100">Save Event</button>
-          </form>
+          <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
+            <div id="tag-filter-container" class="tag-filter-container"></div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!---------------------------------------------->
-  <!-- Your own JavaScript scripts go here      -->
-  <!---------------------------------------------->
+        <div class="results-header">
+          <h2 class="results-title">Results</h2>
+          <span id="results-count" class="results-count">0 restaurants</span>
+        </div>
 
-  <script type="module" src="./src/main.js"></script>
-  <script type="module" src="./src/map.js"></script>
-</body>
+        <div id="results-list" class="results-list"></div>
+      </section>
 
+      <section class="map-section">
+        <div id="map"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/map.js"></script>
+  </body>
 </html>

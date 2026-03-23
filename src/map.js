@@ -1,149 +1,735 @@
-import maplibregl, { restoreNow } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-// Add this to the top of your JS file
-// Database initialized
 import { db } from "./firebase.js";
-// Functions needed to read from database
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 
-// ------------------------------------------------------------
-// Global variable to store user location, restaurant data
-// ------------------------------------------------------------
-const appState = {
+const state = {
+  map: null,
   restaurants: [],
+  filteredRestaurants: [],
+  markers: [],
+  userMarker: null,
+  searchCenterMarker: null,
   userLngLat: null,
-  currentRestaurant: {},
+  searchCenter: null,
+  selectedTag: "all",
+  distanceRadiusKm: 0,
+  sourceMode: "auto", // auto | search | user
+  isTagPanelOpen: false,
 };
 
-// ------------------------------------------------------------
-// This top level function initializes the MapLibre map, adds controls
-// It waits for the map to load before trying to add sources/layers.
-// ------------------------------------------------------------
-function showMap() {
-  // Initialize MapLibre
-  // Centered at Vancouver
-  const map = new maplibregl.Map({
-    container: "map",
-    style: `https://api.maptiler.com/maps/streets/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
-    center: [-123.1244189912157, 49.28304910906851],
-    zoom: 10,
+const elements = {
+  restaurantSearchInput: document.getElementById("restaurant-search-input"),
+  placeSearchInput: document.getElementById("place-search-input"),
+  searchBtn: document.getElementById("search-btn"),
+  useMyLocationBtn: document.getElementById("use-my-location-btn"),
+  resetBtn: document.getElementById("reset-btn"),
+  distanceRangeInput: document.getElementById("distance-range-input"),
+  showAllBtn: document.getElementById("show-all-btn"),
+  distanceHelperText: document.getElementById("distance-helper-text"),
+  tagFilterContainer: document.getElementById("tag-filter-container"),
+  tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
+  toggleTagBtn: document.getElementById("toggle-tag-btn"),
+  tagToggleIcon: document.getElementById("tag-toggle-icon"),
+  resultsList: document.getElementById("results-list"),
+  resultsCount: document.getElementById("results-count"),
+  quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
+};
+
+function normalizeTags(tags) {
+  if (!tags) return [];
+
+  if (Array.isArray(tags)) {
+    return tags.map((tag) => String(tag).trim().toLowerCase()).filter(Boolean);
+  }
+
+  return String(tags)
+    .split(",")
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function getRestaurantCoords(restaurant) {
+  if (
+    restaurant?.location?.latitude != null &&
+    restaurant?.location?.longitude != null
+  ) {
+    return [
+      Number(restaurant.location.longitude),
+      Number(restaurant.location.latitude),
+    ];
+  }
+
+  if (
+    restaurant?.location?._lat != null &&
+    restaurant?.location?._long != null
+  ) {
+    return [
+      Number(restaurant.location._long),
+      Number(restaurant.location._lat),
+    ];
+  }
+
+  if (restaurant?.lat != null && restaurant?.lng != null) {
+    return [Number(restaurant.lng), Number(restaurant.lat)];
+  }
+
+  if (restaurant?.latitude != null && restaurant?.longitude != null) {
+    return [Number(restaurant.longitude), Number(restaurant.latitude)];
+  }
+
+  return null;
+}
+
+function toRadians(value) {
+  return (value * Math.PI) / 180;
+}
+
+function distanceKm(lng1, lat1, lng2, lat2) {
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(lat2 - lat1);
+  const dLng = toRadians(lng2 - lng1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+}
+
+function getActiveDistanceCenter() {
+  if (state.sourceMode === "user" && state.userLngLat) {
+    return {
+      lng: state.userLngLat[0],
+      lat: state.userLngLat[1],
+      label: "your current location",
+      source: "user",
+    };
+  }
+
+  if (state.sourceMode === "search" && state.searchCenter) {
+    return {
+      lng: state.searchCenter.lng,
+      lat: state.searchCenter.lat,
+      label: "the searched location",
+      source: "search",
+    };
+  }
+
+  if (state.searchCenter) {
+    return {
+      lng: state.searchCenter.lng,
+      lat: state.searchCenter.lat,
+      label: "the searched location",
+      source: "search",
+    };
+  }
+
+  if (state.userLngLat) {
+    return {
+      lng: state.userLngLat[0],
+      lat: state.userLngLat[1],
+      label: "your current location",
+      source: "user",
+    };
+  }
+
+  return null;
+}
+
+async function patchExistingRestaurantTags() {
+  const snapshot = await getDocs(collection(db, "restaurants"));
+
+  const tagsByRestaurantName = {
+    "Trattoria by Italian Kitchen": ["italian", "pasta", "casual", "burnaby"],
+    "Chambar Restaurant": ["belgian", "seafood", "downtown", "fine dining"],
+    "Nightingale": ["bar", "cocktails", "modern canadian", "downtown"],
+  };
+
+  const updates = snapshot.docs.map(async (restaurantDoc) => {
+    const data = restaurantDoc.data();
+    const currentTags = normalizeTags(data.tags);
+
+    if (currentTags.length > 0) return;
+
+    const suggestedTags = tagsByRestaurantName[data.name];
+    if (!suggestedTags) return;
+
+    await updateDoc(doc(db, "restaurants", restaurantDoc.id), {
+      tags: suggestedTags,
+    });
   });
 
-  // Add controls (zoom, rotation, etc.) shown in top-right corner of map
-  addControls(map);
+  await Promise.all(updates);
+}
 
-  // Once the map loads, we can add the user location and restaurant markers, etc.
-  // We wait for the "load" event to ensure the map is fully initialized before we try to add sources/layers.
-  map.once("load", async () => {
-    // Choose either the built-in geolocate control or the manual pin method
-    // addGeolocationControl(map);
-    await addGeolocationControl(map);
-    console.log("map loaded, placed user pin!");
+async function getRestaurants() {
+  const snapshot = await getDocs(collection(db, "restaurants"));
 
-    await showRestaurants(map);
-    await zoomToAll(map);
+  return snapshot.docs.map((restaurantDoc) => {
+    const data = restaurantDoc.data();
+
+    return {
+      id: restaurantDoc.id,
+      ...data,
+      tagsArray: normalizeTags(data.tags),
+    };
   });
+}
 
-  function addControls(map) {
-    // Zoom and rotation
-    map.addControl(new maplibregl.NavigationControl(), "top-right");
+async function geocodePlace(query) {
+  const apiKey = import.meta.env.VITE_MAPTILER_KEY;
+
+  if (!apiKey || !query?.trim()) return null;
+
+  const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(
+    query.trim()
+  )}.json?limit=1&key=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.features || data.features.length === 0) return null;
+
+    const [lng, lat] = data.features[0].center;
+
+    return {
+      lng,
+      lat,
+      placeName: data.features[0].place_name || query.trim(),
+    };
+  } catch (error) {
+    console.error("Geocoding failed:", error);
+    return null;
   }
 }
 
-showMap();
+function createMarkerElement() {
+  const el = document.createElement("div");
+  el.className = "restaurant-marker";
+  return el;
+}
 
-function addGeolocationControl(map) {
-  const geolocate = new maplibregl.GeolocateControl({
-    positionOptions: { enableHighAccuracy: true },
-    trackUserLocation: true,
-    showUserHeading: true,
-  });
-  map.addControl(geolocate, "top-right");
+function clearMarkers() {
+  state.markers.forEach((marker) => marker.remove());
+  state.markers = [];
+}
 
-  // Optional: trigger a locate once the control is added
-  geolocate.on("trackuserlocationstart", () => {
-    // You can react to tracking start here if needed
+function renderMarkers(restaurants) {
+  clearMarkers();
+
+  restaurants.forEach((restaurant) => {
+    const coords = getRestaurantCoords(restaurant);
+
+    if (!coords) {
+      console.warn("No valid coordinates for restaurant:", restaurant.name, restaurant);
+      return;
+    }
+
+    const markerEl = createMarkerElement();
+    markerEl.title = restaurant.name || "Restaurant";
+
+    const marker = new maplibregl.Marker({
+      element: markerEl,
+      anchor: "center",
+    })
+      .setLngLat(coords)
+      .setPopup(
+        new maplibregl.Popup({ offset: 18 }).setHTML(`
+          <div style="min-width: 180px;">
+            <strong>${restaurant.name || "Restaurant"}</strong><br />
+            <small>${restaurant.address || restaurant.city || ""}</small>
+          </div>
+        `)
+      )
+      .addTo(state.map);
+
+    markerEl.addEventListener("click", () => {
+      openRestaurantDetails(restaurant);
+    });
+
+    state.markers.push(marker);
   });
 }
 
-// ------------------------------------------------------------
-// Gets the restaurant data from Firestore.
-// It assumes each restaurant entry has a "lat" and "lng" fields.
-// ------------------------------------------------------------
-async function getRestaurants() {
-  // Get all documents from the "restaurant" collection in Firestore
-  const restaurants = await getDocs(collection(db, "restaurants"));
+function renderTagButtons(restaurants) {
+  const tagSet = new Set();
 
-  // Convert Firestore documents (restaurants) to plain JavaScript objects
-  // And returns an array containing the documents (restaurants) in json format)
-  console.log("getting restaurants");
-  return restaurants.docs.map((doc) => doc.data());
+  restaurants.forEach((restaurant) => {
+    restaurant.tagsArray.forEach((tag) => tagSet.add(tag));
+  });
+
+  const tags = ["all", ...Array.from(tagSet).sort((a, b) => a.localeCompare(b))];
+
+  elements.tagFilterContainer.innerHTML = "";
+
+  tags.forEach((tag) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = tag;
+    button.className = `tag-btn ${state.selectedTag === tag ? "active" : ""}`;
+
+    button.addEventListener("click", () => {
+      state.selectedTag = tag;
+      renderTagButtons(state.restaurants);
+      applyFilters();
+    });
+
+    elements.tagFilterContainer.appendChild(button);
+  });
 }
 
-// ------------------------------------------------------------
-// Takes the restaurant data and adds location pins to the map.
-// It also stores the restaurant data in a global variable for later use (e.g., zooming).
-// ------------------------------------------------------------
-async function showRestaurants(map) {
-  // Store restaurant data from Firestore database in the "restaurants" array
-  const restaurants = await getRestaurants();
+function setTagPanelOpen(isOpen) {
+  state.isTagPanelOpen = isOpen;
+  elements.tagFilterWrapper.classList.toggle("collapsed", !isOpen);
+  elements.tagToggleIcon.textContent = isOpen ? "▲" : "▼";
+}
 
-  // Loop through each restaurant document and add a green pin to the map
-  restaurants.forEach((doc) => {
-    // Store restaurant data in global variable (array)
-    // for later use (e.g., zooming to all points)
-    appState.restaurants.push(doc);
-    console.log("adding restaurant");
+function updateQuickDistanceButtons() {
+  elements.quickDistanceButtons.forEach((button) => {
+    const buttonDistance = Number(button.dataset.distance);
+    button.classList.toggle(
+      "active",
+      state.distanceRadiusKm > 0 && state.distanceRadiusKm === buttonDistance
+    );
+  });
+}
 
-    // create the location pin
-    const el = document.createElement("div");
-    el.style.width = "16px";
-    el.style.height = "16px";
-    el.style.borderRadius = "50%";
-    el.style.backgroundColor = "green";
-    el.style.border = "2px solid white";
+function buildRestaurantCard(restaurant) {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "restaurant-card";
 
-    // new layer with markers, add to map
-    new maplibregl.Marker({ element: el })
-      .setLngLat([doc.location.longitude, doc.location.latitude])
-      .addTo(map);
+  const tagsHtml =
+    restaurant.tagsArray.length > 0
+      ? restaurant.tagsArray
+          .map((tag) => `<span class="restaurant-tag">${tag}</span>`)
+          .join("")
+      : `<span class="restaurant-tag">No tags</span>`;
 
-    el.addEventListener("click", (e) => {
-      e.stopPropagation();
-      console.log("Clicked restaurant: ", doc.name);
+  const distanceText =
+    typeof restaurant.distanceKm === "number"
+      ? `<p class="restaurant-distance">${restaurant.distanceKm.toFixed(2)} km away</p>`
+      : "";
+
+  card.innerHTML = `
+    <div class="restaurant-card-top">
+      <h3>${restaurant.name || "Restaurant"}</h3>
+      <p>${restaurant.price || ""}</p>
+    </div>
+    <p class="restaurant-address">${restaurant.address || restaurant.city || "Address not available"}</p>
+    <p class="restaurant-description">${restaurant.description || "No description available."}</p>
+    ${distanceText}
+    <div class="restaurant-tags">${tagsHtml}</div>
+  `;
+
+  card.addEventListener("click", () => {
+    openRestaurantDetails(restaurant);
+  });
+
+  return card;
+}
+
+function renderResults(restaurants) {
+  elements.resultsList.innerHTML = "";
+  elements.resultsCount.textContent = `${restaurants.length} restaurant${restaurants.length === 1 ? "" : "s"}`;
+
+  if (restaurants.length === 0) {
+    elements.resultsList.innerHTML = `
+      <div class="empty-state">No restaurants matched your filters.</div>
+    `;
+    return;
+  }
+
+  restaurants.forEach((restaurant) => {
+    elements.resultsList.appendChild(buildRestaurantCard(restaurant));
+  });
+}
+
+function openRestaurantDetails(restaurant) {
+  localStorage.setItem("selectedRestaurant", JSON.stringify(restaurant));
+  window.location.href = "./restaurant.html";
+}
+
+function updateSearchCenterMarker() {
+  if (state.searchCenterMarker) {
+    state.searchCenterMarker.remove();
+    state.searchCenterMarker = null;
+  }
+
+  if (!state.searchCenter) return;
+
+  const el = document.createElement("div");
+  el.className = "search-center-marker";
+
+  state.searchCenterMarker = new maplibregl.Marker({ element: el })
+    .setLngLat([state.searchCenter.lng, state.searchCenter.lat])
+    .setPopup(
+      new maplibregl.Popup({ offset: 18 }).setText(
+        state.searchCenter.placeName || "Search location"
+      )
+    )
+    .addTo(state.map);
+}
+
+function fitMapToVisibleResults(restaurants) {
+  const bounds = new maplibregl.LngLatBounds();
+  let hasPoints = false;
+
+  const activeCenter = getActiveDistanceCenter();
+  if (activeCenter) {
+    bounds.extend([activeCenter.lng, activeCenter.lat]);
+    hasPoints = true;
+  }
+
+  restaurants.forEach((restaurant) => {
+    const coords = getRestaurantCoords(restaurant);
+    if (!coords) return;
+    bounds.extend(coords);
+    hasPoints = true;
+  });
+
+  if (hasPoints) {
+    state.map.fitBounds(bounds, {
+      padding: 80,
+      duration: 700,
+      maxZoom: 14,
+    });
+  }
+}
+
+function updateMapAfterFilter(restaurants) {
+  const activeCenter = getActiveDistanceCenter();
+
+  if (!activeCenter && restaurants.length === 0) return;
+
+  if (state.distanceRadiusKm > 0 && activeCenter) {
+    fitMapToVisibleResults(restaurants);
+    return;
+  }
+
+  if (restaurants.length === 0) {
+    if (activeCenter) {
+      state.map.flyTo({
+        center: [activeCenter.lng, activeCenter.lat],
+        zoom: 14,
+        essential: true,
+        duration: 700,
+      });
+    }
+    return;
+  }
+
+  fitMapToVisibleResults(restaurants);
+}
+
+function getRestaurantsWithComputedDistance() {
+  const activeCenter = getActiveDistanceCenter();
+
+  return state.restaurants.map((restaurant) => {
+    if (!activeCenter) {
+      return {
+        ...restaurant,
+        distanceKm: null,
+      };
+    }
+
+    const coords = getRestaurantCoords(restaurant);
+
+    if (!coords) {
+      return {
+        ...restaurant,
+        distanceKm: null,
+      };
+    }
+
+    return {
+      ...restaurant,
+      distanceKm: distanceKm(
+        activeCenter.lng,
+        activeCenter.lat,
+        coords[0],
+        coords[1]
+      ),
+    };
+  });
+}
+
+function updateHelperText() {
+  const activeCenter = getActiveDistanceCenter();
+
+  if (!activeCenter) {
+    elements.distanceHelperText.textContent =
+      "Click “Use My Location” to start with a 1 km radius, or search an address.";
+    return;
+  }
+
+  if (state.distanceRadiusKm > 0) {
+    elements.distanceHelperText.textContent =
+      `Showing restaurants within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
+  } else {
+    elements.distanceHelperText.textContent =
+      `Distance filter is off. Distance will be measured from ${activeCenter.label}.`;
+  }
+}
+
+function applyFilters() {
+  const restaurantQuery = elements.restaurantSearchInput.value.trim().toLowerCase();
+
+  let filtered = getRestaurantsWithComputedDistance();
+
+  if (restaurantQuery) {
+    filtered = filtered.filter((restaurant) => {
+      const haystack = [
+        restaurant.name,
+        restaurant.description,
+        restaurant.address,
+        restaurant.city,
+        ...(restaurant.tagsArray || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(restaurantQuery);
+    });
+  }
+
+  if (state.selectedTag !== "all") {
+    filtered = filtered.filter((restaurant) =>
+      restaurant.tagsArray.some(
+        (tag) => tag.toLowerCase() === state.selectedTag.toLowerCase()
+      )
+    );
+  }
+
+  if (state.distanceRadiusKm > 0) {
+    filtered = filtered.filter(
+      (restaurant) =>
+        typeof restaurant.distanceKm === "number" &&
+        restaurant.distanceKm <= state.distanceRadiusKm
+    );
+  }
+
+  if (getActiveDistanceCenter()) {
+    filtered.sort((a, b) => {
+      if (a.distanceKm == null) return 1;
+      if (b.distanceKm == null) return -1;
+      return a.distanceKm - b.distanceKm;
+    });
+  }
+
+  state.filteredRestaurants = filtered;
+  renderMarkers(filtered);
+  renderResults(filtered);
+  updateHelperText();
+  updateQuickDistanceButtons();
+
+  requestAnimationFrame(() => {
+    updateMapAfterFilter(filtered);
+  });
+}
+
+function syncDistanceFromInput() {
+  const radiusValue = Number(elements.distanceRangeInput.value);
+
+  if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
+    state.distanceRadiusKm = 0;
+    updateQuickDistanceButtons();
+    updateHelperText();
+    return;
+  }
+
+  state.distanceRadiusKm = radiusValue;
+}
+
+async function handleSearch() {
+  const placeQuery = elements.placeSearchInput.value.trim();
+
+  if (!placeQuery) {
+    state.searchCenter = null;
+    state.sourceMode = state.userLngLat ? "user" : "auto";
+    updateSearchCenterMarker();
+    applyFilters();
+    return;
+  }
+
+  const geocoded = await geocodePlace(placeQuery);
+
+  if (geocoded) {
+    state.searchCenter = geocoded;
+    state.sourceMode = "search";
+    updateSearchCenterMarker();
+    syncDistanceFromInput();
+    applyFilters();
+  } else {
+    alert("Could not find that address or place.");
+  }
+}
+
+function handleReset() {
+  elements.restaurantSearchInput.value = "";
+  elements.placeSearchInput.value = "";
+  elements.distanceRangeInput.value = "1";
+
+  state.selectedTag = "all";
+  state.searchCenter = null;
+  state.distanceRadiusKm = 0;
+  state.sourceMode = "auto";
+
+  updateSearchCenterMarker();
+  renderTagButtons(state.restaurants);
+  applyFilters();
+}
+
+function handleShowAll() {
+  state.distanceRadiusKm = 0;
+  updateQuickDistanceButtons();
+  updateHelperText();
+  applyFilters();
+}
+
+function attachEvents() {
+  elements.searchBtn.addEventListener("click", handleSearch);
+
+  elements.useMyLocationBtn.addEventListener("click", () => {
+    state.sourceMode = "user";
+    elements.distanceRangeInput.value = "1";
+    state.distanceRadiusKm = 1;
+    updateQuickDistanceButtons();
+    addUserLocationToMap(true);
+  });
+
+  elements.resetBtn.addEventListener("click", handleReset);
+  elements.showAllBtn.addEventListener("click", handleShowAll);
+
+  elements.toggleTagBtn.addEventListener("click", () => {
+    setTagPanelOpen(!state.isTagPanelOpen);
+  });
+
+  elements.restaurantSearchInput.addEventListener("input", applyFilters);
+
+  elements.distanceRangeInput.addEventListener("input", () => {
+    syncDistanceFromInput();
+    applyFilters();
+  });
+
+  elements.placeSearchInput.addEventListener("keydown", async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      await handleSearch();
+    }
+  });
+
+  elements.quickDistanceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const chosenDistance = Number(button.dataset.distance);
+      elements.distanceRangeInput.value = String(chosenDistance);
+      state.distanceRadiusKm = chosenDistance;
+      applyFilters();
     });
   });
 }
 
-//TODO On click update update appState with a currentRestaurant object
-// Modify restaurant.js to load the data for the currently selected restaurant
-// Right now it shows the first restaurant in the restaurant array
-// Then navigate the user to the page
+function addUserLocationToMap(applyAfterSuccess = false) {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by this browser.");
+    return;
+  }
 
-// ------------------------------------------------------------
-// This function calculates the bounding box that includes both the user location and all restaurant locations,
-// and then zooms the map to fit that bounding box with some padding.
-// It uses the MapLibre "fitBounds" method to smoothly zoom and pan the map.
-// ------------------------------------------------------------
-async function zoomToAll(map) {
-  const bounds = new maplibregl.LngLatBounds();
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lng = position.coords.longitude;
+      const lat = position.coords.latitude;
+      state.userLngLat = [lng, lat];
 
-  // user location
-  console.log("User location:", appState.userLngLat);
-  bounds.extend(appState.userLngLat);
+      if (state.userMarker) {
+        state.userMarker.remove();
+      }
 
-  // restaurant locations
-  console.log("Restaurant data:", appState.restaurants);
-  appState.restaurants.forEach((post) => {
-    console.log(
-      `Adding post to bounds: ${post.name} at [${post.lng}, ${post.lat}]`,
-    );
-    bounds.extend([post.location.longitude, post.location.latitude]);
-  });
+      const el = document.createElement("div");
+      el.className = "user-location-marker";
 
-  map.fitBounds(bounds, {
-    padding: 80,
-    duration: 1000,
+      state.userMarker = new maplibregl.Marker({ element: el })
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup({ offset: 18 }).setText("Your location"))
+        .addTo(state.map);
+
+      if (applyAfterSuccess) {
+        applyFilters();
+      } else {
+        updateHelperText();
+      }
+    },
+    (error) => {
+      console.warn("User location unavailable:", error.message);
+      alert("Could not get your current location.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 60000,
+    }
+  );
+}
+
+function registerMissingImageFallback() {
+  state.map.on("styleimagemissing", (event) => {
+    const imageId = event.id;
+
+    if (state.map.hasImage(imageId)) return;
+
+    const width = 16;
+    const height = 16;
+    const data = new Uint8Array(width * height * 4);
+
+    state.map.addImage(imageId, {
+      width,
+      height,
+      data,
+    });
   });
 }
+
+async function initializeMapPage() {
+  state.map = new maplibregl.Map({
+    container: "map",
+    style: `https://api.maptiler.com/maps/streets/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
+    center: [-123.1207, 49.2827],
+    zoom: 11,
+  });
+
+  state.map.touchZoomRotate.disableRotation();
+  state.map.addControl(new maplibregl.NavigationControl(), "top-right");
+  registerMissingImageFallback();
+
+  state.map.on("load", async () => {
+    try {
+      await patchExistingRestaurantTags();
+      state.restaurants = await getRestaurants();
+      renderTagButtons(state.restaurants);
+      setTagPanelOpen(false);
+      applyFilters();
+      addUserLocationToMap(false);
+    } catch (error) {
+      console.error("Failed to load restaurant data:", error);
+      elements.resultsList.innerHTML = `
+        <div class="empty-state">Failed to load restaurant data.</div>
+      `;
+    }
+  });
+
+  attachEvents();
+}
+
+initializeMapPage();

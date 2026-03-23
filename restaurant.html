@@ -1,43 +1,74 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Restaurant</title>
-    <meta name="comp1800 team 22" content="My 1800 App" />
+    <title>Restaurant Details</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="comp1800 team 22" content="Restaurant details page" />
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
 
   <body>
     <div id="navbar-placeholder"></div>
 
-    <article class="restaurant-container">
-      <figure class="restaurant-img">
-        <figcaption></figcaption>
-        <img src="./images/Restaurant_Pictures.png" alt="Restaurant Image" />
-      </figure>
+    <main class="restaurant-detail-page">
+      <button class="back-btn" onclick="window.location.href='./map.html'">
+        ← Back to Map
+      </button>
 
-      <div class="restaurant-info">
-        <h1 id="restaurant-name">Restaurant Name</h1>
+      <article class="restaurant-container">
+        <figure class="restaurant-img">
+          <img
+            id="restaurant-image"
+            src="./images/Restaurant_Pictures.png"
+            alt="Restaurant Image"
+          />
+        </figure>
 
-        <p>
-          <strong>Description</strong><br />
-          <span id="restaurant-description">Loading...</span>
-        </p>
+        <div class="restaurant-info">
+          <h1 id="restaurant-name">Restaurant Name</h1>
 
-        <p>
-          <strong>Atmosphere</strong><br />
-          <span id="restaurant-atmosphere">Loading...</span>
-        </p>
+          <p class="detail-row">
+            <strong>Description</strong><br />
+            <span id="restaurant-description">Loading...</span>
+          </p>
 
-        <p>
-          <strong>Tags</strong><br />
-          <span id="restaurant-tags">Loading...</span>
-        </p>
+          <p class="detail-row">
+            <strong>Atmosphere</strong><br />
+            <span id="restaurant-atmosphere">Loading...</span>
+          </p>
 
-        <p id="restaurant-price">$$$</p>
-      </div>
-    </article>
+          <p class="detail-row">
+            <strong>Tags</strong><br />
+            <span id="restaurant-tags">Loading...</span>
+          </p>
+
+          <p class="detail-row">
+            <strong>Address</strong><br />
+            <span id="restaurant-address">Loading...</span>
+          </p>
+
+          <p class="detail-row">
+            <strong>Website</strong><br />
+            <a
+              id="restaurant-website"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Not available
+            </a>
+          </p>
+
+          <p class="detail-row">
+            <strong>Hours</strong><br />
+            <span id="restaurant-hours">Loading...</span>
+          </p>
+
+          <p id="restaurant-price" class="restaurant-price">$$</p>
+        </div>
+      </article>
+    </main>
 
     <script type="module" src="./src/main.js"></script>
     <script type="module" src="./src/navbar.js"></script>
