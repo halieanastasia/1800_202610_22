@@ -29,7 +29,6 @@
       <a href="signup.html" class="btn btn-primary">Sign up</a>
     </div>
 
-
     <!-- Navigation buttons -->
     <div class="mb-4">
 
@@ -41,6 +40,62 @@
       <input class="nav-button" id="add-restaurant-btn" type="button" value="Add Location"
         onclick="window.location.href='./addrestaurant.html'" />
 
+      <button class="btn btn-primary rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#eventModal">
+        Add an Event
+      </button>
+
+      <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Add FIFA Stream Event</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="event-form" class="modal-body">
+              <div class="mb-3">
+                <label for="rest-name" class="form-label">Restaurant Name</label>
+                <input type="text" id="rest-name" class="form-control" placeholder="Enter name" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="event-desc" class="form-label">Description</label>
+                <textarea id="event-desc" class="form-control" rows="2"
+                  placeholder="Deals, screen size, etc."></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="event-time" class="form-label">Time & Date</label>
+                <input type="datetime-local" id="event-time" class="form-control" required>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label for="capacity" class="form-label">Capacity</label>
+                  <input type="number" id="capacity" class="form-control" placeholder="e.g. 50">
+                </div>
+                <div class="col">
+                  <label for="parking" class="form-label">Parking</label>
+                  <select id="parking" class="form-select">
+                    <option>Available</option>
+                    <option>Street Only</option>
+                    <option>None</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-check mb-4">
+                <input type="checkbox" id="kids-friendly" class="form-check-input">
+                <label for="kids-friendly" class="form-check-label">Kids Welcome?</label>
+              </div>
+
+              <button type="submit" class="btn btn-success w-100">Save Event</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Footer: Suzy -->
