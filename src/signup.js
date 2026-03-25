@@ -17,7 +17,7 @@ if (signupForm) {
 }
 
 if (homeBtn) {
-  homeBtn.addEventListener("click", () => {
+  homeBtn.addEventListener("click", (e) => {
     window.location.href = "./index.html";
   });
 }
