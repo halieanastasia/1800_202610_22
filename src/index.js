@@ -1,36 +1,41 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap";
-import "../styles/style.css";
+import * as bootstrap from "bootstrap";
 import "./navbar.js";
+
+import { db } from './firebase.js';
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const eventForm = document.getElementById('event-form');
 
 eventForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log("Submit clicked! Starting Firestore upload...");
 
-    const eventData = {
+    // Gather data from your specific IDs
+    const formData = {
         restaurantName: document.getElementById('rest-name').value,
         description: document.getElementById('event-desc').value,
         time: document.getElementById('event-time').value,
-        capacity: Number(document.getElementById('capacity').value),
+        capacity: Number(document.getElementById('capacity').value) || 0,
         parking: document.getElementById('parking').value,
         isKidsFriendly: document.getElementById('kids-friendly').checked,
-        createdAt: new Date()
+        submittedAt: serverTimestamp()
     };
 
     try {
-        const docRef = await addDoc(collection(db, "events"), eventData);
+        const docRef = await addDoc(collection(db, "events"), formData);
 
-        console.log("Document written with ID: ", docRef.id);
-        alert("Event saved successfully!");
+        console.log("Document successfully written with ID: ", docRef.id);
+        alert("Success! Event added to Firestore.");
 
         eventForm.reset();
         const modalElement = document.getElementById('eventModal');
-        const modal = bootstrap.Modal.getInstance(modalElement);
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
         modal.hide();
+
 
     } catch (error) {
         console.error("Error adding document: ", error);
-        alert("Error saving event. Check console.");
+        alert("Error! Check the browser console for details.");
     }
 });
