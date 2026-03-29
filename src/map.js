@@ -356,6 +356,7 @@ function renderResults(restaurants) {
   restaurants.forEach((restaurant) => {
     elements.resultsList.appendChild(buildRestaurantCard(restaurant));
   });
+  document.getElementById("search-result-popup").style.display = "block";
 }
 
 function openRestaurantDetails(restaurant) {
@@ -592,6 +593,7 @@ function handleReset() {
   updateSearchCenterMarker();
   renderTagButtons(state.restaurants);
   applyFilters();
+  document.getElementById("search-result-popup").style.display = "none";
 }
 
 function handleShowAll() {
@@ -721,7 +723,9 @@ async function initializeMapPage() {
       state.restaurants = await getRestaurants();
       renderTagButtons(state.restaurants);
       setTagPanelOpen(false);
-      applyFilters();
+
+      //TODO I don't think the filters need to be applied on load
+      //applyFilters();
       addUserLocationToMap(false);
     } catch (error) {
       console.error("Failed to load restaurant data:", error);
@@ -737,9 +741,21 @@ async function initializeMapPage() {
 initializeMapPage();
 
 function displayFilterPopup() {
-  document.getElementById("map-search-popup").style.display = "block";
+  document.getElementById("map-filter-popup").style.display = "block";
+}
+
+function toggleFilterPopup() {
+  const popup = document.getElementById("map-filter-popup");
+  const button = document.getElementById("filter-button");
+  if (popup.style.display == "block") {
+    popup.style.display = "none";
+    button.innerHTML = "Filters";
+  } else {
+    popup.style.display = "block";
+    button.innerHTML = "Close";
+  }
 }
 
 document
   .getElementById("filter-button")
-  .addEventListener("click", displayFilterPopup);
+  .addEventListener("click", toggleFilterPopup);

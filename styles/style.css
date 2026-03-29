@@ -757,6 +757,10 @@ body {
     order: 1;
   }
 
+  #map-filter-popup {
+    order: 1;
+  }
+
   .map-section {
     order: 2;
   }
@@ -850,14 +854,21 @@ textarea {
 }
 
 /***********************************************************/
-/************************Hidden Filter/ Search**********************/
+/************************Hidden Filter/ Search**************/
 /***********************************************************/
-#map-search-popup {
+#map-filter-popup {
   display: none;
 }
 
-#search-results {
+#map-filter-popup {
+  padding: 2%;
+}
+
+#search-result-popup {
   display: none;
+  grid-row: 3 / span 1;
+  padding: 2%;
+  background-color: var(--darkgreen);
 }
 
 #map-search-bar {
@@ -908,6 +919,13 @@ textarea {
   padding: 1px;
 }
 
+/*
+TODO
+Make navbar sticky
+Reorder everything and make things normal heights
+Find out where the map goes when filters are opened
+*/
+
 /***********************************************************/
 /************************Map Page V2**********************/
 /***********************************************************/
@@ -923,15 +941,15 @@ textarea {
   display: grid;
   height: 100%;
 
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr auto auto auto;
   position: relative;
 }
-#map-search-popup {
+#map-filter-popup {
   background-color: var(--darkgreen);
 }
 
 .map-navbar {
-  grid-row: 2 / span 1;
+  grid-row: 4 / span 1;
   background-color: #2ecc71;
   margin: 0;
   padding: 0;
@@ -941,6 +959,7 @@ textarea {
   grid-row: 1 / span 1;
   width: 100%;
   height: auto;
+  min-height: 500px;
 }
 
 .map-layout {
