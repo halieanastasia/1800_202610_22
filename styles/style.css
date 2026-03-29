@@ -480,74 +480,6 @@ body {
   opacity: 1;
 }
 
-/***********************************************************/
-/************************Map CSS****************************/
-/***********************************************************/
-#map-body {
-  margin: 0;
-}
-
-.map-layout {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  min-height: calc(100vh - 80px);
-  position: relative;
-  z-index: 1;
-}
-
-.map-sidebar {
-  background-color: var(--darkgreen);
-  color: var(--cream);
-  padding: 20px;
-  overflow-y: auto;
-  position: relative;
-  z-index: 20;
-}
-
-.map-sidebar * {
-  position: relative;
-  z-index: 21;
-}
-
-.map-section {
-  min-height: calc(100vh - 80px);
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-}
-
-#map {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: calc(100vh - 80px);
-}
-
-.maplibregl-map {
-  position: absolute !important;
-  inset: 0;
-}
-
-.maplibregl-canvas-container {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-canvas {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-marker {
-  z-index: 5 !important;
-}
-
-.maplibregl-popup {
-  z-index: 6 !important;
-}
-
 .page-title {
   font-size: 2rem;
   margin-bottom: 8px;
@@ -916,3 +848,112 @@ textarea {
 .maplibregl-canvas:active {
   cursor: grabbing;
 }
+
+/***********************************************************/
+/************************Hidden Filter/ Search**********************/
+/***********************************************************/
+#map-search-popup {
+  display: none;
+}
+
+#search-results {
+  display: none;
+}
+
+/*Temporary for testing*/
+#restaurant-search-input {
+  display: none;
+}
+
+/***********************************************************/
+/************************Map Page V2**********************/
+/***********************************************************/
+/***********************************************************/
+/************************Map CSS****************************/
+/***********************************************************/
+#map-body {
+  height: 100vh;
+  margin: 0;
+}
+
+#map-container {
+  display: grid;
+  height: 100%;
+
+  grid-template-rows: 1fr auto;
+  position: relative;
+}
+
+.map-navbar {
+  grid-row: 2 / span 1;
+  background-color: #2ecc71;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  grid-row: 1 / span 1;
+  width: 100%;
+  height: auto;
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+}
+
+.map-sidebar {
+  background-color: var(--darkgreen);
+  color: var(--cream);
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 20;
+}
+
+.map-sidebar * {
+  position: relative;
+  z-index: 21;
+}
+
+.map-section {
+  min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* #map {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: calc(100vh - 80px);
+} */
+
+/* .maplibregl-map {
+  position: absolute !important;
+  inset: 0;
+}
+
+.maplibregl-canvas-container {
+  position: absolute !important;
+  inset: 0;
+  z-index: 1 !important;
+}
+
+.maplibregl-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 1 !important;
+}
+
+.maplibregl-marker {
+  z-index: 5 !important;
+}
+
+.maplibregl-popup {
+  z-index: 6 !important;
+} */
