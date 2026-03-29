@@ -1,12 +1,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { db } from "./firebase.js";
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
 const state = {
   map: null,
@@ -152,7 +147,7 @@ async function patchExistingRestaurantTags() {
   const tagsByRestaurantName = {
     "Trattoria by Italian Kitchen": ["italian", "pasta", "casual", "burnaby"],
     "Chambar Restaurant": ["belgian", "seafood", "downtown", "fine dining"],
-    "Nightingale": ["bar", "cocktails", "modern canadian", "downtown"],
+    Nightingale: ["bar", "cocktails", "modern canadian", "downtown"],
   };
 
   const updates = snapshot.docs.map(async (restaurantDoc) => {
@@ -192,7 +187,7 @@ async function geocodePlace(query) {
   if (!apiKey || !query?.trim()) return null;
 
   const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(
-    query.trim()
+    query.trim(),
   )}.json?limit=1&key=${apiKey}`;
 
   try {
@@ -232,7 +227,11 @@ function renderMarkers(restaurants) {
     const coords = getRestaurantCoords(restaurant);
 
     if (!coords) {
-      console.warn("No valid coordinates for restaurant:", restaurant.name, restaurant);
+      console.warn(
+        "No valid coordinates for restaurant:",
+        restaurant.name,
+        restaurant,
+      );
       return;
     }
 
@@ -250,7 +249,7 @@ function renderMarkers(restaurants) {
             <strong>${restaurant.name || "Restaurant"}</strong><br />
             <small>${restaurant.address || restaurant.city || ""}</small>
           </div>
-        `)
+        `),
       )
       .addTo(state.map);
 
@@ -269,7 +268,10 @@ function renderTagButtons(restaurants) {
     restaurant.tagsArray.forEach((tag) => tagSet.add(tag));
   });
 
-  const tags = ["all", ...Array.from(tagSet).sort((a, b) => a.localeCompare(b))];
+  const tags = [
+    "all",
+    ...Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
+  ];
 
   elements.tagFilterContainer.innerHTML = "";
 
@@ -300,7 +302,7 @@ function updateQuickDistanceButtons() {
     const buttonDistance = Number(button.dataset.distance);
     button.classList.toggle(
       "active",
-      state.distanceRadiusKm > 0 && state.distanceRadiusKm === buttonDistance
+      state.distanceRadiusKm > 0 && state.distanceRadiusKm === buttonDistance,
     );
   });
 }
@@ -376,8 +378,8 @@ function updateSearchCenterMarker() {
     .setLngLat([state.searchCenter.lng, state.searchCenter.lat])
     .setPopup(
       new maplibregl.Popup({ offset: 18 }).setText(
-        state.searchCenter.placeName || "Search location"
-      )
+        state.searchCenter.placeName || "Search location",
+      ),
     )
     .addTo(state.map);
 }
@@ -459,7 +461,7 @@ function getRestaurantsWithComputedDistance() {
         activeCenter.lng,
         activeCenter.lat,
         coords[0],
-        coords[1]
+        coords[1],
       ),
     };
   });
@@ -475,16 +477,16 @@ function updateHelperText() {
   }
 
   if (state.distanceRadiusKm > 0) {
-    elements.distanceHelperText.textContent =
-      `Showing restaurants within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
+    elements.distanceHelperText.textContent = `Showing restaurants within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
   } else {
-    elements.distanceHelperText.textContent =
-      `Distance filter is off. Distance will be measured from ${activeCenter.label}.`;
+    elements.distanceHelperText.textContent = `Distance filter is off. Distance will be measured from ${activeCenter.label}.`;
   }
 }
 
 function applyFilters() {
-  const restaurantQuery = elements.restaurantSearchInput.value.trim().toLowerCase();
+  const restaurantQuery = elements.restaurantSearchInput.value
+    .trim()
+    .toLowerCase();
 
   let filtered = getRestaurantsWithComputedDistance();
 
@@ -508,8 +510,8 @@ function applyFilters() {
   if (state.selectedTag !== "all") {
     filtered = filtered.filter((restaurant) =>
       restaurant.tagsArray.some(
-        (tag) => tag.toLowerCase() === state.selectedTag.toLowerCase()
-      )
+        (tag) => tag.toLowerCase() === state.selectedTag.toLowerCase(),
+      ),
     );
   }
 
@@ -517,7 +519,7 @@ function applyFilters() {
     filtered = filtered.filter(
       (restaurant) =>
         typeof restaurant.distanceKm === "number" &&
-        restaurant.distanceKm <= state.distanceRadiusKm
+        restaurant.distanceKm <= state.distanceRadiusKm,
     );
   }
 
@@ -679,7 +681,7 @@ function addUserLocationToMap(applyAfterSuccess = false) {
       enableHighAccuracy: true,
       timeout: 20000,
       maximumAge: 60000,
-    }
+    },
   );
 }
 
@@ -733,3 +735,11 @@ async function initializeMapPage() {
 }
 
 initializeMapPage();
+
+function displayFilterPopup() {
+  document.getElementById("map-search-popup").style.display = "block";
+}
+
+document
+  .getElementById("filter-button")
+  .addEventListener("click", displayFilterPopup);

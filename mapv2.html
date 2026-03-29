@@ -11,13 +11,35 @@
     <div id="map-container">
       <div id="navbar-placeholder" class="map-navbar"></div>
 
-      <!--Restaurant searchbar-->
-      <input
-        id="restaurant-search-input"
-        type="text"
-        class="search-input"
-        placeholder="Search for a restaurant"
-      />
+      <div id="map-search-bar">
+        <!--Restaurant searchbar-->
+        <input
+          id="restaurant-search-input"
+          type="text"
+          class="search-input"
+          placeholder="Search for a restaurant"
+        />
+
+        <!--Filter Pop Up Button-->
+        <button id="filter-button" class="btn btn-primary" type="button">
+          Filters
+        </button>
+
+        <!-- <div id="filter-button">
+          <img src="./images/filter.png" />
+        </div> -->
+
+        <!--Search Button-->
+        <!-- <button id="search-button" class="btn btn-primary" type="button">
+          Search
+        </button> -->
+
+        <!--Reset Button-->
+        <!-- <button id="reset-button" class="btn btn-outline-light" type="button">
+          Reset
+        </button> -->
+      </div>
+
       <div id="map-search-popup">
         <label for="place-search-input" class="search-label">
           Address / place search
