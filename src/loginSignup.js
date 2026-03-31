@@ -11,6 +11,8 @@ import "bootstrap";
 import "../styles/style.css";
 import { loginUser, signupUser, authErrorMessage } from "./authentication.js";
 
+import { auth } from "/src/firebase.js";
+
 // --- Login and Signup Page ---
 // Handles toggling between Login/Signup views and form submits
 // using plain DOM APIs for simplicity and maintainability.
@@ -24,7 +26,7 @@ function initAuthUI() {
   const toLoginBtn = document.getElementById("toLogin");
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
-  const redirectUrl = "main.html";
+  const redirectUrl = "index.html";
 
   // --- Helper Functions ---
   // Toggle element visibility
@@ -85,6 +87,10 @@ function initAuthUI() {
     setSubmitDisabled(loginForm, true);
     try {
       await loginUser(email, password);
+
+      // console.log("Auth'd user:" + auth.currentUser);
+      // alert("Auth'd user:" + auth.currentUser);
+
       location.href = redirectUrl;
     } catch (err) {
       showError(authErrorMessage(err));

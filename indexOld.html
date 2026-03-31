@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My BCIT Project</title>
+    <meta name="comp1800 team 22" content="My 1800 App" />
+  </head>
+
+  <body>
+    <!-- NavBar: Halie -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ===== Page Content ===== -->
+    <div class="container mt-4">
+      <!-- Welcome banner: Thien -->
+      <div class="mb-4">
+        <h1>Welcome to 1800 Project</h1>
+        <p>This is the Sprint 1 homepage layout.</p>
+      </div>
+
+      <!-- Call to action: Winston -->
+      <div class="mb-4">
+        <button class="btn btn-primary">Get Started</button>
+      </div>
+
+      <div class="mb-4">
+        <a href="signup.html" class="btn btn-primary">Sign up</a>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="mb-4">
+        <input
+          class="nav-button"
+          id="restaurant-skeleton-btn"
+          type="button"
+          value="Restaurant"
+          onclick="window.location.href = './restaurant-skeleton.html'"
+        />
+
+        <input
+          class="nav-button"
+          id="map-btn"
+          type="button"
+          value="Map"
+          onclick="window.location.href = './mapv2.html'"
+        />
+
+        <input
+          class="nav-button"
+          id="add-restaurant-btn"
+          type="button"
+          value="Add Location"
+          onclick="window.location.href = './addrestaurant.html'"
+        />
+
+        <button
+          class="btn btn-primary rounded-pill shadow"
+          data-bs-toggle="modal"
+          data-bs-target="#eventModal"
+        >
+          Add an Event
+        </button>
+
+        <div
+          class="modal fade"
+          id="eventModal"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add FIFA Stream Event</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                ></button>
+              </div>
+
+              <form id="event-form" class="modal-body">
+                <div class="mb-3">
+                  <label for="rest-name" class="form-label"
+                    >Restaurant Name</label
+                  >
+                  <input
+                    type="text"
+                    id="rest-name"
+                    class="form-control"
+                    placeholder="Enter name"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="event-desc" class="form-label">Description</label>
+                  <textarea
+                    id="event-desc"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Deals, screen size, etc."
+                  ></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="event-time" class="form-label">Time & Date</label>
+                  <input
+                    type="datetime-local"
+                    id="event-time"
+                    class="form-control"
+                    required
+                  />
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col">
+                    <label for="capacity" class="form-label">Capacity</label>
+                    <input
+                      type="number"
+                      id="capacity"
+                      class="form-control"
+                      placeholder="e.g. 50"
+                    />
+                  </div>
+                  <div class="col">
+                    <label for="parking" class="form-label">Parking</label>
+                    <select id="parking" class="form-select">
+                      <option>Available</option>
+                      <option>Street Only</option>
+                      <option>None</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-check mb-4">
+                  <input
+                    type="checkbox"
+                    id="kids-friendly"
+                    class="form-check-input"
+                  />
+                  <label for="kids-friendly" class="form-check-label"
+                    >Kids Welcome?</label
+                  >
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                  Save Event
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer: Suzy -->
+      <footer class="mt-5 pt-3 border-top">
+        <p class="text-muted">&copy; 2026 Team 22 - BCIT</p>
+      </footer>
+    </div>
+
+    <!-- Vite entry point -->
+    <script type="module" src="/src/main.js"></script>
+
+    <script src="/src/signup.js"></script>
+    <script type="module" src="/src/index.js"></script>
+  </body>
+</html>

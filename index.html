@@ -1,168 +1,136 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My BCIT Project</title>
-    <meta name="comp1800 team 22" content="My 1800 App" />
+    <title>FIFA Spot Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="comp1800 team 22" content="Restaurant map page" />
   </head>
 
-  <body>
-    <!-- NavBar: Halie -->
-    <div id="navbar-placeholder"></div>
-
-    <!-- ===== Page Content ===== -->
-    <div class="container mt-4">
-      <!-- Welcome banner: Thien -->
-      <div class="mb-4">
-        <h1>Welcome to 1800 Project</h1>
-        <p>This is the Sprint 1 homepage layout.</p>
-      </div>
-
-      <!-- Call to action: Winston -->
-      <div class="mb-4">
-        <button class="btn btn-primary">Get Started</button>
-      </div>
-
-      <div class="mb-4">
-        <a href="signup.html" class="btn btn-primary">Sign up</a>
-      </div>
-
-      <!-- Navigation buttons -->
-      <div class="mb-4">
+  <body id="map-body">
+    <div id="map-container">
+      <div id="map-search-bar">
+        <!--Restaurant searchbar-->
         <input
-          class="nav-button"
-          id="restaurant-skeleton-btn"
-          type="button"
-          value="Restaurant"
-          onclick="window.location.href = './restaurant-skeleton.html'"
+          id="restaurant-search-input"
+          type="text"
+          class="search-input"
+          placeholder="Search for a restaurant"
         />
 
-        <input
-          class="nav-button"
-          id="map-btn"
-          type="button"
-          value="Map"
-          onclick="window.location.href = './mapv2.html'"
-        />
-
-        <input
-          class="nav-button"
-          id="add-restaurant-btn"
-          type="button"
-          value="Add Location"
-          onclick="window.location.href = './addrestaurant.html'"
-        />
-
-        <button
-          class="btn btn-primary rounded-pill shadow"
-          data-bs-toggle="modal"
-          data-bs-target="#eventModal"
-        >
-          Add an Event
+        <!--Filter Pop Up Button-->
+        <button id="filter-button" class="btn btn-primary" type="button">
+          Filters
         </button>
 
-        <div
-          class="modal fade"
-          id="eventModal"
-          tabindex="-1"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Add FIFA Stream Event</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                ></button>
-              </div>
+        <!-- <div id="filter-button">
+          <img src="./images/filter.png" />
+        </div> -->
 
-              <form id="event-form" class="modal-body">
-                <div class="mb-3">
-                  <label for="rest-name" class="form-label"
-                    >Restaurant Name</label
-                  >
-                  <input
-                    type="text"
-                    id="rest-name"
-                    class="form-control"
-                    placeholder="Enter name"
-                    required
-                  />
-                </div>
+        <!--Search Button-->
+        <!-- <button id="search-button" class="btn btn-primary" type="button">
+          Search
+        </button> -->
 
-                <div class="mb-3">
-                  <label for="event-desc" class="form-label">Description</label>
-                  <textarea
-                    id="event-desc"
-                    class="form-control"
-                    rows="2"
-                    placeholder="Deals, screen size, etc."
-                  ></textarea>
-                </div>
+        <!--Reset Button-->
+        <!-- <button id="reset-button" class="btn btn-outline-light" type="button">
+          Reset
+        </button> -->
+      </div>
 
-                <div class="mb-3">
-                  <label for="event-time" class="form-label">Time & Date</label>
-                  <input
-                    type="datetime-local"
-                    id="event-time"
-                    class="form-control"
-                    required
-                  />
-                </div>
+      <div id="map-filter-popup">
+        <label for="place-search-input" class="search-label">
+          Address / place search
+        </label>
+        <input
+          id="place-search-input"
+          type="text"
+          class="search-input"
+          placeholder="e.g. BCIT Burnaby, Vancouver"
+        />
 
-                <div class="row g-2 mb-3">
-                  <div class="col">
-                    <label for="capacity" class="form-label">Capacity</label>
-                    <input
-                      type="number"
-                      id="capacity"
-                      class="form-control"
-                      placeholder="e.g. 50"
-                    />
-                  </div>
-                  <div class="col">
-                    <label for="parking" class="form-label">Parking</label>
-                    <select id="parking" class="form-select">
-                      <option>Available</option>
-                      <option>Street Only</option>
-                      <option>None</option>
-                    </select>
-                  </div>
-                </div>
+        <div class="search-actions">
+          <button id="search-btn" class="btn btn-primary" type="button">
+            Search
+          </button>
+          <button
+            id="use-my-location-btn"
+            class="btn btn-outline-light"
+            type="button"
+          >
+            Use My Location
+          </button>
+          <button id="reset-btn" class="btn btn-outline-light" type="button">
+            Reset
+          </button>
+        </div>
 
-                <div class="form-check mb-4">
-                  <input
-                    type="checkbox"
-                    id="kids-friendly"
-                    class="form-check-input"
-                  />
-                  <label for="kids-friendly" class="form-check-label"
-                    >Kids Welcome?</label
-                  >
-                </div>
+        <div class="distance-filter">
+          <label class="search-label">Quick distance filters</label>
+          <div class="quick-distance-buttons">
+            <button type="button" class="quick-distance-btn" data-distance="1">
+              1 km
+            </button>
+            <button type="button" class="quick-distance-btn" data-distance="3">
+              3 km
+            </button>
+            <button type="button" class="quick-distance-btn" data-distance="5">
+              5 km
+            </button>
+          </div>
+        </div>
 
-                <button type="submit" class="btn btn-success w-100">
-                  Save Event
-                </button>
-              </form>
-            </div>
+        <div class="distance-filter">
+          <label for="distance-range-input" class="search-label">
+            Distance radius (km)
+          </label>
+          <input
+            id="distance-range-input"
+            type="number"
+            class="distance-number-input"
+            min="1"
+            max="50"
+            step="1"
+            value="1"
+            placeholder="Enter distance in km"
+          />
+          <small id="distance-helper-text" class="distance-helper-text">
+            Click “Use My Location” to start with a 1 km radius.
+          </small>
+        </div>
+
+        <div class="search-actions">
+          <button id="show-all-btn" class="btn btn-outline-light" type="button">
+            Show All
+          </button>
+        </div>
+
+        <div class="tag-panel">
+          <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
+            Filter by tag
+            <span id="tag-toggle-icon">▼</span>
+          </button>
+
+          <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
+            <div id="tag-filter-container" class="tag-filter-container"></div>
           </div>
         </div>
       </div>
 
-      <!-- Footer: Suzy -->
-      <footer class="mt-5 pt-3 border-top">
-        <p class="text-muted">&copy; 2026 Team 22 - BCIT</p>
-      </footer>
+      <div id="search-result-popup">
+        <div class="results-header">
+          <h2 class="results-title">Results</h2>
+          <span id="results-count" class="results-count">0 restaurants</span>
+        </div>
+
+        <div id="results-list" class="results-list"></div>
+      </div>
+
+      <div id="map"></div>
     </div>
+    <div id="navbar-placeholder" class="map-navbar"></div>
 
-    <!-- Vite entry point -->
-    <script type="module" src="/src/main.js"></script>
-
-    <script src="/src/signup.js"></script>
-    <script type="module" src="/src/index.js"></script>
+    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/map.js"></script>
   </body>
 </html>
