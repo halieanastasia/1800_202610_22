@@ -72,15 +72,16 @@ body {
 .menu {
   list-style-type: none;
   display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-columns: 33.33% 33.33% 33.33%;
   padding: 1%;
   margin: 0;
+  /*TODO Figure out how to set a max height so nav bar doesn't get too thick in full screen*/
 }
 
 .menu li {
   display: block;
-  padding: 5%;
-  margin: auto;
+  padding: 2%;
+
   height: 100%;
   width: 75%;
   text-align: center;
@@ -875,7 +876,7 @@ textarea {
   position: absolute;
   /* top: 20px; */
   z-index: 10;
-  width: 100%;
+  width: 95%;
   margin: 5%;
 }
 
