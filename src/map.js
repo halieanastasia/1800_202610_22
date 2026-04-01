@@ -724,6 +724,9 @@ async function initializeMapPage() {
       renderTagButtons(state.restaurants);
       setTagPanelOpen(false);
 
+      // HotFix for map pins not displaying on load
+      handleReset();
+
       //TODO I don't think the filters need to be applied on load
       //applyFilters();
       addUserLocationToMap(false);
