@@ -22,320 +22,25 @@ body {
   cursor: default;
 }
 
-/***********************************************************/
-/************************Media Rules************************/
-/***********************************************************/
-@media (max-width: 700px) {
-  .hero {
-    height: 70vh;
-    min-height: 500px;
-  }
-
-  .hero h1 {
-    font-size: 2.8rem;
-    margin-bottom: 1.2rem;
-    padding: 0 10px;
-  }
-
-  .btn-primary {
-    padding: 14px 32px;
-    font-size: 1.1rem;
-  }
-
-  .hero-content {
-    padding: 0 15px;
-  }
-
-  .nav-items p {
-    display: none;
-  }
-}
-
-/***********************************************************/
-/************************Header CSS*************************/
-/***********************************************************/
-.header {
-  background-color: var(--darkgreen);
-  color: var(--lightgreen);
-  font-size: 40px;
-  text-align: center;
-}
-
-/***********************************************************/
-/************************Nav Bar CSS************************/
-/***********************************************************/
-.menu-container {
-  background-color: var(--darkgreen);
-  margin: 0;
-}
-
-.menu {
-  list-style-type: none;
-  display: grid;
-  grid-template-columns: 33.33% 33.33% 33.33%;
-  padding: 1%;
-  margin: 0;
-  /*TODO Figure out how to set a max height so nav bar doesn't get too thick in full screen*/
-}
-
-.menu li {
-  display: block;
-  padding: 2%;
-
-  height: 100%;
-  width: 75%;
-  text-align: center;
-  color: var(--lightgreen);
-}
-
-.nav-items {
-  text-decoration: none;
-  color: var(--lightgreen);
-}
-
-.nav-items img {
-  display: block;
-  margin: auto;
-  object-fit: contain;
-  width: 30%;
-  min-width: 35px;
-}
-
-.quick-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 20px 0 30px;
-}
-
-.nav-button {
-  display: inline-block;
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-  padding: 12px 25px;
-  border-radius: 999px;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.nav-button:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-  transform: translateY(-3px);
-}
-
-/***********************************************************/
-/************************Hero CSS***************************/
-/***********************************************************/
-.hero {
-  position: relative;
-  height: 60vh;
-  min-height: 400px;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75)),
-    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000")
-      center/cover no-repeat;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 900px;
-  padding: 0 20px;
-}
-
-.hero h1 {
-  font-family: "Intro Rust", serif;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  margin-bottom: 1.5rem;
-  line-height: 1.05;
-  font-weight: 700;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
-}
-
-.hero p {
-  font-size: clamp(1.3rem, 4vw, 1.8rem);
-  margin-bottom: 2.5rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.btn-primary {
-  font-family: "Intro Rust", serif;
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-  padding: 16px 40px;
-  border-radius: 999px;
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.3s;
-}
-
-.btn-primary:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-/***********************************************************/
-/************************Footer CSS*************************/
-/***********************************************************/
-.footer {
-  background-color: #222;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-}
-
-.footer-container h3 {
-  margin-bottom: 10px;
-}
-
-.footer-container p {
-  margin: 5px 0;
-  font-size: 14px;
-}
-
-/***********************************************************/
-/********************** Restaurant Page CSS ****************/
-/***********************************************************/
-.restaurant-detail-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.restaurant-container {
-  background: white;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
-}
-
-.restaurant-img img {
-  width: 100%;
-  max-height: 420px;
-  object-fit: cover;
-}
-
-.restaurant-info {
-  padding: 24px;
-}
-
-.detail-row {
-  margin-bottom: 16px;
-}
-
-.restaurant-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--darkgreen);
-}
-
-.back-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 10px 16px;
-  margin-bottom: 18px;
-  background: var(--darkgreen);
-  color: var(--cream);
+button,
+select,
+a,
+.tag-btn,
+.restaurant-card,
+#search-btn,
+#reset-btn,
+#use-my-location-btn,
+#show-all-btn,
+.quick-distance-btn,
+.tag-toggle-btn,
+.edit-btn,
+.delete-btn {
   cursor: pointer;
 }
 
-/***********************************************************/
-/************************Login Page CSS*********************/
-/***********************************************************/
-.login-container {
-  background-color: white;
-  padding: 40px;
-  border-radius: 18px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.login-container h2 {
-  text-align: center;
-  margin-bottom: 8px;
-  font-size: 26px;
-}
-
-.login-container p {
-  text-align: center;
-  font-size: 14px;
-  color: var(--darkgreen);
-  margin-bottom: 25px;
-}
-
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.form-options a {
-  text-decoration: none;
-  color: var(--darkgreen);
-}
-
-.form-options a:hover {
-  text-decoration: underline;
-}
-
-.login-btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 999px;
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.login-btn:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-}
-
-.signup-link {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 14px;
-}
-
-.signup-link a {
-  color: var(--darkgreen);
-  text-decoration: none;
-}
-
-.signup-link a:hover {
-  text-decoration: underline;
-}
-
-.home-button {
-  color: var(--darkgreen);
+input,
+textarea {
+  cursor: text;
 }
 
 /***********************************************************/
@@ -369,11 +74,13 @@ body {
   text-align: center;
   margin-top: 0;
   margin-bottom: 8px;
+  color: var(--darkgreen);
 }
 
 .signup-container p {
   text-align: center;
   margin-bottom: 24px;
+  color: var(--darkgreen);
 }
 
 .form-group {
@@ -387,6 +94,7 @@ body {
   font-weight: 700;
   margin-bottom: 8px;
   font-size: 14px;
+  color: var(--darkgreen);
 }
 
 .form-group input,
@@ -397,6 +105,7 @@ body {
   border-radius: 10px;
   font-size: 1rem;
   background-color: var(--cream);
+  color: #222;
 }
 
 .form-group input:focus,
@@ -424,6 +133,7 @@ body {
   padding: 12px 18px;
   cursor: pointer;
   font-weight: 700;
+  transition: 0.2s ease;
 }
 
 .signup-btn {
@@ -443,21 +153,6 @@ body {
 
 .secondary-btn:hover {
   background: #dfe3e6;
-}
-
-/***********************************************************/
-/************************Temporary CSS**********************/
-/***********************************************************/
-#temp-button {
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-}
-
-#temp-button:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
 }
 
 /***********************************************************/
@@ -481,6 +176,164 @@ body {
   opacity: 1;
 }
 
+/***********************************************************/
+/**********************Account / Events*********************/
+/***********************************************************/
+main h2 {
+  margin: 24px 24px 16px;
+  color: var(--darkgreen);
+}
+
+#my-events {
+  padding: 0 24px 24px;
+}
+
+#account-container {
+  padding: 0 24px 24px;
+}
+
+.event-card {
+  background: #1e1e1e;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  color: white;
+}
+
+.event-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.event-card p {
+  margin: 6px 0;
+}
+
+.event-actions {
+  margin-top: 12px;
+}
+
+.event-actions button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+}
+
+.edit-btn {
+  background: orange;
+}
+
+.delete-btn {
+  background: red;
+}
+
+/***********************************************************/
+/**********************Restaurant Page CSS******************/
+/***********************************************************/
+.restaurant-detail-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.restaurant-container {
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.restaurant-img img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.restaurant-info {
+  padding: 24px;
+}
+
+.restaurant-info h1 {
+  margin-top: 0;
+  color: var(--darkgreen);
+}
+
+.detail-row {
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.restaurant-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--darkgreen);
+}
+
+.back-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  margin-bottom: 18px;
+  background: var(--darkgreen);
+  color: var(--cream);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.back-btn:hover {
+  background: #1c4d3d;
+}
+
+/***********************************************************/
+/************************Map Page V2***********************/
+/***********************************************************/
+/***********************************************************/
+/************************Map CSS****************************/
+/***********************************************************/
+#map-body {
+  height: 100vh;
+  margin: 0;
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+}
+
+.map-sidebar {
+  background-color: var(--darkgreen);
+  color: var(--cream);
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 20;
+}
+
+.map-sidebar * {
+  position: relative;
+  z-index: 21;
+}
+
+.map-section {
+  min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
 .page-title {
   font-size: 2rem;
   margin-bottom: 8px;
@@ -491,6 +344,7 @@ body {
   font-size: 0.95rem;
   margin-bottom: 18px;
   color: #d7eadb;
+  line-height: 1.5;
 }
 
 .search-panel,
@@ -501,8 +355,7 @@ body {
   margin-bottom: 18px;
 }
 
-.search-label,
-.tag-title {
+.search-label {
   display: block;
   font-weight: 700;
   margin-bottom: 8px;
@@ -517,6 +370,12 @@ body {
   margin-bottom: 14px;
   background: white;
   color: #222;
+}
+
+.search-input:focus,
+.distance-number-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(179, 211, 187, 0.35);
 }
 
 .search-actions {
@@ -565,9 +424,13 @@ body {
   color: var(--darkgreen);
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
   text-align: center;
   white-space: nowrap;
+  transition: 0.2s ease;
+}
+
+.quick-distance-btn:hover {
+  background: #cfe3d4;
 }
 
 .quick-distance-btn.active {
@@ -584,7 +447,6 @@ body {
   color: var(--cream);
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -621,7 +483,6 @@ body {
   background: #dce9df;
   color: var(--darkgreen);
   font-weight: 600;
-  cursor: pointer;
   transition: all 0.2s ease;
   text-transform: capitalize;
 }
@@ -667,7 +528,6 @@ body {
   padding: 16px;
   background: #f8f9fa;
   color: #222;
-  cursor: pointer;
   transition: transform 0.2s ease;
   appearance: none;
   -webkit-appearance: none;
@@ -681,7 +541,7 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .restaurant-card-top h3 {
@@ -725,7 +585,6 @@ body {
   background-color: #2ecc71;
   border: 3px solid white;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.18);
-  cursor: pointer;
 }
 
 .user-location-marker {
@@ -747,86 +606,8 @@ body {
 }
 
 /***********************************************************/
-/************************Responsive CSS*********************/
-/***********************************************************/
-@media (max-width: 900px) {
-  .map-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .map-sidebar {
-    order: 1;
-  }
-
-  #map-filter-popup {
-    order: 1;
-  }
-
-  .map-section {
-    order: 2;
-  }
-
-  #map {
-    height: 60vh;
-  }
-
-  .signup-actions {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-container,
-  .signup-container {
-    padding: 30px;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-container,
-  .signup-container {
-    padding: 25px 20px;
-  }
-
-  .login-container h2,
-  .signup-container h1,
-  .signup-container h2 {
-    font-size: 20px;
-  }
-
-  .login-btn,
-  .signup-btn {
-    padding: 12px;
-    font-size: 15px;
-  }
-
-  .quick-distance-buttons {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-}
-
-/***********************************************************/
 /************************Cursor Polish**********************/
 /***********************************************************/
-button,
-select,
-a,
-.tag-btn,
-.restaurant-card,
-#search-btn,
-#reset-btn,
-#use-my-location-btn,
-#show-all-btn,
-.quick-distance-btn,
-.tag-toggle-btn {
-  cursor: pointer;
-}
-
-input,
-textarea {
-  cursor: text;
-}
-
 .map-sidebar,
 .search-panel,
 .tag-panel,
@@ -835,7 +616,6 @@ textarea {
 .page-title,
 .page-subtitle,
 .search-label,
-.tag-title,
 .distance-helper-text {
   cursor: default;
 }
@@ -855,209 +635,72 @@ textarea {
 }
 
 /***********************************************************/
-/************************Hidden Filter/ Search**************/
+/************************Responsive CSS*********************/
 /***********************************************************/
-#map-filter-popup {
-  display: none;
+@media (max-width: 900px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-sidebar {
+    order: 1;
+  }
+
+  .map-section {
+    order: 2;
+  }
+
+  #map {
+    height: 60vh;
+  }
+
+  .signup-actions {
+    flex-direction: column;
+  }
 }
 
-#map-filter-popup {
-  padding: 2%;
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 30px;
+  }
+
+  .restaurant-detail-page {
+    padding: 16px;
+  }
+
+  .restaurant-info {
+    padding: 20px;
+  }
 }
 
-#search-result-popup {
-  display: none;
-  grid-row: 3 / span 1;
-  padding: 2%;
-  background-color: var(--darkgreen);
+@media (max-width: 480px) {
+  .signup-container {
+    padding: 25px 20px;
+  }
+
+  .signup-container h1,
+  .signup-container h2 {
+    font-size: 20px;
+  }
+
+  .signup-btn,
+  .secondary-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .quick-distance-buttons {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  #my-events,
+  #account-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  main h2 {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
 }
-
-#map-search-bar {
-  position: absolute;
-  /* top: 20px; */
-  z-index: 10;
-  width: 95%;
-  margin: 5%;
-}
-
-/*Temporary for testing*/
-#restaurant-search-input {
-  /* position: absolute;
-  top: 20px; */
-  left: 10%;
-  z-index: 10;
-  width: 60%;
-
-  border: 2px solid var(--lightgreen);
-  border-radius: 10px;
-  background-color: var(--cream);
-  color: var(--darkgreen);
-}
-
-#restaurant-search-input:focus {
-  outline: none;
-  border: 2px solid var(--darkgreen);
-
-  background-color: var(--cream);
-  color: var(--darkgreen);
-}
-
-#search-button {
-  /* position: absolute;
-  top: 20px; */
-  left: 5%;
-  z-index: 10;
-  min-width: 30px;
-  border-radius: 0px;
-  padding: 1px;
-}
-
-#filter-button {
-  left: 5%;
-  z-index: 10;
-  min-width: 30px;
-  border-radius: 0px;
-  padding: 1px;
-}
-
-/*
-TODO
-Make navbar sticky
-Reorder everything and make things normal heights
-Find out where the map goes when filters are opened
-*/
-
-/***********************************************************/
-/************************Map Page V2**********************/
-/***********************************************************/
-/***********************************************************/
-/************************Map CSS****************************/
-/***********************************************************/
-#map-body {
-  height: 100vh;
-  margin: 0;
-}
-
-#map-container {
-  display: grid;
-  height: 100%;
-
-  grid-template-rows: 1fr auto auto auto;
-  position: relative;
-}
-#map-filter-popup {
-  background-color: var(--darkgreen);
-}
-
-.map-navbar {
-  grid-row: 4 / span 1;
-  background-color: #2ecc71;
-  margin: 0;
-  padding: 0;
-}
-
-#map {
-  grid-row: 1 / span 1;
-  width: 100%;
-  height: auto;
-  min-height: 500px;
-}
-
-.map-layout {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  min-height: calc(100vh - 80px);
-  position: relative;
-  z-index: 1;
-}
-
-.map-sidebar {
-  background-color: var(--darkgreen);
-  color: var(--cream);
-  padding: 20px;
-  overflow-y: auto;
-  position: relative;
-  z-index: 20;
-}
-
-.map-sidebar * {
-  position: relative;
-  z-index: 21;
-}
-
-.map-section {
-  min-height: calc(100vh - 80px);
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.event-card {
-  background: #1e1e1e;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  color: white;
-}
-
-.event-actions {
-  margin-top: 10px;
-}
-
-.edit-btn {
-  background: orange;
-  margin-right: 10px;
-}
-
-.delete-btn {
-  background: red;
-}
-
-.event-card {
-  background: #1e1e1e;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  color: white;
-}
-
-.event-actions {
-  margin-top: 10px;
-}
-
-.event-actions button {
-  margin-right: 10px;
-  padding: 5px 10px;
-}
-
-/* #map {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: calc(100vh - 80px);
-}
-
-.maplibregl-map {
-  position: absolute !important;
-  inset: 0;
-}
-
-.maplibregl-canvas-container {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-canvas {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-marker {
-  z-index: 5 !important;
-}
-
-.maplibregl-popup {
-  z-index: 6 !important;
-} */
