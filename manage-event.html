@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Account</title>
+    <title>Manage Events</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="./styles/style.css" />
@@ -11,7 +11,7 @@
     <div id="navbar-placeholder"></div>
 
     <main>
-      <h2>My Account</h2>
+      <h2>My Events</h2>
 
       <div class="signup-actions" style="padding: 0 24px 24px;">
         <button
@@ -19,21 +19,24 @@
           class="signup-btn"
           onclick="window.location.href='./create-event.html'"
         >
-          Create Event
+          Create New Event
         </button>
 
         <button
           type="button"
           class="secondary-btn"
-          onclick="window.location.href='./manage-event.html'"
+          onclick="window.location.href='./account.html'"
         >
-          Manage Events
+          Back to Account
         </button>
       </div>
+
+      <div id="my-events"></div>
     </main>
 
     <script type="module" src="./src/main.js"></script>
     <script type="module" src="./src/navbar.js"></script>
     <script type="module" src="./src/protected.js"></script>
+    <script type="module" src="./src/manageEvents.js"></script>
   </body>
 </html>

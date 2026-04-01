@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
@@ -7,29 +7,47 @@ const id = params.get("id");
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 
-// Load data
 async function loadEvent() {
-  const docRef = doc(db, "events", id);
-  const snap = await getDoc(docRef);
+  if (!id) {
+    alert("Missing event ID.");
+    window.location.href = "./manage-events.html";
+    return;
+  }
 
-  if (snap.exists()) {
+  try {
+    const docRef = doc(db, "events", id);
+    const snap = await getDoc(docRef);
+
+    if (!snap.exists()) {
+      alert("Event not found.");
+      window.location.href = "./manage-events.html";
+      return;
+    }
+
     const data = snap.data();
-    nameInput.value = data.name;
+    nameInput.value = data.name || "";
     descInput.value = data.description || "";
+  } catch (error) {
+    console.error("Error loading event:", error);
+    alert("Failed to load event.");
   }
 }
 
 loadEvent();
 
-// Update
-document.getElementById("editForm").addEventListener("submit", async (e) => {
+document.getElementById("editForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  await updateDoc(doc(db, "events", id), {
-    name: nameInput.value,
-    description: descInput.value
-  });
+  try {
+    await updateDoc(doc(db, "events", id), {
+      name: nameInput.value.trim(),
+      description: descInput.value.trim(),
+    });
 
-  alert("Updated!");
-  window.location.href = "account.html";
+    alert("Updated!");
+    window.location.href = "./manage-events.html";
+  } catch (error) {
+    console.error("Error updating event:", error);
+    alert("Failed to update event.");
+  }
 });

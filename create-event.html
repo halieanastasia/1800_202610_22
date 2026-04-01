@@ -1,31 +1,62 @@
 <!doctype html>
-<html>
-
-<head>
+<html lang="en">
+  <head>
     <title>Create Event</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/style.css" />
-</head>
+  </head>
 
-<body>
-
-    <site-navbar></site-navbar>
+  <body>
+    <div id="navbar-placeholder"></div>
 
     <main class="auth-page">
+      <div class="signup-container">
         <form id="eventForm">
-            <h2>Create Event</h2>
+          <h2>Create Event</h2>
 
-            <input id="name" placeholder="Event Name" required />
-            <input id="address" placeholder="Address" required />
-            <input id="city" placeholder="City" />
-            <input id="tags" placeholder="tags (comma separated)" />
+          <div class="form-group">
+            <label for="name">Event Name</label>
+            <input id="name" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input id="address" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="city">City</label>
+            <input id="city" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="tags">Tags</label>
+            <input id="tags" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
             <textarea id="description"></textarea>
+          </div>
 
-            <button type="submit">Create</button>
+          <div class="signup-actions">
+            <button type="submit" class="signup-btn">Create Event</button>
+            <button
+              type="button"
+              class="secondary-btn"
+              onclick="window.location.href='./account.html'"
+            >
+              Back to Account
+            </button>
+          </div>
         </form>
+      </div>
     </main>
 
-    <script type="module" src="./src/createEvent.js"></script>
+    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/navbar.js"></script>
     <script type="module" src="./src/protected.js"></script>
-</body>
-
+    <script type="module" src="./src/create-event.js"></script>
+  </body>
 </html>

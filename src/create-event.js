@@ -1,58 +1,45 @@
 import { db, auth } from "./firebase.js";
-import {
-    collection,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
-import {
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const form = document.getElementById("eventForm");
 
-//  Protect page
 onAuthStateChanged(auth, (user) => {
-    if (!user) {window.location.href = "login-halie.html";
-    }
-});
+  if (!user) {
+    window.location.href = "./login-halie.html";
+    return;
+  }
 
-document.getElementById("eventForm").addEventListener("submit", async (e) => {
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const name = document.getElementById("name")?.value.trim();
+    const address = document.getElementById("address")?.value.trim();
+    const city = document.getElementById("city")?.value.trim();
+    const tags = (document.getElementById("tags")?.value || "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    const description = document.getElementById("description")?.value.trim();
 
-    await addDoc(collection(db, "events"), {
-        name: document.getElementById("name").value,
-        address: document.getElementById("address").value,
-        city: document.getElementById("city").value,
-        tags: document.getElementById("tags").value.split(","),
-        description: document.getElementById("description").value,
+    try {
+      await addDoc(collection(db, "events"), {
+        name,
+        address,
+        city,
+        tags,
+        description,
         createdBy: user.uid,
-        createdAt: serverTimestamp()
-    });
+        createdAt: serverTimestamp(),
+      });
 
-    alert("Event created!");
-    window.location.href = "index.html";
-});
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login-halie.html";
-        return;
+      alert("Event created successfully.");
+      window.location.href = "./manage-event.html";
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create event.");
     }
-
-    document.getElementById("eventForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        await addDoc(collection(db, "events"), {
-            name: document.getElementById("name").value,
-            address: document.getElementById("address").value,
-            city: document.getElementById("city").value,
-            tags: document.getElementById("tags").value.split(","),
-            description: document.getElementById("description").value,
-            createdBy: user.uid,
-            createdAt: serverTimestamp()
-        });
-
-        alert("Event created!");
-        window.location.href = "index.html";
-    });
+  });
 });
