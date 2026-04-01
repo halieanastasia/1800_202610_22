@@ -12,12 +12,13 @@
 
     <main>
       <h2>My Account</h2>
+      <button type="button" id="logout-button">Log Out</button>
 
-      <div class="signup-actions" style="padding: 0 24px 24px;">
+      <div class="signup-actions" style="padding: 0 24px 24px">
         <button
           type="button"
           class="signup-btn"
-          onclick="window.location.href='./create-event.html'"
+          onclick="window.location.href = './create-event.html'"
         >
           Create Event
         </button>
@@ -25,7 +26,7 @@
         <button
           type="button"
           class="secondary-btn"
-          onclick="window.location.href='./manage-event.html'"
+          onclick="window.location.href = './manage-event.html'"
         >
           Manage Events
         </button>
@@ -35,5 +36,6 @@
     <script type="module" src="./src/main.js"></script>
     <script type="module" src="./src/navbar.js"></script>
     <script type="module" src="./src/protected.js"></script>
+    <script type="module" src="./src/account.js"></script>
   </body>
 </html>
