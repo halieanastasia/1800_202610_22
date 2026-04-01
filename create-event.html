@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Create Event</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+</head>
+
+<body>
+
+    <site-navbar></site-navbar>
+
+    <main class="auth-page">
+        <form id="eventForm">
+            <h2>Create Event</h2>
+
+            <input id="name" placeholder="Event Name" required />
+            <input id="address" placeholder="Address" required />
+            <input id="city" placeholder="City" />
+            <input id="tags" placeholder="tags (comma separated)" />
+            <textarea id="description"></textarea>
+
+            <button type="submit">Create</button>
+        </form>
+    </main>
+
+    <script type="module" src="./src/createEvent.js"></script>
+    <script type="module" src="./src/protected.js"></script>
+</body>
+
+</html>

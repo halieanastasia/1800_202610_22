@@ -992,6 +992,44 @@ Find out where the map goes when filters are opened
   overflow: hidden;
 }
 
+.event-card {
+  background: #1e1e1e;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.event-actions {
+  margin-top: 10px;
+}
+
+.edit-btn {
+  background: orange;
+  margin-right: 10px;
+}
+
+.delete-btn {
+  background: red;
+}
+
+.event-card {
+  background: #1e1e1e;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  color: white;
+}
+
+.event-actions {
+  margin-top: 10px;
+}
+
+.event-actions button {
+  margin-right: 10px;
+  padding: 5px 10px;
+}
+
 /* #map {
   position: relative;
   z-index: 1;
