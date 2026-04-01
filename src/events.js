@@ -23,10 +23,6 @@ async function loadAllEvents() {
         <p><strong>City:</strong> ${data.city || "N/A"}</p>
         <p><strong>Tags:</strong> ${(data.tags || []).join(", ") || "N/A"}</p>
 
-        <div class="event-actions">
-          <button class="edit-btn">Edit</button>
-          <button class="delete-btn">Delete</button>
-        </div>
       `;
 
       container.appendChild(div);
