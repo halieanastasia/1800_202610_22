@@ -137,8 +137,7 @@ body {
   min-height: 400px;
   background:
     linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75)),
-    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000")
-      center/cover no-repeat;
+    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000") center/cover no-repeat;
   color: white;
   display: flex;
   align-items: center;
@@ -776,6 +775,7 @@ body {
 }
 
 @media (max-width: 768px) {
+
   .login-container,
   .signup-container {
     padding: 30px;
@@ -783,6 +783,7 @@ body {
 }
 
 @media (max-width: 480px) {
+
   .login-container,
   .signup-container {
     padding: 25px 20px;
@@ -945,6 +946,7 @@ Find out where the map goes when filters are opened
   grid-template-rows: 1fr auto auto auto;
   position: relative;
 }
+
 #map-filter-popup {
   background-color: var(--darkgreen);
 }
@@ -1061,3 +1063,17 @@ Find out where the map goes when filters are opened
 .maplibregl-popup {
   z-index: 6 !important;
 } */
+
+/* Target the geocoder input field */
+.maplibregl-ctrl-geocoder--input {
+  padding-left: 40px !important;
+  /* Adjust this number to move the text further right */
+  height: 45px;
+  /* Optional: makes the box feel a bit more substantial */
+}
+
+/* Ensure the icon stays in a good spot */
+.maplibregl-ctrl-geocoder--icon-search {
+  left: 12px !important;
+  top: 12px !important;
+}

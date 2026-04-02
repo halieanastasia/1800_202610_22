@@ -6,19 +6,94 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./styles/style.css" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-geocoding-control/v1.3.3/maptilersdk.umd.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-geocoding-control/v1.3.3/style.css" rel="stylesheet">
+  <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css"
+    type="text/css" />
 </head>
 
 <body>
   <div id="navbar-placeholder"></div>
 
   <main>
-    <h2>Events</h2>
 
     <div class="signup-actions" style="padding: 0 24px 24px">
-      <button type="button" class="signup-btn" onclick="window.location.href = './create-event.html'">
+      <button type="button" class="signup-btn" data-bs-toggle="modal" data-bs-target="#eventModal">
         Create Event
       </button>
     </div>
+
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title">Create an Event</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <form id="event-form" class="modal-body">
+            <div class="mb-3">
+              <label for="event-name" class="form-label">Event Name</label>
+              <input type="text" id="event-name" class="form-control" placeholder="Enter name" required>
+            </div>
+
+            <div class="form-group mt-3">
+              <label>Search Address:</label>
+              <div id="addressSearch"></div>
+            </div>
+
+            <div class="form-group mt-3">
+              <label>Selected address:</label>
+              <input type="text" id="address" class="form-control" readonly>
+            </div>
+
+            <div class="form-group mt-3">
+              <label>Map Location:</label>
+              <div id="formMap" style="height: 300px; width: 100%;"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="event-desc" class="form-label">Description</label>
+              <textarea id="event-desc" class="form-control" rows="2" placeholder="Deals, screen size, etc."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="event-time" class="form-label">Time & Date</label>
+              <input type="datetime-local" id="event-time" class="form-control" required>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input type="number" id="capacity" class="form-control" placeholder="e.g. 50">
+              </div>
+              <div class="col">
+                <label for="parking" class="form-label">Parking</label>
+                <select id="parking" class="form-select">
+                  <option value="Available">Available</option>
+                  <option value="Street Only">Street Only</option>
+                  <option value="None">None</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-check mb-4">
+              <input type="checkbox" id="kids-friendly" class="form-check-input">
+              <label for="kids-friendly" class="form-check-label">Kids Welcome?</label>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Save Event</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <h2>Events</h2>
     <div id="results-list"></div>
   </main>
 

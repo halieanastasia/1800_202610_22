@@ -2,8 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import * as bootstrap from "bootstrap";
 import "./navbar.js";
 
-import { db } from './firebase.js';
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const eventForm = document.getElementById('event-form');
 
