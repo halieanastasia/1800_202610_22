@@ -30,6 +30,7 @@ const elements = {
   resultsList: document.getElementById("results-list"),
   resultsCount: document.getElementById("results-count"),
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
+  distanceRangeInput: document.getElementById("distance-range-input"),
 };
 
 function normalizeTags(tags) {
@@ -555,7 +556,7 @@ function attachEvents() {
   elements.eventSearchInput.addEventListener("input", applyFilters);
 
   elements.distanceRangeInput.addEventListener("input", () => {
-    syncDistanceFromInput();
+    //syncDistanceFromInput();
     applyFilters();
   });
 
@@ -649,7 +650,7 @@ async function initializeMapPage() {
 
   state.map.on("load", async () => {
     try {
-      await patchExistingEventTags();
+      // await patchExistingEventTags();
       state.events = await getEvents();
       renderTagButtons(state.events);
       setTagPanelOpen(false);
