@@ -168,26 +168,26 @@ body {
 /***********************************************************/
 /********************** Restaurant Page CSS ****************/
 /***********************************************************/
-.restaurant-detail-page {
+.event-detail-page {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.restaurant-container {
+.event-container {
   background: white;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 }
 
-.restaurant-img img {
+.event-img img {
   width: 100%;
   max-height: 420px;
   object-fit: cover;
 }
 
-.restaurant-info {
+.event-info {
   padding: 24px;
 }
 
@@ -195,7 +195,7 @@ body {
   margin-bottom: 16px;
 }
 
-.restaurant-price {
+.event-price {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--darkgreen);
@@ -507,7 +507,7 @@ body {
   gap: 12px;
 }
 
-.restaurant-card {
+.event-card {
   width: 100%;
   text-align: left;
   border: 1px solid var(--border-green);
@@ -521,36 +521,36 @@ body {
   -webkit-appearance: none;
 }
 
-.restaurant-card:hover {
+.event-card:hover {
   transform: translateY(-2px);
 }
 
-.restaurant-card-top {
+.event-card-top {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: start;
 }
 
-.restaurant-card-top h3 {
+.event-card-top h3 {
   margin: 0;
   font-size: 1.1rem;
 }
 
-.restaurant-address,
-.restaurant-description,
-.restaurant-distance {
+.event-address,
+.event-description,
+.event-distance {
   margin: 8px 0;
   font-size: 0.92rem;
 }
 
-.restaurant-tags {
+.event-tags {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.restaurant-tag {
+.event-tag {
   background: var(--soft-green);
   color: var(--darkgreen);
   border-radius: 999px;
@@ -566,7 +566,7 @@ body {
   border-radius: 12px;
 }
 
-.restaurant-marker {
+.event-marker {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -627,7 +627,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
   .login-container,
   .signup-container {
     padding: 30px;
@@ -635,7 +634,6 @@ body {
 }
 
 @media (max-width: 480px) {
-
   .login-container,
   .signup-container {
     padding: 25px 20px;
@@ -665,7 +663,7 @@ button,
 select,
 a,
 .tag-btn,
-.restaurant-card,
+.event-card,
 #search-btn,
 #reset-btn,
 #use-my-location-btn,
@@ -734,7 +732,7 @@ textarea {
 }
 
 /*Temporary for testing*/
-#restaurant-search-input {
+#event-search-input {
   /* position: absolute;
   top: 20px; */
   left: 10%;
@@ -747,7 +745,7 @@ textarea {
   color: var(--darkgreen);
 }
 
-#restaurant-search-input:focus {
+#event-search-input:focus {
   outline: none;
   border: 2px solid var(--darkgreen);
 
@@ -1054,7 +1052,7 @@ Find out where the map goes when filters are opened
 }
 
 .material-icons-outlined {
-  font-family: 'Material Icons Outlined' !important;
+  font-family: "Material Icons Outlined" !important;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -1066,7 +1064,7 @@ Find out where the map goes when filters are opened
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'liga';
+  font-feature-settings: "liga";
 }
 
 .fav-btn,
