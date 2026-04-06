@@ -108,7 +108,7 @@ function setSelectedLocation(lng, lat) {
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
-// --- Favorites Logic ---
+// --- Favourites Logic ---
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
   if (!user) { alert("Please log in to favorite events!"); return; }
@@ -297,7 +297,7 @@ async function fetchFavorites() {
   try {
     const q = query(collection(db, "bookmarks"), where("userId", "==", user.uid));
     const snap = await getDocs(q);
-    container.innerHTML = snap.empty ? "No favorites yet." : "";
+    container.innerHTML = snap.empty ? "No favourites yet." : "";
 
     snap.forEach(async (bDoc) => {
       const eventSnap = await getDoc(doc(db, "events", bDoc.data().eventId));
