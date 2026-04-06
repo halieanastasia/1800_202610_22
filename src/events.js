@@ -241,7 +241,7 @@ function createEventCard(docId, data, isOwner = false) {
     toggleBookmark(docId, iconEl);
   };
 
-  // OWNER BUTTONS
+  // USER ACTIONS
   if (isOwner) {
     const actionDiv = document.createElement("div");
     actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
