@@ -756,7 +756,7 @@ textarea {
 }
 
 #search-button {
-   /*position: absolute;
+  /*position: absolute;
   top: 20px;*/
   left: 5%;
   z-index: 10;
@@ -854,22 +854,32 @@ Find out where the map goes when filters are opened
 /*********************** Top Filter Layout *****************/
 /***********************************************************/
 .map-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
-  min-height: calc(100vh - 92px);
-  position: relative;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 92px);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .map-sidebar {
   background-color: var(--darkgreen);
   color: var(--cream);
   padding: 16px;
-  overflow: visible;
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 20;
+}
+
+.map-section {
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
 .map-sidebar .page-title,
@@ -925,12 +935,6 @@ Find out where the map goes when filters are opened
   position: relative;
   z-index: 1;
   overflow: hidden;
-}
-
-#map {
-  width: 100%;
-  min-height: 55vh;
-  height: calc(100vh - 420px);
 }
 
 .event-card {
