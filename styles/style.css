@@ -5,6 +5,11 @@
   --cream: #fffef0;
   --lightgreen: #b3d3bb;
   --darkgreen: #143a2f;
+  --darkgreen-2: #1c4d3d;
+  --soft-green: #dce9df;
+  --soft-green-2: #e8f2ea;
+  --border-green: rgba(20, 58, 47, 0.18);
+  --shadow-dark: rgba(0, 0, 0, 0.18);
 }
 
 /***********************************************************/
@@ -20,6 +25,7 @@ body {
   color: var(--darkgreen);
   font-family: Arial, sans-serif;
   cursor: default;
+  padding-bottom: 92px;
 }
 
 /***********************************************************/
@@ -45,45 +51,42 @@ body {
   .hero-content {
     padding: 0 15px;
   }
-
-  .nav-items p {
-    display: none;
-  }
-}
-
-/***********************************************************/
-/************************Header CSS*************************/
-/***********************************************************/
-.header {
-  background-color: var(--darkgreen);
-  color: var(--lightgreen);
-  font-size: 40px;
-  text-align: center;
 }
 
 /***********************************************************/
 /************************Nav Bar CSS************************/
 /***********************************************************/
-.menu-container {
-  background-color: var(--darkgreen);
-  margin: 0;
+#navbar-placeholder {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
 }
 
-.menu {
+.bottom-navbar {
+  background-color: var(--darkgreen);
+  border-top: 1px solid rgba(255, 254, 240, 0.12);
+  box-shadow: 0 -6px 18px var(--shadow-dark);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.menu,
+.bottom-menu {
   list-style-type: none;
   display: grid;
-  grid-template-columns: 33.33% 33.33% 33.33%;
-  padding: 1%;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 8px 10px;
   margin: 0;
-  /*TODO Figure out how to set a max height so nav bar doesn't get too thick in full screen*/
+  align-items: stretch;
 }
 
-.menu li {
+.menu li,
+.bottom-menu li {
   display: block;
-  padding: 2%;
-
+  padding: 0;
   height: 100%;
-  width: 75%;
+  width: 100%;
   text-align: center;
   color: var(--lightgreen);
 }
@@ -91,80 +94,53 @@ body {
 .nav-items {
   text-decoration: none;
   color: var(--lightgreen);
-}
-
-.nav-items img {
-  display: block;
-  margin: auto;
-  object-fit: contain;
-  width: 30%;
-  min-width: 35px;
-}
-
-.quick-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 20px 0 30px;
-}
-
-.nav-button {
-  display: inline-block;
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-  padding: 12px 25px;
-  border-radius: 999px;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.nav-button:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-  transform: translateY(-3px);
-}
-
-/***********************************************************/
-/************************Hero CSS***************************/
-/***********************************************************/
-.hero {
-  position: relative;
-  height: 60vh;
-  min-height: 400px;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75)),
-    url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ&w=2000") center/cover no-repeat;
-  color: white;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 900px;
-  padding: 0 20px;
-}
-
-.hero h1 {
-  font-family: "Intro Rust", serif;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  margin-bottom: 1.5rem;
-  line-height: 1.05;
+  gap: 5px;
+  width: 100%;
+  min-height: 64px;
+  border-radius: 14px;
+  transition:
+    background-color 0.25s ease,
+    transform 0.2s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
   font-weight: 700;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
 }
 
-.hero p {
-  font-size: clamp(1.3rem, 4vw, 1.8rem);
-  margin-bottom: 2.5rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+.nav-items:hover {
+  background-color: rgba(179, 211, 187, 0.16);
+  color: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1px rgba(255, 254, 240, 0.08);
+}
+
+.nav-items.active {
+  background-color: rgba(179, 211, 187, 0.22);
+  color: var(--cream);
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.nav-svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.nav-button-reset {
+  border: none;
+  background: transparent;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -187,26 +163,6 @@ body {
   border: 4px solid var(--darkgreen);
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-/***********************************************************/
-/************************Footer CSS*************************/
-/***********************************************************/
-.footer {
-  background-color: #222;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-}
-
-.footer-container h3 {
-  margin-bottom: 10px;
-}
-
-.footer-container p {
-  margin: 5px 0;
-  font-size: 14px;
 }
 
 /***********************************************************/
@@ -253,88 +209,6 @@ body {
   background: var(--darkgreen);
   color: var(--cream);
   cursor: pointer;
-}
-
-/***********************************************************/
-/************************Login Page CSS*********************/
-/***********************************************************/
-.login-container {
-  background-color: white;
-  padding: 40px;
-  border-radius: 18px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.login-container h2 {
-  text-align: center;
-  margin-bottom: 8px;
-  font-size: 26px;
-}
-
-.login-container p {
-  text-align: center;
-  font-size: 14px;
-  color: var(--darkgreen);
-  margin-bottom: 25px;
-}
-
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.form-options a {
-  text-decoration: none;
-  color: var(--darkgreen);
-}
-
-.form-options a:hover {
-  text-decoration: underline;
-}
-
-.login-btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 999px;
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.login-btn:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-}
-
-.signup-link {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 14px;
-}
-
-.signup-link a {
-  color: var(--darkgreen);
-  text-decoration: none;
-}
-
-.signup-link a:hover {
-  text-decoration: underline;
-}
-
-.home-button {
-  color: var(--darkgreen);
 }
 
 /***********************************************************/
@@ -445,29 +319,14 @@ body {
 }
 
 /***********************************************************/
-/************************Temporary CSS**********************/
-/***********************************************************/
-#temp-button {
-  background: var(--darkgreen);
-  color: var(--lightgreen);
-  border: 4px solid var(--darkgreen);
-}
-
-#temp-button:hover {
-  background: var(--lightgreen);
-  color: var(--darkgreen);
-  border: 4px solid var(--darkgreen);
-}
-
-/***********************************************************/
 /************************Toast CSS**************************/
 /***********************************************************/
 #success-toast {
   position: fixed;
-  bottom: 24px;
+  bottom: 110px;
   right: 24px;
-  background: #1c3d30;
-  color: white;
+  background: var(--darkgreen);
+  color: var(--cream);
   padding: 14px 18px;
   border-radius: 12px;
   opacity: 0;
@@ -534,16 +393,6 @@ body {
   margin-bottom: 12px;
 }
 
-.distance-number-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: white;
-  color: #222;
-  font-size: 1rem;
-}
-
 .distance-helper-text {
   color: #d7eadb;
   font-size: 0.9rem;
@@ -557,10 +406,10 @@ body {
 }
 
 .quick-distance-btn {
-  border: none;
+  border: 1px solid var(--border-green);
   border-radius: 999px;
   padding: 10px 0;
-  background: #dce9df;
+  background: var(--soft-green);
   color: var(--darkgreen);
   font-weight: 700;
   font-size: 1rem;
@@ -570,8 +419,8 @@ body {
 }
 
 .quick-distance-btn.active {
-  background: #7fd08c;
-  color: #0b241c;
+  background: var(--lightgreen);
+  color: var(--darkgreen);
 }
 
 .tag-toggle-btn {
@@ -613,11 +462,11 @@ body {
 }
 
 .tag-btn {
-  border: none;
+  border: 1px solid var(--border-green);
   border-radius: 20px;
   padding: 6px 12px;
   font-size: 0.85rem;
-  background: #dce9df;
+  background: var(--soft-green);
   color: var(--darkgreen);
   font-weight: 600;
   cursor: pointer;
@@ -626,12 +475,12 @@ body {
 }
 
 .tag-btn:hover {
-  background: #c5e3cd;
+  background: var(--soft-green-2);
 }
 
 .tag-btn.active {
-  background: #7fd08c;
-  color: #0b241c;
+  background: var(--lightgreen);
+  color: var(--darkgreen);
 }
 
 .results-header {
@@ -661,11 +510,11 @@ body {
 .restaurant-card {
   width: 100%;
   text-align: left;
-  border: none;
+  border: 1px solid var(--border-green);
   border-radius: 14px;
   padding: 16px;
-  background: #f8f9fa;
-  color: #222;
+  background: var(--cream);
+  color: var(--darkgreen);
   cursor: pointer;
   transition: transform 0.2s ease;
   appearance: none;
@@ -702,8 +551,8 @@ body {
 }
 
 .restaurant-tag {
-  background: #dfeee2;
-  color: #1c3d30;
+  background: var(--soft-green);
+  color: var(--darkgreen);
   border-radius: 999px;
   padding: 5px 10px;
   font-size: 0.8rem;
@@ -711,7 +560,7 @@ body {
 }
 
 .empty-state {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 254, 240, 0.14);
   color: var(--cream);
   padding: 16px;
   border-radius: 12px;
@@ -751,10 +600,12 @@ body {
 @media (max-width: 900px) {
   .map-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
   }
 
   .map-sidebar {
     order: 1;
+    position: static;
   }
 
   #map-filter-popup {
@@ -762,11 +613,12 @@ body {
   }
 
   .map-section {
-    order: 2;
+    order: 3;
   }
 
   #map {
     height: 60vh;
+    min-height: 420px;
   }
 
   .signup-actions {
@@ -904,8 +756,8 @@ textarea {
 }
 
 #search-button {
-  /* position: absolute;
-  top: 20px; */
+   /*position: absolute;
+  top: 20px;*/
   left: 5%;
   z-index: 10;
   min-width: 30px;
@@ -953,7 +805,7 @@ Find out where the map goes when filters are opened
 
 .map-navbar {
   grid-row: 4 / span 1;
-  background-color: #2ecc71;
+  background-color: transparent;
   margin: 0;
   padding: 0;
 }
@@ -998,33 +850,97 @@ Find out where the map goes when filters are opened
   z-index: 1000;
 }
 
+/***********************************************************/
+/*********************** Top Filter Layout *****************/
+/***********************************************************/
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+  min-height: calc(100vh - 92px);
+  position: relative;
+  z-index: 1;
+}
+
+.map-sidebar {
+  background-color: var(--darkgreen);
+  color: var(--cream);
+  padding: 16px;
+  overflow: visible;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.map-sidebar .page-title,
+.map-sidebar .page-subtitle {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.search-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+
+.search-panel .search-label {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.search-panel .search-input {
+  flex: 1 1 220px;
+  margin-bottom: 0;
+}
+
+.search-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.distance-filter {
+  width: 100%;
+}
+
+.quick-distance-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-panel {
+  margin-top: 16px;
+}
+
+.results-header {
+  margin-top: 16px;
+}
+
+.map-section {
+  min-height: 55vh;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+#map {
+  width: 100%;
+  min-height: 55vh;
+  height: calc(100vh - 420px);
+}
+
 .event-card {
-  background: #1e1e1e;
+  background: var(--cream);
   padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  color: white;
-}
-
-.event-actions {
-  margin-top: 10px;
-}
-
-.edit-btn {
-  background: orange;
-  margin-right: 10px;
-}
-
-.delete-btn {
-  background: red;
-}
-
-.event-card {
-  background: #1e1e1e;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  color: white;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  color: var(--darkgreen);
+  border: 1px solid var(--border-green);
+  box-shadow: 0 8px 18px rgba(20, 58, 47, 0.08);
 }
 
 .event-actions {
@@ -1033,7 +949,24 @@ Find out where the map goes when filters are opened
 
 .event-actions button {
   margin-right: 10px;
-  padding: 5px 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: var(--lightgreen);
+  color: var(--darkgreen);
+  border: 1px solid var(--border-green);
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.delete-btn {
+  background: var(--red);
+  color: var(--cream);
+  border: 1px solid var(--darkgreen);
+  border-radius: 10px;
 }
 
 /* #map {

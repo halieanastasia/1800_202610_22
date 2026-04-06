@@ -5,27 +5,23 @@ import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
 const state = {
   map: null,
-  restaurants: [],
-  filteredRestaurants: [],
+  events: [],
+  filteredEvents: [],
   markers: [],
   userMarker: null,
-  searchCenterMarker: null,
   userLngLat: null,
-  searchCenter: null,
   selectedTag: "all",
   distanceRadiusKm: 0,
-  sourceMode: "auto", // auto | search | user
+  sourceMode: "auto", // auto | user
   isTagPanelOpen: false,
 };
 
 const elements = {
-  restaurantSearchInput: document.getElementById("restaurant-search-input"),
+  eventSearchInput: document.getElementById("event-search-input"),
   placeSearchInput: document.getElementById("place-search-input"),
   searchBtn: document.getElementById("search-btn"),
   useMyLocationBtn: document.getElementById("use-my-location-btn"),
   resetBtn: document.getElementById("reset-btn"),
-  distanceRangeInput: document.getElementById("distance-range-input"),
-  showAllBtn: document.getElementById("show-all-btn"),
   distanceHelperText: document.getElementById("distance-helper-text"),
   tagFilterContainer: document.getElementById("tag-filter-container"),
   tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
@@ -49,33 +45,17 @@ function normalizeTags(tags) {
     .filter(Boolean);
 }
 
-function getRestaurantCoords(restaurant) {
-  if (
-    restaurant?.location?.latitude != null &&
-    restaurant?.location?.longitude != null
-  ) {
-    return [
-      Number(restaurant.location.longitude),
-      Number(restaurant.location.latitude),
-    ];
+function getEventCoords(event) {
+  if (event?.location?.lat != null && event?.location?.lng != null) {
+    return [Number(event.location.lng), Number(event.location.lat)];
   }
 
-  if (
-    restaurant?.location?._lat != null &&
-    restaurant?.location?._long != null
-  ) {
-    return [
-      Number(restaurant.location._long),
-      Number(restaurant.location._lat),
-    ];
+  if (event?.lat != null && event?.lng != null) {
+    return [Number(event.lng), Number(event.lat)];
   }
 
-  if (restaurant?.lat != null && restaurant?.lng != null) {
-    return [Number(restaurant.lng), Number(restaurant.lat)];
-  }
-
-  if (restaurant?.latitude != null && restaurant?.longitude != null) {
-    return [Number(restaurant.longitude), Number(restaurant.latitude)];
+  if (event?.lat != null && event?.lng != null) {
+    return [Number(event.lng), Number(event.lat)];
   }
 
   return null;
@@ -111,24 +91,6 @@ function getActiveDistanceCenter() {
     };
   }
 
-  if (state.sourceMode === "search" && state.searchCenter) {
-    return {
-      lng: state.searchCenter.lng,
-      lat: state.searchCenter.lat,
-      label: "the searched location",
-      source: "search",
-    };
-  }
-
-  if (state.searchCenter) {
-    return {
-      lng: state.searchCenter.lng,
-      lat: state.searchCenter.lat,
-      label: "the searched location",
-      source: "search",
-    };
-  }
-
   if (state.userLngLat) {
     return {
       lng: state.userLngLat[0],
@@ -141,77 +103,51 @@ function getActiveDistanceCenter() {
   return null;
 }
 
-async function patchExistingRestaurantTags() {
-  const snapshot = await getDocs(collection(db, "restaurants"));
+// TODO probably remove
+// async function patchExistingEventTags() {
+//   const snapshot = await getDocs(collection(db, "events"));
 
-  const tagsByRestaurantName = {
-    "Trattoria by Italian Kitchen": ["italian", "pasta", "casual", "burnaby"],
-    "Chambar Restaurant": ["belgian", "seafood", "downtown", "fine dining"],
-    Nightingale: ["bar", "cocktails", "modern canadian", "downtown"],
-  };
+//   //TODO  It should be being read from the collection!????
+//   const tagsByRestaurantName = {
+//     "Trattoria by Italian Kitchen": ["italian", "pasta", "casual", "burnaby"],
+//     "Chambar Restaurant": ["belgian", "seafood", "downtown", "fine dining"],
+//     Nightingale: ["bar", "cocktails", "modern canadian", "downtown"],
+//   };
 
-  const updates = snapshot.docs.map(async (restaurantDoc) => {
-    const data = restaurantDoc.data();
-    const currentTags = normalizeTags(data.tags);
+//   const updates = snapshot.docs.map(async (restaurantDoc) => {
+//     const data = restaurantDoc.data();
+//     const currentTags = normalizeTags(data.tags);
 
-    if (currentTags.length > 0) return;
+//     if (currentTags.length > 0) return;
 
-    const suggestedTags = tagsByRestaurantName[data.name];
-    if (!suggestedTags) return;
+//     const suggestedTags = tagsByRestaurantName[data.name];
+//     if (!suggestedTags) return;
 
-    await updateDoc(doc(db, "restaurants", restaurantDoc.id), {
-      tags: suggestedTags,
-    });
-  });
+//     await updateDoc(doc(db, "events", restaurantDoc.id), {
+//       tags: suggestedTags,
+//     });
+//   });
 
-  await Promise.all(updates);
-}
+//   await Promise.all(updates);
+// }
 
-async function getRestaurants() {
-  const snapshot = await getDocs(collection(db, "restaurants"));
+async function getEvents() {
+  const snapshot = await getDocs(collection(db, "events"));
 
-  return snapshot.docs.map((restaurantDoc) => {
-    const data = restaurantDoc.data();
+  return snapshot.docs.map((eventDoc) => {
+    const data = eventDoc.data();
 
     return {
-      id: restaurantDoc.id,
+      id: eventDoc.id,
       ...data,
       tagsArray: normalizeTags(data.tags),
     };
   });
 }
 
-async function geocodePlace(query) {
-  const apiKey = import.meta.env.VITE_MAPTILER_KEY;
-
-  if (!apiKey || !query?.trim()) return null;
-
-  const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(
-    query.trim(),
-  )}.json?limit=1&key=${apiKey}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!data.features || data.features.length === 0) return null;
-
-    const [lng, lat] = data.features[0].center;
-
-    return {
-      lng,
-      lat,
-      placeName: data.features[0].place_name || query.trim(),
-    };
-  } catch (error) {
-    console.error("Geocoding failed:", error);
-    return null;
-  }
-}
-
 function createMarkerElement() {
   const el = document.createElement("div");
-  el.className = "restaurant-marker";
+  el.className = "event-marker";
   return el;
 }
 
@@ -220,23 +156,19 @@ function clearMarkers() {
   state.markers = [];
 }
 
-function renderMarkers(restaurants) {
+function renderMarkers(events) {
   clearMarkers();
 
-  restaurants.forEach((restaurant) => {
-    const coords = getRestaurantCoords(restaurant);
+  events.forEach((event) => {
+    const coords = getEventCoords(event);
 
     if (!coords) {
-      console.warn(
-        "No valid coordinates for restaurant:",
-        restaurant.name,
-        restaurant,
-      );
+      console.warn("No valid coordinates for event:", event.name, event);
       return;
     }
 
     const markerEl = createMarkerElement();
-    markerEl.title = restaurant.name || "Restaurant";
+    markerEl.title = event.name || "Event";
 
     const marker = new maplibregl.Marker({
       element: markerEl,
@@ -247,8 +179,8 @@ function renderMarkers(restaurants) {
       .setPopup(
         new maplibregl.Popup({ offset: 18 }).setHTML(`
           <div style="min-width: 180px;">
-            <strong>${restaurant.name || "Restaurant"}</strong><br />
-            <small>${restaurant.address || restaurant.city || ""}</small>
+            <strong>${event.name || "Event"}</strong><br />
+            <small>${event.address || event.city || ""}</small>
           </div>
         `),
       )
@@ -256,7 +188,7 @@ function renderMarkers(restaurants) {
 
     // FIX removing redirection
     // markerEl.addEventListener("click", () => {
-    //   openRestaurantDetails(restaurant);
+    //   openRestaurantDetails(event);
     // });
 
     // FIX adding these to make the markers open a pop up on hover
@@ -267,11 +199,11 @@ function renderMarkers(restaurants) {
   });
 }
 
-function renderTagButtons(restaurants) {
+function renderTagButtons(events) {
   const tagSet = new Set();
 
-  restaurants.forEach((restaurant) => {
-    restaurant.tagsArray.forEach((tag) => tagSet.add(tag));
+  events.forEach((event) => {
+    event.tagsArray.forEach((tag) => tagSet.add(tag));
   });
 
   const tags = [
@@ -289,7 +221,7 @@ function renderTagButtons(restaurants) {
 
     button.addEventListener("click", () => {
       state.selectedTag = tag;
-      renderTagButtons(state.restaurants);
+      renderTagButtons(state.events);
       applyFilters();
     });
 
@@ -313,61 +245,60 @@ function updateQuickDistanceButtons() {
   });
 }
 
-function buildRestaurantCard(restaurant) {
+function buildEventCard(event) {
   const card = document.createElement("button");
   card.type = "button";
-  card.className = "restaurant-card";
+  card.className = "event-card";
 
   const tagsHtml =
-    restaurant.tagsArray.length > 0
-      ? restaurant.tagsArray
-          .map((tag) => `<span class="restaurant-tag">${tag}</span>`)
+    event.tagsArray.length > 0
+      ? event.tagsArray
+          .map((tag) => `<span class="event-tag">${tag}</span>`)
           .join("")
-      : `<span class="restaurant-tag">No tags</span>`;
+      : `<span class="event-tag">No tags</span>`;
 
   const distanceText =
-    typeof restaurant.distanceKm === "number"
-      ? `<p class="restaurant-distance">${restaurant.distanceKm.toFixed(2)} km away</p>`
+    typeof event.distanceKm === "number"
+      ? `<p class="event-distance">${event.distanceKm.toFixed(2)} km away</p>`
       : "";
 
   card.innerHTML = `
-    <div class="restaurant-card-top">
-      <h3>${restaurant.name || "Restaurant"}</h3>
-      <p>${restaurant.price || ""}</p>
+    <div class="event-card-top">
+      <h3>${event.name || "Event"}</h3>
     </div>
-    <p class="restaurant-address">${restaurant.address || restaurant.city || "Address not available"}</p>
-    <p class="restaurant-description">${restaurant.description || "No description available."}</p>
+    <p class="event-address">${event.address || event.city || "Address not available"}</p>
+    <p class="event-description">${event.description || "No description available."}</p>
     ${distanceText}
-    <div class="restaurant-tags">${tagsHtml}</div>
+    <div class="event-tags">${tagsHtml}</div>
   `;
   //FIX removing this to prevent map redirection
   // card.addEventListener("click", () => {
-  //   openRestaurantDetails(restaurant);
+  //   openRestaurantDetails(event);
   // });
 
   return card;
 }
 
-function renderResults(restaurants) {
+function renderResults(events) {
   elements.resultsList.innerHTML = "";
-  elements.resultsCount.textContent = `${restaurants.length} restaurant${restaurants.length === 1 ? "" : "s"}`;
+  elements.resultsCount.textContent = `${events.length} event${events.length === 1 ? "" : "s"}`;
   const searchResultPopup = document.getElementById("search-result-popup");
 
-  if (!restaurants || restaurants.length === 0) {
+  if (!events || events.length === 0) {
     elements.resultsList.innerHTML = `
-      <div class="empty-state">No restaurants matched your filters.</div>`;
+      <div class="empty-state">No events matched your filters.</div>`;
     searchResultPopup.style.display = "none";
     return;
   }
 
-  restaurants.forEach((restaurant) => {
-    elements.resultsList.appendChild(buildRestaurantCard(restaurant));
+  events.forEach((event) => {
+    elements.resultsList.appendChild(buildEventCard(event));
   });
   // searchResultPopup.style.display = "block";
 
   // FIX trying to have results only appear when user is actively using the filer/ search function
   const isFiltering =
-    elements.restaurantSearchInput.value.trim() ||
+    elements.eventSearchInput.value.trim() ||
     elements.placeSearchInput.value.trim() ||
     state.selectedTag !== "all" ||
     state.distanceRadiusKm > 0;
@@ -377,9 +308,9 @@ function renderResults(restaurants) {
 }
 
 //TODO remove this if it doesn't get used
-function openRestaurantDetails(restaurant) {
-  localStorage.setItem("selectedRestaurant", JSON.stringify(restaurant));
-  window.location.href = "./restaurant.html";
+function openEventDetails(event) {
+  localStorage.setItem("selectedEvent", JSON.stringify(event));
+  window.location.href = "./event.html";
 }
 
 function updateSearchCenterMarker() {
@@ -404,7 +335,7 @@ function updateSearchCenterMarker() {
     .addTo(state.map);
 }
 
-function fitMapToVisibleResults(restaurants) {
+function fitMapToVisibleResults(events) {
   const bounds = new maplibregl.LngLatBounds();
   let hasPoints = false;
 
@@ -415,8 +346,8 @@ function fitMapToVisibleResults(restaurants) {
     hasPoints = true;
   }
 
-  restaurants.forEach((restaurant) => {
-    const coords = getRestaurantCoords(restaurant);
+  events.forEach((event) => {
+    const coords = getEventCoords(event);
     if (!coords) return;
     bounds.extend(coords);
     hasPoints = true;
@@ -434,7 +365,7 @@ function fitMapToVisibleResults(restaurants) {
   if (!hasPoints) return;
 
   const zoomOptions = {};
-  if (restaurants.length === 1 && activeCenter) {
+  if (events.length === 1 && activeCenter) {
     zoomOptions.maxZoom = 14;
   } else {
     zoomOptions.maxZoom = 16;
@@ -447,17 +378,17 @@ function fitMapToVisibleResults(restaurants) {
   });
 }
 
-function updateMapAfterFilter(restaurants) {
+function updateMapAfterFilter(events) {
   const activeCenter = getActiveDistanceCenter();
 
-  //if (!activeCenter && restaurants.length === 0) return;
+  //if (!activeCenter && events.length === 0) return;
 
-  if (state.distanceRadiusKm > 0 && activeCenter && restaurants.length > 0) {
-    fitMapToVisibleResults(restaurants);
+  if (state.distanceRadiusKm > 0 && activeCenter && events.length > 0) {
+    fitMapToVisibleResults(events);
     return;
   }
 
-  if (restaurants.length === 0) {
+  if (events.length === 0) {
     if (activeCenter) {
       state.map.flyTo({
         center: [activeCenter.lng, activeCenter.lat],
@@ -466,7 +397,7 @@ function updateMapAfterFilter(restaurants) {
         duration: 700,
       });
     } else {
-      // FIX trying to make the map zoom back out if there is nothing to display
+      // FIX made the map zoom back out if there is nothing to display
       state.map.flyTo({
         center: [-123.1207, 49.2827], //Downtown vancouver
         zoom: 11,
@@ -476,31 +407,31 @@ function updateMapAfterFilter(restaurants) {
     return;
   }
 
-  fitMapToVisibleResults(restaurants);
+  fitMapToVisibleResults(events);
 }
 
-function getRestaurantsWithComputedDistance() {
+function getEventsWithComputedDistance() {
   const activeCenter = getActiveDistanceCenter();
 
-  return state.restaurants.map((restaurant) => {
+  return state.events.map((event) => {
     if (!activeCenter) {
       return {
-        ...restaurant,
+        ...event,
         distanceKm: null,
       };
     }
 
-    const coords = getRestaurantCoords(restaurant);
+    const coords = getEventCoords(event);
 
     if (!coords) {
       return {
-        ...restaurant,
+        ...event,
         distanceKm: null,
       };
     }
 
     return {
-      ...restaurant,
+      ...event,
       distanceKm: distanceKm(
         activeCenter.lng,
         activeCenter.lat,
@@ -516,44 +447,43 @@ function updateHelperText() {
 
   if (!activeCenter) {
     elements.distanceHelperText.textContent =
-      "Click “Use My Location” to start with a 1 km radius, or search an address.";
+      "Click “Use My Location” to enable distance-based filtering.";
     return;
   }
 
   if (state.distanceRadiusKm > 0) {
-    elements.distanceHelperText.textContent = `Showing restaurants within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
+    elements.distanceHelperText.textContent = `Showing events within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
   } else {
-    elements.distanceHelperText.textContent = `Distance filter is off. Distance will be measured from ${activeCenter.label}.`;
+    elements.distanceHelperText.textContent =
+      "Choose a quick distance filter to narrow results, or press Reset to clear filters.";
   }
 }
 
 function applyFilters() {
-  const restaurantQuery = elements.restaurantSearchInput.value
-    .trim()
-    .toLowerCase();
+  const eventQuery = elements.eventSearchInput.value.trim().toLowerCase();
 
-  let filtered = getRestaurantsWithComputedDistance();
+  let filtered = getEventsWithComputedDistance();
 
-  if (restaurantQuery) {
-    filtered = filtered.filter((restaurant) => {
+  if (eventQuery) {
+    filtered = filtered.filter((event) => {
       const haystack = [
-        restaurant.name,
-        restaurant.description,
-        restaurant.address,
-        restaurant.city,
-        ...(restaurant.tagsArray || []),
+        event.name,
+        event.description,
+        event.address,
+        event.city,
+        ...(event.tagsArray || []),
       ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
-      return haystack.includes(restaurantQuery);
+      return haystack.includes(eventQuery);
     });
   }
 
   if (state.selectedTag !== "all") {
-    filtered = filtered.filter((restaurant) =>
-      restaurant.tagsArray.some(
+    filtered = filtered.filter((event) =>
+      event.tagsArray.some(
         (tag) => tag.toLowerCase() === state.selectedTag.toLowerCase(),
       ),
     );
@@ -561,9 +491,9 @@ function applyFilters() {
 
   if (state.distanceRadiusKm > 0) {
     filtered = filtered.filter(
-      (restaurant) =>
-        typeof restaurant.distanceKm === "number" &&
-        restaurant.distanceKm <= state.distanceRadiusKm,
+      (event) =>
+        typeof event.distanceKm === "number" &&
+        event.distanceKm <= state.distanceRadiusKm,
     );
   }
 
@@ -575,7 +505,7 @@ function applyFilters() {
     });
   }
 
-  state.filteredRestaurants = filtered;
+  state.filteredEvents = filtered;
   renderMarkers(filtered);
   renderResults(filtered);
   updateHelperText();
@@ -586,59 +516,19 @@ function applyFilters() {
   });
 }
 
-function syncDistanceFromInput() {
-  const radiusValue = Number(elements.distanceRangeInput.value);
-
-  if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
-    state.distanceRadiusKm = 0;
-    updateQuickDistanceButtons();
-    updateHelperText();
-    return;
-  }
-
-  state.distanceRadiusKm = radiusValue;
-}
-
-async function handleSearch() {
-  const placeQuery = elements.placeSearchInput.value.trim();
-
-  if (!placeQuery) {
-    state.searchCenter = null;
-    state.sourceMode = state.userLngLat ? "user" : "auto";
-    updateSearchCenterMarker();
-    applyFilters();
-    return;
-  }
-
-  const geocoded = await geocodePlace(placeQuery);
-
-  if (geocoded) {
-    state.searchCenter = geocoded;
-    state.sourceMode = "search";
-    updateSearchCenterMarker();
-    syncDistanceFromInput();
-    applyFilters();
-  } else {
-    alert("Could not find that address or place.");
-  }
-}
-
 function handleReset() {
-  elements.restaurantSearchInput.value = "";
+  elements.eventSearchInput.value = "";
   elements.placeSearchInput.value = "";
   elements.distanceRangeInput.value = "1";
 
   state.selectedTag = "all";
-  state.searchCenter = null;
   state.distanceRadiusKm = 0;
-  state.sourceMode = "auto";
+  state.sourceMode = state.userLngLat ? "user" : "auto";
 
   updateSearchCenterMarker();
-  renderTagButtons(state.restaurants);
+  renderTagButtons(state.events);
   applyFilters();
-
-  // FIX attempting to fix the issue with results being displayed all the time after something is searched for
-  //document.getElementById("search-result-popup").style.display = "none";
+  document.getElementById("search-result-popup").style.display = "none";
 }
 
 function handleShowAll() {
@@ -649,24 +539,20 @@ function handleShowAll() {
 }
 
 function attachEvents() {
-  elements.searchBtn.addEventListener("click", handleSearch);
-
   elements.useMyLocationBtn.addEventListener("click", () => {
     state.sourceMode = "user";
-    elements.distanceRangeInput.value = "1";
     state.distanceRadiusKm = 1;
     updateQuickDistanceButtons();
     addUserLocationToMap(true);
   });
 
   elements.resetBtn.addEventListener("click", handleReset);
-  elements.showAllBtn.addEventListener("click", handleShowAll);
 
   elements.toggleTagBtn.addEventListener("click", () => {
     setTagPanelOpen(!state.isTagPanelOpen);
   });
 
-  elements.restaurantSearchInput.addEventListener("input", applyFilters);
+  elements.eventSearchInput.addEventListener("input", applyFilters);
 
   elements.distanceRangeInput.addEventListener("input", () => {
     syncDistanceFromInput();
@@ -683,7 +569,6 @@ function attachEvents() {
   elements.quickDistanceButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const chosenDistance = Number(button.dataset.distance);
-      elements.distanceRangeInput.value = String(chosenDistance);
       state.distanceRadiusKm = chosenDistance;
       applyFilters();
     });
@@ -764,9 +649,9 @@ async function initializeMapPage() {
 
   state.map.on("load", async () => {
     try {
-      await patchExistingRestaurantTags();
-      state.restaurants = await getRestaurants();
-      renderTagButtons(state.restaurants);
+      await patchExistingEventTags();
+      state.events = await getEvents();
+      renderTagButtons(state.events);
       setTagPanelOpen(false);
 
       // HotFix for map pins not displaying on load
@@ -776,9 +661,9 @@ async function initializeMapPage() {
       //applyFilters();
       addUserLocationToMap(false);
     } catch (error) {
-      console.error("Failed to load restaurant data:", error);
+      console.error("Failed to load event data:", error);
       elements.resultsList.innerHTML = `
-        <div class="empty-state">Failed to load restaurant data.</div>
+        <div class="empty-state">Failed to load event data.</div>
       `;
     }
   });
