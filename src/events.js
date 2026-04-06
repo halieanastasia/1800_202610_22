@@ -9,7 +9,7 @@ import {
   serverTimestamp,
   query,
   where,
-  orderBy
+  orderBy,
 } from "firebase/firestore";
 import maplibregl from "maplibre-gl";
 
@@ -20,7 +20,7 @@ let selectedLngLat = null;
 let selectedAddress = null;
 let editingDocId = null;
 
-const eventForm = document.getElementById('event-form');
+const eventForm = document.getElementById("event-form");
 
 // --- Map Initialization ---
 function initFormMap() {
@@ -28,7 +28,7 @@ function initFormMap() {
     container: "formMap",
     style: `https://api.maptiler.com/maps/streets/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
     center: [-123.00163752324765, 49.25324576104826],
-    zoom: 10
+    zoom: 10,
   });
   formMap.addControl(new maplibregl.NavigationControl(), "top-right");
 }
@@ -38,21 +38,25 @@ initFormMap();
 // --- UI & Tab Listeners ---
 
 // Fix Map size when switching to "Create Event" tab
-document.getElementById('create-tab').addEventListener('shown.bs.tab', () => {
+document.getElementById("create-tab").addEventListener("shown.bs.tab", () => {
   if (formMap) formMap.resize();
 });
 
-document.getElementById('my-tab').addEventListener('shown.bs.tab', () => fetchEvents(true));
-document.getElementById('all-tab').addEventListener('shown.bs.tab', () => fetchEvents(false));
+document
+  .getElementById("my-tab")
+  .addEventListener("shown.bs.tab", () => fetchEvents(true));
+document
+  .getElementById("all-tab")
+  .addEventListener("shown.bs.tab", () => fetchEvents(false));
 
-document.getElementsByName('isStreaming').forEach(radio => {
-  radio.addEventListener('change', (e) => {
-    const matchSection = document.getElementById('match-section');
-    if (e.target.value === 'true') {
-      matchSection.classList.remove('d-none');
+document.getElementsByName("isStreaming").forEach((radio) => {
+  radio.addEventListener("change", (e) => {
+    const matchSection = document.getElementById("match-section");
+    if (e.target.value === "true") {
+      matchSection.classList.remove("d-none");
     } else {
-      matchSection.classList.add('d-none');
-      document.getElementById('fifa-match').value = "";
+      matchSection.classList.add("d-none");
+      document.getElementById("fifa-match").value = "";
     }
   });
 });
@@ -69,7 +73,7 @@ function addAddressSearch() {
 
       try {
         const response = await fetch(url, {
-          headers: { 'User-Agent': 'FIFA-Project-Search' }
+          headers: { "User-Agent": "FIFA-Project-Search" },
         });
         const geojson = await response.json();
 
@@ -82,23 +86,23 @@ function addAddressSearch() {
             geometry: f.geometry,
             place_name: f.properties.display_name,
             center: f.geometry.coordinates,
-            properties: f.properties
-          }))
+            properties: f.properties,
+          })),
         };
       } catch (err) {
         console.error("Search failed:", err);
         return { features: [] };
       }
-    }
+    },
   };
 
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
     placeholder: "Search for a bar or restaurant...",
-    minLength: 2,           // Starts searching after 2 characters
+    minLength: 2, // Starts searching after 2 characters
     showResultsWhileTyping: true,
-    popup: false,           // Set to false to keep results in the list format
-    trackProximity: true    // Helps find local results
+    popup: false, // Set to false to keep results in the list format
+    trackProximity: true, // Helps find local results
   });
 
   document.getElementById("addressSearch").appendChild(geocoder.onAdd());
@@ -114,12 +118,14 @@ function addAddressSearch() {
 
 function setSelectedLocation(lng, lat) {
   if (selectedMarker) selectedMarker.setLngLat([lng, lat]);
-  else selectedMarker = new maplibregl.Marker().setLngLat([lng, lat]).addTo(formMap);
+  else
+    selectedMarker = new maplibregl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(formMap);
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
 // --- Delete & Edit Functions ---
-
 async function deleteEvent(id) {
   if (confirm("Are you sure you want to delete this event?")) {
     try {
@@ -139,73 +145,83 @@ function startEdit(id, data) {
   editingDocId = id;
 
   // Fill Form Fields
-  document.getElementById('event-name').value = data.name || "";
-  document.getElementById('event-desc').value = data.description || "";
-  document.getElementById('event-time').value = data.time || "";
-  document.getElementById('kids-friendly').checked = data.isKidsFriendly || false;
-  document.getElementById('pet-friendly').checked = data.isPetFriendly || false;
+  document.getElementById("event-name").value = data.name || "";
+  document.getElementById("event-desc").value = data.description || "";
+  document.getElementById("event-time").value = data.time || "";
+  document.getElementById("kids-friendly").checked =
+    data.isKidsFriendly || false;
+  document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
 
   // FIFA Toggle
   if (data.isStreaming) {
-    document.getElementById('stream-yes').checked = true;
-    document.getElementById('match-section').classList.remove('d-none');
-    document.getElementById('fifa-match').value = data.matchName || "";
+    document.getElementById("stream-yes").checked = true;
+    document.getElementById("match-section").classList.remove("d-none");
+    document.getElementById("fifa-match").value = data.matchName || "";
   } else {
-    document.getElementById('stream-no').checked = true;
-    document.getElementById('match-section').classList.add('d-none');
+    document.getElementById("stream-no").checked = true;
+    document.getElementById("match-section").classList.add("d-none");
   }
 
   // Map Data
   selectedAddress = data.address;
-  document.getElementById('address').value = data.address || "";
+  document.getElementById("address").value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
   setSelectedLocation(data.location.lng, data.location.lat);
 
   // Update Button Style
   const submitBtn = eventForm.querySelector('button[type="submit"]');
   submitBtn.textContent = "Update Event";
-  submitBtn.classList.replace('btn-success', 'btn-primary');
+  submitBtn.classList.replace("btn-success", "btn-primary");
 
-  // SWITCH TO CREATE TAB 
-  const createTabTrigger = document.getElementById('create-tab');
-  document.getElementById('create-tab').addEventListener('shown.bs.tab', () => {
+  // SWITCH TO CREATE TAB
+  const createTabTrigger = document.getElementById("create-tab");
+  document.getElementById("create-tab").addEventListener("shown.bs.tab", () => {
     if (formMap) {
       formMap.resize();
       // Force the geocoder to update its internal size
-      const geocoderInput = document.querySelector('.maplibregl-ctrl-geocoder');
+      const geocoderInput = document.querySelector(".maplibregl-ctrl-geocoder");
       if (geocoderInput) {
-        geocoderInput.style.width = '100%';
+        geocoderInput.style.width = "100%";
       }
     }
   });
-  const tabInstance = window.bootstrap.Tab.getOrCreateInstance(createTabTrigger);
+  const tabInstance =
+    window.bootstrap.Tab.getOrCreateInstance(createTabTrigger);
   tabInstance.show();
 
   // Scroll to top of form
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // --- Form Submission ---
 
-eventForm.addEventListener('submit', async (e) => {
+eventForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const user = auth.currentUser;
-  if (!user) { alert("Please log in first!"); return; }
-  if (!selectedLngLat) { alert("Please select a location."); return; }
+  if (!user) {
+    alert("Please log in first!");
+    return;
+  }
+  if (!selectedLngLat) {
+    alert("Please select a location.");
+    return;
+  }
 
-  const isStreaming = document.getElementById('stream-yes').checked;
+  const isStreaming = document.getElementById("stream-yes").checked;
   const combinedData = {
     owner: user.uid,
-    name: document.getElementById('event-name').value,
-    description: document.getElementById('event-desc').value,
-    time: document.getElementById('event-time').value,
-    isKidsFriendly: document.getElementById('kids-friendly').checked,
-    isPetFriendly: document.getElementById('pet-friendly').checked,
+    name: document.getElementById("event-name").value,
+    description: document.getElementById("event-desc").value,
+    time: document.getElementById("event-time").value,
+    isKidsFriendly: document.getElementById("kids-friendly").checked,
+    isPetFriendly: document.getElementById("pet-friendly").checked,
     isStreaming: isStreaming,
-    matchName: isStreaming ? document.getElementById('fifa-match').value : "N/A",
+    matchName: isStreaming
+      ? document.getElementById("fifa-match").value
+      : "N/A",
     address: selectedAddress,
     location: { lat: selectedLngLat[1], lng: selectedLngLat[0] },
-    last_updated: serverTimestamp()
+    last_updated: serverTimestamp(),
   };
 
   try {
@@ -215,18 +231,23 @@ eventForm.addEventListener('submit', async (e) => {
       editingDocId = null;
       const btn = eventForm.querySelector('button[type="submit"]');
       btn.textContent = "Save Event";
-      btn.classList.replace('btn-primary', 'btn-success');
+      btn.classList.replace("btn-primary", "btn-success");
     } else {
       await addDoc(collection(db, "events"), combinedData);
       alert("Event saved!");
     }
 
     eventForm.reset();
-    document.getElementById('match-section').classList.add('d-none');
-    if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
+    document.getElementById("match-section").classList.add("d-none");
+    if (selectedMarker) {
+      selectedMarker.remove();
+      selectedMarker = null;
+    }
     selectedLngLat = null;
 
-    window.bootstrap.Tab.getOrCreateInstance(document.getElementById('all-tab')).show();
+    window.bootstrap.Tab.getOrCreateInstance(
+      document.getElementById("all-tab"),
+    ).show();
     fetchEvents(false);
   } catch (error) {
     console.error("Save Error:", error);
@@ -248,8 +269,15 @@ async function fetchEvents(filterByUser = false) {
 
     if (filterByUser) {
       const user = auth.currentUser;
-      if (!user) { container.innerHTML = "Login to manage events."; return; }
-      q = query(eventsRef, where("owner", "==", user.uid), orderBy("time", "asc"));
+      if (!user) {
+        container.innerHTML = "Login to manage events.";
+        return;
+      }
+      q = query(
+        eventsRef,
+        where("owner", "==", user.uid),
+        orderBy("time", "asc"),
+      );
     } else {
       q = query(eventsRef, orderBy("time", "asc"));
     }
@@ -268,9 +296,10 @@ async function fetchEvents(filterByUser = false) {
       const div = document.createElement("div");
       div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-white";
 
-      const badge = (data.isStreaming && data.matchName !== "N/A")
-        ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-        : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+      const badge =
+        data.isStreaming && data.matchName !== "N/A"
+          ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
+          : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
       div.innerHTML = `
         ${badge}
@@ -278,8 +307,8 @@ async function fetchEvents(filterByUser = false) {
         <p class="mb-1 text-primary small"><strong>🕒 ${data.time || "Time TBD"}</strong></p>
         <p class="mb-2 text-muted">${data.description || ""}</p>
         <div class="mb-2">
-          ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
-          ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
+          ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ""}
+          ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ""}
         </div>
         <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
       `;
@@ -313,7 +342,8 @@ async function fetchEvents(filterByUser = false) {
     });
   } catch (error) {
     console.error("Fetch Error:", error);
-    container.innerHTML = "<p class='text-danger'>Check Firestore Index link in console.</p>";
+    container.innerHTML =
+      "<p class='text-danger'>Check Firestore Index link in console.</p>";
   }
 }
 
