@@ -846,6 +846,10 @@ Find out where the map goes when filters are opened
   overflow: hidden;
 }
 
+.maplibregl-popup {
+  z-index: 1000;
+}
+
 /***********************************************************/
 /*********************** Top Filter Layout *****************/
 /***********************************************************/
@@ -1043,4 +1047,32 @@ Find out where the map goes when filters are opened
 #formMap {
   border: 1px solid #dee2e6;
   margin-bottom: 1rem;
+}
+
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none !important;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'liga';
+}
+
+.fav-btn,
+.fav-btn:hover {
+  text-decoration: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #6c757d;
+}
+
+.fav-btn .text-danger {
+  color: #dc3545 !important;
 }

@@ -192,6 +192,7 @@ function renderMarkers(restaurants) {
       anchor: "center",
     })
       .setLngLat(coords)
+      // TODO Edit popup here
       .setPopup(
         new maplibregl.Popup({ offset: 18 }).setHTML(`
           <div style="min-width: 180px;">
@@ -202,9 +203,14 @@ function renderMarkers(restaurants) {
       )
       .addTo(state.map);
 
-    markerEl.addEventListener("click", () => {
-      openRestaurantDetails(restaurant);
-    });
+    // FIX removing redirection
+    // markerEl.addEventListener("click", () => {
+    //   openRestaurantDetails(restaurant);
+    // });
+
+    // FIX adding these to make the markers open a pop up on hover
+    markerEl.addEventListener("mouseenter", () => marker.togglePopup());
+    markerEl.addEventListener("mouseleave", () => marker.togglePopup());
 
     state.markers.push(marker);
   });
@@ -283,10 +289,10 @@ function buildRestaurantCard(restaurant) {
     ${distanceText}
     <div class="restaurant-tags">${tagsHtml}</div>
   `;
-
-  card.addEventListener("click", () => {
-    openRestaurantDetails(restaurant);
-  });
+  //FIX removing this to prevent map redirection
+  // card.addEventListener("click", () => {
+  //   openRestaurantDetails(restaurant);
+  // });
 
   return card;
 }
@@ -294,20 +300,32 @@ function buildRestaurantCard(restaurant) {
 function renderResults(restaurants) {
   elements.resultsList.innerHTML = "";
   elements.resultsCount.textContent = `${restaurants.length} restaurant${restaurants.length === 1 ? "" : "s"}`;
+  const searchResultPopup = document.getElementById("search-result-popup");
 
-  if (restaurants.length === 0) {
+  if (!restaurants || restaurants.length === 0) {
     elements.resultsList.innerHTML = `
-      <div class="empty-state">No restaurants matched your filters.</div>
-    `;
+      <div class="empty-state">No restaurants matched your filters.</div>`;
+    searchResultPopup.style.display = "none";
     return;
   }
 
   restaurants.forEach((restaurant) => {
     elements.resultsList.appendChild(buildRestaurantCard(restaurant));
   });
-  document.getElementById("search-result-popup").style.display = "block";
+  // searchResultPopup.style.display = "block";
+
+  // FIX trying to have results only appear when user is actively using the filer/ search function
+  const isFiltering =
+    elements.restaurantSearchInput.value.trim() ||
+    elements.placeSearchInput.value.trim() ||
+    state.selectedTag !== "all" ||
+    state.distanceRadiusKm > 0;
+
+  // if the user is filtering display, if they are not hide
+  searchResultPopup.style.display = isFiltering ? "block" : "none";
 }
 
+//TODO remove this if it doesn't get used
 function openRestaurantDetails(restaurant) {
   localStorage.setItem("selectedRestaurant", JSON.stringify(restaurant));
   window.location.href = "./restaurant.html";
@@ -320,7 +338,8 @@ function fitMapToVisibleResults(restaurants) {
   let hasPoints = false;
 
   const activeCenter = getActiveDistanceCenter();
-  if (activeCenter) {
+  // FIX removes user from the zoom to results
+  if (activeCenter && activeCenter.source !== "user") {
     bounds.extend([activeCenter.lng, activeCenter.lat]);
     hasPoints = true;
   }
@@ -332,21 +351,37 @@ function fitMapToVisibleResults(restaurants) {
     hasPoints = true;
   });
 
-  if (hasPoints) {
-    state.map.fitBounds(bounds, {
-      padding: 80,
-      duration: 700,
-      maxZoom: 14,
-    });
+  // if (hasPoints) {
+  //   state.map.fitBounds(bounds, {
+  //     padding: 80,
+  //     duration: 700,
+  //     maxZoom: 14,
+  //   });
+  // }
+
+  // TODO Might be unnecessary but it looks bad if the map zooms in too much
+  if (!hasPoints) return;
+
+  const zoomOptions = {};
+  if (restaurants.length === 1 && activeCenter) {
+    zoomOptions.maxZoom = 14;
+  } else {
+    zoomOptions.maxZoom = 16;
   }
+
+  state.map.fitBounds(bounds, {
+    padding: 80,
+    duration: 700,
+    ...zoomOptions,
+  });
 }
 
 function updateMapAfterFilter(restaurants) {
   const activeCenter = getActiveDistanceCenter();
 
-  if (!activeCenter && restaurants.length === 0) return;
+  //if (!activeCenter && restaurants.length === 0) return;
 
-  if (state.distanceRadiusKm > 0 && activeCenter) {
+  if (state.distanceRadiusKm > 0 && activeCenter && restaurants.length > 0) {
     fitMapToVisibleResults(restaurants);
     return;
   }
@@ -355,8 +390,15 @@ function updateMapAfterFilter(restaurants) {
     if (activeCenter) {
       state.map.flyTo({
         center: [activeCenter.lng, activeCenter.lat],
-        zoom: 14,
+        zoom: 11,
         essential: true,
+        duration: 700,
+      });
+    } else {
+      // FIX trying to make the map zoom back out if there is nothing to display
+      state.map.flyTo({
+        center: [-123.1207, 49.2827], //Downtown vancouver
+        zoom: 11,
         duration: 700,
       });
     }
@@ -483,6 +525,7 @@ function handleReset() {
 
   renderTagButtons(state.restaurants);
   applyFilters();
+  document.getElementById("search-result-popup").style.display = "none";
 }
 
 function handleShowAll() {
@@ -612,12 +655,11 @@ async function initializeMapPage() {
 
   attachEvents();
 }
-
 initializeMapPage();
 
-function displayFilterPopup() {
-  document.getElementById("map-filter-popup").style.display = "block";
-}
+// function displayFilterPopup() {
+//   document.getElementById("map-filter-popup").style.display = "block";
+// }
 
 function toggleFilterPopup() {
   const popup = document.getElementById("map-filter-popup");
