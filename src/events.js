@@ -6,6 +6,8 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  getDoc,
+  setDoc,
   serverTimestamp,
   query,
   where,
@@ -36,14 +38,13 @@ function initFormMap() {
 initFormMap();
 
 // --- UI & Tab Listeners ---
-
-// Fix Map size when switching to "Create Event" tab
 document.getElementById('create-tab').addEventListener('shown.bs.tab', () => {
   if (formMap) formMap.resize();
 });
 
 document.getElementById('my-tab').addEventListener('shown.bs.tab', () => fetchEvents(true));
 document.getElementById('all-tab').addEventListener('shown.bs.tab', () => fetchEvents(false));
+document.getElementById('fav-tab').addEventListener('shown.bs.tab', fetchFavorites);
 
 document.getElementsByName('isStreaming').forEach(radio => {
   radio.addEventListener('change', (e) => {
@@ -57,7 +58,7 @@ document.getElementsByName('isStreaming').forEach(radio => {
   });
 });
 
-// --- Geocoder & Marker Logic ---
+// --- Geocoder Logic ---
 window.addEventListener("DOMContentLoaded", () => {
   addAddressSearch();
 });
@@ -66,16 +67,9 @@ function addAddressSearch() {
   const geocoderApi = {
     forwardGeocode: async (config) => {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
-
       try {
-        const response = await fetch(url, {
-          headers: { 'User-Agent': 'FIFA-Project-Search' }
-        });
+        const response = await fetch(url, { headers: { 'User-Agent': 'FIFA-Project-Search' } });
         const geojson = await response.json();
-
-        // DEBUG: Look at your console to see if results are coming back
-        console.log("Search results found:", geojson.features.length);
-
         return {
           features: geojson.features.map((f) => ({
             type: "Feature",
@@ -85,20 +79,16 @@ function addAddressSearch() {
             properties: f.properties
           }))
         };
-      } catch (err) {
-        console.error("Search failed:", err);
-        return { features: [] };
-      }
+      } catch (err) { return { features: [] }; }
     }
   };
 
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
-    placeholder: "Search for a bar or restaurant...",
-    minLength: 2,           // Starts searching after 2 characters
+    placeholder: "Search for a bar...",
+    minLength: 2,
     showResultsWhileTyping: true,
-    popup: false,           // Set to false to keep results in the list format
-    trackProximity: true    // Helps find local results
+    popup: false
   });
 
   document.getElementById("addressSearch").appendChild(geocoder.onAdd());
@@ -118,34 +108,44 @@ function setSelectedLocation(lng, lat) {
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
-// --- Delete & Edit Functions ---
+// --- Favorites Logic ---
+async function toggleBookmark(eventId, iconElement) {
+  const user = auth.currentUser;
+  if (!user) { alert("Please log in to favorite events!"); return; }
 
+  const bookmarkId = `${user.uid}_${eventId}`;
+  const bookmarkRef = doc(db, "bookmarks", bookmarkId);
+  const snap = await getDoc(bookmarkRef);
+
+  if (snap.exists()) {
+    await deleteDoc(bookmarkRef);
+    iconElement.innerText = "favorite_border";
+    iconElement.classList.remove("text-danger");
+  } else {
+    await setDoc(bookmarkRef, { userId: user.uid, eventId: eventId, timestamp: serverTimestamp() });
+    iconElement.innerText = "favorite";
+    iconElement.classList.add("text-danger");
+  }
+}
+
+// --- Delete & Edit Functions ---
 async function deleteEvent(id) {
   if (confirm("Are you sure you want to delete this event?")) {
     try {
       await deleteDoc(doc(db, "events", id));
-      alert("Event deleted.");
       fetchEvents(true);
-    } catch (error) {
-      console.error("Delete Error:", error);
-    }
+    } catch (error) { console.error(error); }
   }
 }
 
-/**
- * This function fills the form and switches the tab
- */
 function startEdit(id, data) {
   editingDocId = id;
-
-  // Fill Form Fields
   document.getElementById('event-name').value = data.name || "";
   document.getElementById('event-desc').value = data.description || "";
   document.getElementById('event-time').value = data.time || "";
   document.getElementById('kids-friendly').checked = data.isKidsFriendly || false;
   document.getElementById('pet-friendly').checked = data.isPetFriendly || false;
 
-  // FIFA Toggle
   if (data.isStreaming) {
     document.getElementById('stream-yes').checked = true;
     document.getElementById('match-section').classList.remove('d-none');
@@ -155,43 +155,23 @@ function startEdit(id, data) {
     document.getElementById('match-section').classList.add('d-none');
   }
 
-  // Map Data
   selectedAddress = data.address;
   document.getElementById('address').value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
   setSelectedLocation(data.location.lng, data.location.lat);
 
-  // Update Button Style
   const submitBtn = eventForm.querySelector('button[type="submit"]');
   submitBtn.textContent = "Update Event";
   submitBtn.classList.replace('btn-success', 'btn-primary');
 
-  // SWITCH TO CREATE TAB 
-  const createTabTrigger = document.getElementById('create-tab');
-  document.getElementById('create-tab').addEventListener('shown.bs.tab', () => {
-    if (formMap) {
-      formMap.resize();
-      // Force the geocoder to update its internal size
-      const geocoderInput = document.querySelector('.maplibregl-ctrl-geocoder');
-      if (geocoderInput) {
-        geocoderInput.style.width = '100%';
-      }
-    }
-  });
-  const tabInstance = window.bootstrap.Tab.getOrCreateInstance(createTabTrigger);
-  tabInstance.show();
-
-  // Scroll to top of form
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.bootstrap.Tab.getOrCreateInstance(document.getElementById('create-tab')).show();
 }
 
 // --- Form Submission ---
-
 eventForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const user = auth.currentUser;
-  if (!user) { alert("Please log in first!"); return; }
-  if (!selectedLngLat) { alert("Please select a location."); return; }
+  if (!user || !selectedLngLat) return;
 
   const isStreaming = document.getElementById('stream-yes').checked;
   const combinedData = {
@@ -211,110 +191,119 @@ eventForm.addEventListener('submit', async (e) => {
   try {
     if (editingDocId) {
       await updateDoc(doc(db, "events", editingDocId), combinedData);
-      alert("Event updated successfully!");
       editingDocId = null;
-      const btn = eventForm.querySelector('button[type="submit"]');
-      btn.textContent = "Save Event";
-      btn.classList.replace('btn-primary', 'btn-success');
+      eventForm.querySelector('button[type="submit"]').textContent = "Save Event";
+      eventForm.querySelector('button[type="submit"]').classList.replace('btn-primary', 'btn-success');
     } else {
       await addDoc(collection(db, "events"), combinedData);
-      alert("Event saved!");
     }
-
     eventForm.reset();
     document.getElementById('match-section').classList.add('d-none');
     if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
-    selectedLngLat = null;
-
     window.bootstrap.Tab.getOrCreateInstance(document.getElementById('all-tab')).show();
     fetchEvents(false);
-  } catch (error) {
-    console.error("Save Error:", error);
-  }
+  } catch (error) { console.error(error); }
 });
 
 // --- Data Display ---
+function createEventCard(docId, data, isOwner = false) {
+  const div = document.createElement("div");
+  div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-white position-relative";
+
+  const badge = (data.isStreaming && data.matchName !== "N/A")
+    ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
+    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+
+  div.innerHTML = `
+    <button class="btn btn-link float-end p-0 fav-btn" title="Favorite">
+      <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
+    </button>
+    ${badge}
+    <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled"}</h2>
+    <p class="mb-1 text-primary small"><strong>🕒 ${data.time}</strong></p>
+    <p class="mb-2 text-muted">${data.description || ""}</p>
+    <div class="mb-2">
+      ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
+      ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
+    </div>
+    <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
+  `;
+
+  const iconEl = div.querySelector(`#icon-${docId}`);
+  if (auth.currentUser) {
+    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(snap => {
+      if (snap.exists()) { iconEl.innerText = "favorite"; iconEl.classList.add("text-danger"); }
+    });
+  }
+
+  div.querySelector('.fav-btn').onclick = (e) => {
+    e.stopPropagation();
+    toggleBookmark(docId, iconEl);
+  };
+
+  // OWNER BUTTONS (Untouched)
+  if (isOwner) {
+    const actionDiv = document.createElement("div");
+    actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "btn btn-sm btn-outline-primary";
+    editBtn.textContent = "Edit";
+    editBtn.onclick = () => startEdit(docId, data);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "btn btn-sm btn-outline-danger";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => deleteEvent(docId);
+
+    actionDiv.appendChild(editBtn);
+    actionDiv.appendChild(deleteBtn);
+    div.appendChild(actionDiv);
+  }
+
+  return div;
+}
 
 async function fetchEvents(filterByUser = false) {
-  const containerId = filterByUser ? "my-results-list" : "results-list";
-  const container = document.getElementById(containerId);
+  const container = document.getElementById(filterByUser ? "my-results-list" : "results-list");
   if (!container) return;
-
   container.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
 
   try {
-    let q;
     const eventsRef = collection(db, "events");
+    const now = new Date().toISOString().slice(0, 16);
+    let q;
 
     if (filterByUser) {
       const user = auth.currentUser;
-      if (!user) { container.innerHTML = "Login to manage events."; return; }
-      q = query(eventsRef, where("owner", "==", user.uid), orderBy("time", "asc"));
+      if (!user) return;
+      q = query(eventsRef, where("owner", "==", user.uid), where("time", ">=", now), orderBy("time", "asc"));
     } else {
-      q = query(eventsRef, orderBy("time", "asc"));
+      q = query(eventsRef, where("time", ">=", now), orderBy("time", "asc"));
     }
 
     const snapshot = await getDocs(q);
-    container.innerHTML = "";
+    container.innerHTML = snapshot.empty ? "<p class='text-muted'>No upcoming events found.</p>" : "";
+    snapshot.forEach(docSnap => container.appendChild(createEventCard(docSnap.id, docSnap.data(), filterByUser)));
+  } catch (error) { console.error(error); }
+}
 
-    if (snapshot.empty) {
-      container.innerHTML = "<p class='text-muted'>No events found.</p>";
-      return;
-    }
+async function fetchFavorites() {
+  const user = auth.currentUser;
+  const container = document.getElementById("fav-results-list");
+  if (!user || !container) return;
+  container.innerHTML = "Loading...";
 
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      const docId = docSnap.id;
-      const div = document.createElement("div");
-      div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-white";
+  try {
+    const q = query(collection(db, "bookmarks"), where("userId", "==", user.uid));
+    const snap = await getDocs(q);
+    container.innerHTML = snap.empty ? "No favorites yet." : "";
 
-      const badge = (data.isStreaming && data.matchName !== "N/A")
-        ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-        : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
-
-      div.innerHTML = `
-        ${badge}
-        <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled"}</h2>
-        <p class="mb-1 text-primary small"><strong>🕒 ${data.time || "Time TBD"}</strong></p>
-        <p class="mb-2 text-muted">${data.description || ""}</p>
-        <div class="mb-2">
-          ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
-          ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
-        </div>
-        <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
-      `;
-
-      if (filterByUser) {
-        const actionDiv = document.createElement("div");
-        actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
-
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn btn-sm btn-outline-primary";
-        editBtn.textContent = "Edit";
-        editBtn.onclick = (e) => {
-          e.stopPropagation();
-          startEdit(docId, data);
-        };
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "btn btn-sm btn-outline-danger";
-        deleteBtn.textContent = "Delete";
-        deleteBtn.onclick = (e) => {
-          e.stopPropagation();
-          deleteEvent(docId);
-        };
-
-        actionDiv.appendChild(editBtn);
-        actionDiv.appendChild(deleteBtn);
-        div.appendChild(actionDiv);
-      }
-
-      container.appendChild(div);
+    snap.forEach(async (bDoc) => {
+      const eventSnap = await getDoc(doc(db, "events", bDoc.data().eventId));
+      if (eventSnap.exists()) container.appendChild(createEventCard(eventSnap.id, eventSnap.data(), false));
     });
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    container.innerHTML = "<p class='text-danger'>Check Firestore Index link in console.</p>";
-  }
+  } catch (error) { console.error(error); }
 }
 
 fetchEvents(false);
