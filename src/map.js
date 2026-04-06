@@ -9,12 +9,10 @@ const state = {
   filteredEvents: [],
   markers: [],
   userMarker: null,
-  searchCenterMarker: null,
   userLngLat: null,
-  searchCenter: null,
   selectedTag: "all",
   distanceRadiusKm: 0,
-  sourceMode: "auto", // auto | search | user
+  sourceMode: "auto", // auto | user
   isTagPanelOpen: false,
 };
 
@@ -24,8 +22,6 @@ const elements = {
   searchBtn: document.getElementById("search-btn"),
   useMyLocationBtn: document.getElementById("use-my-location-btn"),
   resetBtn: document.getElementById("reset-btn"),
-  distanceRangeInput: document.getElementById("distance-range-input"),
-  showAllBtn: document.getElementById("show-all-btn"),
   distanceHelperText: document.getElementById("distance-helper-text"),
   tagFilterContainer: document.getElementById("tag-filter-container"),
   tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
@@ -95,24 +91,6 @@ function getActiveDistanceCenter() {
     };
   }
 
-  if (state.sourceMode === "search" && state.searchCenter) {
-    return {
-      lng: state.searchCenter.lng,
-      lat: state.searchCenter.lat,
-      label: "the searched location",
-      source: "search",
-    };
-  }
-
-  if (state.searchCenter) {
-    return {
-      lng: state.searchCenter.lng,
-      lat: state.searchCenter.lat,
-      label: "the searched location",
-      source: "search",
-    };
-  }
-
   if (state.userLngLat) {
     return {
       lng: state.userLngLat[0],
@@ -165,34 +143,6 @@ async function getEvents() {
       tagsArray: normalizeTags(data.tags),
     };
   });
-}
-
-async function geocodePlace(query) {
-  const apiKey = import.meta.env.VITE_MAPTILER_KEY;
-
-  if (!apiKey || !query?.trim()) return null;
-
-  const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(
-    query.trim(),
-  )}.json?limit=1&key=${apiKey}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!data.features || data.features.length === 0) return null;
-
-    const [lng, lat] = data.features[0].center;
-
-    return {
-      lng,
-      lat,
-      placeName: data.features[0].place_name || query.trim(),
-    };
-  } catch (error) {
-    console.error("Geocoding failed:", error);
-    return null;
-  }
 }
 
 function createMarkerElement() {
@@ -497,14 +447,15 @@ function updateHelperText() {
 
   if (!activeCenter) {
     elements.distanceHelperText.textContent =
-      "Click “Use My Location” to start with a 1 km radius, or search an address.";
+      "Click “Use My Location” to enable distance-based filtering.";
     return;
   }
 
   if (state.distanceRadiusKm > 0) {
     elements.distanceHelperText.textContent = `Showing events within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
   } else {
-    elements.distanceHelperText.textContent = `Distance filter is off. Distance will be measured from ${activeCenter.label}.`;
+    elements.distanceHelperText.textContent =
+      "Choose a quick distance filter to narrow results, or press Reset to clear filters.";
   }
 }
 
@@ -565,59 +516,19 @@ function applyFilters() {
   });
 }
 
-function syncDistanceFromInput() {
-  const radiusValue = Number(elements.distanceRangeInput.value);
-
-  if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
-    state.distanceRadiusKm = 0;
-    updateQuickDistanceButtons();
-    updateHelperText();
-    return;
-  }
-
-  state.distanceRadiusKm = radiusValue;
-}
-
-async function handleSearch() {
-  const placeQuery = elements.placeSearchInput.value.trim();
-
-  if (!placeQuery) {
-    state.searchCenter = null;
-    state.sourceMode = state.userLngLat ? "user" : "auto";
-    updateSearchCenterMarker();
-    applyFilters();
-    return;
-  }
-
-  const geocoded = await geocodePlace(placeQuery);
-
-  if (geocoded) {
-    state.searchCenter = geocoded;
-    state.sourceMode = "search";
-    updateSearchCenterMarker();
-    syncDistanceFromInput();
-    applyFilters();
-  } else {
-    alert("Could not find that address or place.");
-  }
-}
-
 function handleReset() {
   elements.eventSearchInput.value = "";
   elements.placeSearchInput.value = "";
   elements.distanceRangeInput.value = "1";
 
   state.selectedTag = "all";
-  state.searchCenter = null;
   state.distanceRadiusKm = 0;
-  state.sourceMode = "auto";
+  state.sourceMode = state.userLngLat ? "user" : "auto";
 
   updateSearchCenterMarker();
   renderTagButtons(state.events);
   applyFilters();
-
-  // FIX attempting to fix the issue with results being displayed all the time after something is searched for
-  //document.getElementById("search-result-popup").style.display = "none";
+  document.getElementById("search-result-popup").style.display = "none";
 }
 
 function handleShowAll() {
@@ -628,18 +539,14 @@ function handleShowAll() {
 }
 
 function attachEvents() {
-  elements.searchBtn.addEventListener("click", handleSearch);
-
   elements.useMyLocationBtn.addEventListener("click", () => {
     state.sourceMode = "user";
-    elements.distanceRangeInput.value = "1";
     state.distanceRadiusKm = 1;
     updateQuickDistanceButtons();
     addUserLocationToMap(true);
   });
 
   elements.resetBtn.addEventListener("click", handleReset);
-  elements.showAllBtn.addEventListener("click", handleShowAll);
 
   elements.toggleTagBtn.addEventListener("click", () => {
     setTagPanelOpen(!state.isTagPanelOpen);
@@ -662,7 +569,6 @@ function attachEvents() {
   elements.quickDistanceButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const chosenDistance = Number(button.dataset.distance);
-      elements.distanceRangeInput.value = String(chosenDistance);
       state.distanceRadiusKm = chosenDistance;
       applyFilters();
     });

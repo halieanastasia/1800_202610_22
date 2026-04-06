@@ -6,6 +6,8 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  getDoc,
+  setDoc,
   serverTimestamp,
   query,
   where,
@@ -36,7 +38,6 @@ function initFormMap() {
 initFormMap();
 
 // --- UI & Tab Listeners ---
-
 // Fix Map size when switching to "Create Event" tab
 document.getElementById("create-tab").addEventListener("shown.bs.tab", () => {
   if (formMap) formMap.resize();
@@ -48,6 +49,9 @@ document
 document
   .getElementById("all-tab")
   .addEventListener("shown.bs.tab", () => fetchEvents(false));
+document
+  .getElementById("fav-tab")
+  .addEventListener("shown.bs.tab", fetchFavorites);
 
 document.getElementsByName("isStreaming").forEach((radio) => {
   radio.addEventListener("change", (e) => {
@@ -61,7 +65,7 @@ document.getElementsByName("isStreaming").forEach((radio) => {
   });
 });
 
-// --- Geocoder & Marker Logic ---
+// --- Geocoder Logic ---
 window.addEventListener("DOMContentLoaded", () => {
   addAddressSearch();
 });
@@ -70,16 +74,11 @@ function addAddressSearch() {
   const geocoderApi = {
     forwardGeocode: async (config) => {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
-
       try {
         const response = await fetch(url, {
           headers: { "User-Agent": "FIFA-Project-Search" },
         });
         const geojson = await response.json();
-
-        // DEBUG: Look at your console to see if results are coming back
-        console.log("Search results found:", geojson.features.length);
-
         return {
           features: geojson.features.map((f) => ({
             type: "Feature",
@@ -90,7 +89,6 @@ function addAddressSearch() {
           })),
         };
       } catch (err) {
-        console.error("Search failed:", err);
         return { features: [] };
       }
     },
@@ -125,22 +123,45 @@ function setSelectedLocation(lng, lat) {
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
+// --- Favourites Logic ---
+async function toggleBookmark(eventId, iconElement) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Please log in to favorite events!");
+    return;
+  }
+
+  const bookmarkId = `${user.uid}_${eventId}`;
+  const bookmarkRef = doc(db, "bookmarks", bookmarkId);
+  const snap = await getDoc(bookmarkRef);
+
+  if (snap.exists()) {
+    await deleteDoc(bookmarkRef);
+    iconElement.innerText = "favorite_border";
+    iconElement.classList.remove("text-danger");
+  } else {
+    await setDoc(bookmarkRef, {
+      userId: user.uid,
+      eventId: eventId,
+      timestamp: serverTimestamp(),
+    });
+    iconElement.innerText = "favorite";
+    iconElement.classList.add("text-danger");
+  }
+}
+
 // --- Delete & Edit Functions ---
 async function deleteEvent(id) {
   if (confirm("Are you sure you want to delete this event?")) {
     try {
       await deleteDoc(doc(db, "events", id));
-      alert("Event deleted.");
       fetchEvents(true);
     } catch (error) {
-      console.error("Delete Error:", error);
+      console.error(error);
     }
   }
 }
 
-/**
- * This function fills the form and switches the tab
- */
 function startEdit(id, data) {
   editingDocId = id;
 
@@ -152,7 +173,6 @@ function startEdit(id, data) {
     data.isKidsFriendly || false;
   document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
 
-  // FIFA Toggle
   if (data.isStreaming) {
     document.getElementById("stream-yes").checked = true;
     document.getElementById("match-section").classList.remove("d-none");
@@ -162,13 +182,11 @@ function startEdit(id, data) {
     document.getElementById("match-section").classList.add("d-none");
   }
 
-  // Map Data
   selectedAddress = data.address;
   document.getElementById("address").value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
   setSelectedLocation(data.location.lng, data.location.lat);
 
-  // Update Button Style
   const submitBtn = eventForm.querySelector('button[type="submit"]');
   submitBtn.textContent = "Update Event";
   submitBtn.classList.replace("btn-success", "btn-primary");
@@ -227,16 +245,13 @@ eventForm.addEventListener("submit", async (e) => {
   try {
     if (editingDocId) {
       await updateDoc(doc(db, "events", editingDocId), combinedData);
-      alert("Event updated successfully!");
       editingDocId = null;
       const btn = eventForm.querySelector('button[type="submit"]');
       btn.textContent = "Save Event";
       btn.classList.replace("btn-primary", "btn-success");
     } else {
       await addDoc(collection(db, "events"), combinedData);
-      alert("Event saved!");
     }
-
     eventForm.reset();
     document.getElementById("match-section").classList.add("d-none");
     if (selectedMarker) {
@@ -250,7 +265,7 @@ eventForm.addEventListener("submit", async (e) => {
     ).show();
     fetchEvents(false);
   } catch (error) {
-    console.error("Save Error:", error);
+    console.error(error);
   }
 });
 
@@ -313,25 +328,37 @@ async function fetchEvents(filterByUser = false) {
         <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
       `;
 
-      if (filterByUser) {
+      const iconEl = div.querySelector(`#icon-${docId}`);
+      if (auth.currentUser) {
+        getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
+          (snap) => {
+            if (snap.exists()) {
+              iconEl.innerText = "favorite";
+              iconEl.classList.add("text-danger");
+            }
+          },
+        );
+      }
+
+      div.querySelector(".fav-btn").onclick = (e) => {
+        e.stopPropagation();
+        toggleBookmark(docId, iconEl);
+      };
+
+      // USER ACTIONS
+      if (isOwner) {
         const actionDiv = document.createElement("div");
         actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
 
         const editBtn = document.createElement("button");
         editBtn.className = "btn btn-sm btn-outline-primary";
         editBtn.textContent = "Edit";
-        editBtn.onclick = (e) => {
-          e.stopPropagation();
-          startEdit(docId, data);
-        };
+        editBtn.onclick = () => startEdit(docId, data);
 
         const deleteBtn = document.createElement("button");
         deleteBtn.className = "btn btn-sm btn-outline-danger";
         deleteBtn.textContent = "Delete";
-        deleteBtn.onclick = (e) => {
-          e.stopPropagation();
-          deleteEvent(docId);
-        };
+        deleteBtn.onclick = () => deleteEvent(docId);
 
         actionDiv.appendChild(editBtn);
         actionDiv.appendChild(deleteBtn);
