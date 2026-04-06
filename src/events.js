@@ -87,14 +87,14 @@ function addAddressSearch() {
   const container = document.getElementById("addressSearch");
   if (!container) return;
 
-  container.innerHTML = ""; // Clear to prevent double-bars
+  container.innerHTML = "";
 
   const geocoderApi = {
     forwardGeocode: async (config) => {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
       try {
         const response = await fetch(url, {
-          headers: { "User-Agent": "FIFA-Project-Search" },
+          headers: { "User-Agent": "FIFA-StrEATS-Winston-App" },
         });
         const geojson = await response.json();
         return {
@@ -118,10 +118,10 @@ function addAddressSearch() {
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
     placeholder: "Search for a bar or restaurant...",
-    minLength: 2, // Starts searching after 2 characters
+    minLength: 2,
     showResultsWhileTyping: true,
-    popup: false, // Set to false to keep results in the list format
-    trackProximity: true, // Helps find local results
+    popup: false,
+    trackProximity: true,
   });
 
   container.appendChild(geocoder.onAdd());
@@ -189,15 +189,12 @@ async function deleteEvent(id) {
 function startEdit(id, data) {
   editingDocId = id;
 
-  // Fill Form Fields
   document.getElementById("event-name").value = data.name || "";
   document.getElementById("event-desc").value = data.description || "";
   document.getElementById("event-time").value = data.time || "";
-  document.getElementById("kids-friendly").checked =
-    data.isKidsFriendly || false;
+  document.getElementById("kids-friendly").checked = data.isKidsFriendly || false;
   document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
 
-  // Handle FIFA streaming toggle
   const matchSection = document.getElementById('match-section');
   if (data.isStreaming) {
     document.getElementById('stream-yes').checked = true;
@@ -208,19 +205,16 @@ function startEdit(id, data) {
     if (matchSection) matchSection.classList.add('d-none');
   }
 
-  // Switch tab and then handle map
   const createTabTrigger = document.getElementById('create-tab');
   if (createTabTrigger) {
     const tabInstance = window.bootstrap.Tab.getOrCreateInstance(createTabTrigger);
     tabInstance.show();
   }
 
-  // Set the address values
   selectedAddress = data.address;
   document.getElementById("address").value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
 
-  // Timeout ensures the tab is visible before map interacts
   setTimeout(() => {
     setSelectedLocation(data.location.lng, data.location.lat);
   }, 150);
@@ -344,18 +338,10 @@ async function fetchEvents(filterByUser = false) {
   try {
     let q;
     const eventsRef = collection(db, "events");
-
     if (filterByUser) {
       const user = auth.currentUser;
-      if (!user) {
-        container.innerHTML = "Login to manage events.";
-        return;
-      }
-      q = query(
-        eventsRef,
-        where("owner", "==", user.uid),
-        orderBy("time", "asc"),
-      );
+      if (!user) { container.innerHTML = "Login to manage events."; return; }
+      q = query(eventsRef, where("owner", "==", user.uid), orderBy("time", "asc"));
     } else {
       q = query(eventsRef, orderBy("time", "asc"));
     }
@@ -372,77 +358,25 @@ async function fetchFavorites() {
   if (!user || !container) return;
   container.innerHTML = "Loading Favorites...";
 
-    if (snapshot.empty) {
-      container.innerHTML = "<p class='text-muted'>No events found.</p>";
+  try {
+    const q = query(collection(db, "bookmarks"), where("userId", "==", user.uid));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      container.innerHTML = "<p class='text-muted'>No favorites found.</p>";
       return;
     }
 
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      const docId = docSnap.id;
-      const div = document.createElement("div");
-      div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-white";
-
-      const badge =
-        data.isStreaming && data.matchName !== "N/A"
-          ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-          : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
-
-      div.innerHTML = `
-        ${badge}
-        <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled"}</h2>
-        <p class="mb-1 text-primary small"><strong>🕒 ${data.time || "Time TBD"}</strong></p>
-        <p class="mb-2 text-muted">${data.description || ""}</p>
-        <div class="mb-2">
-          ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ""}
-          ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ""}
-        </div>
-        <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
-      `;
-
-      const iconEl = div.querySelector(`#icon-${docId}`);
-      if (auth.currentUser) {
-        getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
-          (snap) => {
-            if (snap.exists()) {
-              iconEl.innerText = "favorite";
-              iconEl.classList.add("text-danger");
-            }
-          },
-        );
+    container.innerHTML = "";
+    snap.forEach(async (bDoc) => {
+      const eventSnap = await getDoc(doc(db, "events", bDoc.data().eventId));
+      if (eventSnap.exists()) {
+        container.appendChild(createEventCard(eventSnap.id, eventSnap.data(), false));
       }
-
-      div.querySelector(".fav-btn").onclick = (e) => {
-        e.stopPropagation();
-        toggleBookmark(docId, iconEl);
-      };
-
-      // USER ACTIONS
-      if (isOwner) {
-        const actionDiv = document.createElement("div");
-        actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
-
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn btn-sm btn-outline-primary";
-        editBtn.textContent = "Edit";
-        editBtn.onclick = () => startEdit(docId, data);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "btn btn-sm btn-outline-danger";
-        deleteBtn.textContent = "Delete";
-        deleteBtn.onclick = () => deleteEvent(docId);
-
-        actionDiv.appendChild(editBtn);
-        actionDiv.appendChild(deleteBtn);
-        div.appendChild(actionDiv);
-      }
-
-      container.appendChild(div);
     });
   } catch (error) {
-    console.error("Fetch Error:", error);
-    container.innerHTML =
-      "<p class='text-danger'>Check Firestore Index link in console.</p>";
+    console.error("Fetch Favorites Error:", error);
+    container.innerHTML = "Error loading favorites.";
   }
 }
 
