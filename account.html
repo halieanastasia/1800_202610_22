@@ -11,10 +11,42 @@
 <body>
   <div id="navbar-placeholder"></div>
 
-  <main>
-    <h2>My Account</h2>
-    <button type="button" id="logout-button">Log Out</button>
+  <main class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
 
+        <h2 class="mb-4">My Account</h2>
+
+        <div class="bg-white text-dark p-5 rounded shadow-sm border">
+          <h1 class="display-5 fw-bold">
+            Welcome, <span id="name-goes-here">friend</span>
+          </h1>
+          <hr class="my-4">
+
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-success px-4" id="edit-profile-btn">
+              Edit Profile
+            </button>
+            <button type="button" class="btn btn-danger px-4" id="logout-button">
+              Log Out
+            </button>
+          </div>
+
+          <div id="security-section" class="d-none text-start mt-4 border-top pt-3">
+            <label class="small fw-bold text-muted">Email Address</label>
+            <div class="input-group mb-3">
+              <input type="email" id="acc-email" class="form-control" readonly>
+              <button class="btn btn-outline-secondary" id="edit-email-btn">Change</button>
+            </div>
+
+            <label class="small fw-bold text-muted d-block mb-2">Password</label>
+            <button class="btn btn-outline-secondary" id="edit-pass-btn">Change</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
     </div>
   </main>
 

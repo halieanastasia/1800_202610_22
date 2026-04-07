@@ -406,9 +406,11 @@ body {
 }
 
 .quick-distance-btn {
+  min-width: 88px;
+  height: 44px;
   border: 1px solid var(--border-green);
   border-radius: 999px;
-  padding: 10px 0;
+  padding: 0 18px;
   background: var(--soft-green);
   color: var(--darkgreen);
   font-weight: 700;
@@ -416,6 +418,9 @@ body {
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .quick-distance-btn.active {
@@ -423,12 +428,19 @@ body {
   color: var(--darkgreen);
 }
 
+.tag-panel {
+  margin-top: 16px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
 .tag-toggle-btn {
   width: 100%;
-  border: none;
+  border: 1px solid rgba(255, 254, 240, 0.12);
   border-radius: 12px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--cream);
   font-weight: 700;
   font-size: 1rem;
@@ -444,7 +456,7 @@ body {
     max-height 0.3s ease,
     opacity 0.3s ease,
     margin-top 0.3s ease;
-  max-height: 400px;
+  max-height: 500px;
   opacity: 1;
   margin-top: 12px;
 }
@@ -458,7 +470,8 @@ body {
 .tag-filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  padding-top: 4px;
 }
 
 .tag-btn {
@@ -505,6 +518,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 8px;
+}
+
+.results-block {
+  margin-top: 16px;
 }
 
 .event-card {
@@ -880,12 +898,9 @@ Find out where the map goes when filters are opened
   gap: 10px;
 }
 
-.tag-panel {
-  margin-top: 16px;
-}
-
 .results-header {
   margin-top: 16px;
+  padding-top: 4px;
 }
 
 .map-section {
