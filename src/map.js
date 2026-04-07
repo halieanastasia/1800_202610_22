@@ -522,7 +522,7 @@ function applyFilters() {
 function handleReset() {
   elements.eventSearchInput.value = "";
   elements.placeSearchInput.value = "";
-  elements.distanceRangeInput.value = "1";
+  // elements.distanceRangeInput.value = "1";
 
   state.selectedTag = "all";
   state.distanceRadiusKm = 0;
@@ -558,7 +558,7 @@ function attachEvents() {
   elements.eventSearchInput.addEventListener("input", applyFilters);
 
   function syncDistanceFromInput() {
-    const radiusValue = Number(elements.distanceRangeInput.value);
+    // const radiusValue = Number(elements.distanceRangeInput.value);
 
     if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
       state.distanceRadiusKm = 0;
@@ -568,10 +568,10 @@ function attachEvents() {
     state.distanceRadiusKm = radiusValue;
   }
 
-  elements.distanceRangeInput.addEventListener("input", () => {
-    syncDistanceFromInput();
-    applyFilters();
-  });
+  // elements.distanceRangeInput.addEventListener("input", () => {
+  //   syncDistanceFromInput();
+  //   applyFilters();
+  // });
 
   elements.placeSearchInput.addEventListener("keydown", async (event) => {
     if (event.key === "Enter") {
