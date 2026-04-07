@@ -21,13 +21,27 @@ let selectedMarker = null;
 let selectedLngLat = null;
 let selectedAddress = null;
 let editingDocId = null;
-let currentTags = []; // Stores the active tags for the form
+let currentTags = [];
 
 // --- Initialization & UI Listeners ---
 window.addEventListener("DOMContentLoaded", () => {
-  // Initialize Geocoder
   addAddressSearch();
 
+  // --- 1. FIFA Match Toggle Logic ---
+  const streamYes = document.getElementById('stream-yes');
+  const streamNo = document.getElementById('stream-no');
+  const matchSection = document.getElementById('match-section');
+
+  if (streamYes && streamNo && matchSection) {
+    streamYes.addEventListener('change', () => {
+      if (streamYes.checked) matchSection.classList.remove('d-none');
+    });
+    streamNo.addEventListener('change', () => {
+      if (streamNo.checked) matchSection.classList.add('d-none');
+    });
+  }
+
+  // --- 2. Tag Input Logic ---
   const tagInput = document.getElementById('tag-input');
   const tagContainer = document.getElementById('tag-container');
 
@@ -37,20 +51,15 @@ window.addEventListener("DOMContentLoaded", () => {
     tagInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ',') {
         e.preventDefault();
-
-        // Lowercase and trim whitespace
         const val = tagInput.value.trim().toLowerCase().replace(',', '');
-
-        // Prevent duplicates and empty tags
         if (val && !currentTags.includes(val)) {
           currentTags.push(val);
           renderChips();
           tagInput.value = '';
         } else {
-          tagInput.value = ''; // Clear if it's a duplicate
+          tagInput.value = '';
         }
       } else if (e.key === 'Backspace' && tagInput.value === '') {
-        // Remove last tag if backspacing on empty input
         currentTags.pop();
         renderChips();
       }
@@ -66,7 +75,6 @@ function renderChips() {
   const existingChips = tagContainer.querySelectorAll('.badge');
   existingChips.forEach(c => c.remove());
 
-  // Create and insert new chips
   currentTags.forEach((tag, index) => {
     const span = document.createElement('span');
     span.className = 'badge bg-success d-flex align-items-center gap-2 p-2 rounded-pill';
@@ -79,7 +87,6 @@ function renderChips() {
   });
 }
 
-// Global removal function for the "X" button
 window.removeTag = (index) => {
   currentTags.splice(index, 1);
   renderChips();
@@ -88,7 +95,6 @@ window.removeTag = (index) => {
 // --- Map Initialization ---
 function initFormMap() {
   if (formMap) return;
-
   const container = document.getElementById("formMap");
   if (!container) return;
 
@@ -98,7 +104,6 @@ function initFormMap() {
     center: [-123.0016, 49.2532],
     zoom: 10
   });
-
   formMap.addControl(new maplibregl.NavigationControl(), "top-right");
 }
 
@@ -124,16 +129,13 @@ if (favTab) favTab.addEventListener('shown.bs.tab', fetchFavorites);
 function addAddressSearch() {
   const container = document.getElementById("addressSearch");
   if (!container) return;
-
   container.innerHTML = "";
 
   const geocoderApi = {
     forwardGeocode: async (config) => {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
       try {
-        const response = await fetch(url, {
-          headers: { "User-Agent": "FIFA-StrEATS-Winston-App" },
-        });
+        const response = await fetch(url, { headers: { "User-Agent": "Rally-App-Winston" } });
         const geojson = await response.json();
         return {
           features: geojson.features.map((f) => ({
@@ -152,18 +154,14 @@ function addAddressSearch() {
   };
 
   if (typeof MaplibreGeocoder === 'undefined') return;
-
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
     placeholder: "Search for location...",
     minLength: 2,
     showResultsWhileTyping: true,
-    popup: false,
-    trackProximity: true,
   });
 
   container.appendChild(geocoder.onAdd());
-
   geocoder.on("result", (e) => {
     const [lng, lat] = e.result.center;
     selectedLngLat = [lng, lat];
@@ -216,6 +214,7 @@ async function deleteEvent(id) {
 
 function startEdit(id, data) {
   editingDocId = id;
+  const matchSection = document.getElementById('match-section');
 
   document.getElementById("event-name").value = data.name || "";
   document.getElementById("event-desc").value = data.description || "";
@@ -223,32 +222,26 @@ function startEdit(id, data) {
   document.getElementById("kids-friendly").checked = data.isKidsFriendly || false;
   document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
 
-  // Load and sanitize tags for the interactive input
   currentTags = [...new Set((data.tags || []).map(t => t.toLowerCase().trim()))];
   renderChips();
 
-  const matchSection = document.getElementById('match-section');
+  // Sync FIFA Match section on Edit
   if (data.isStreaming) {
     document.getElementById('stream-yes').checked = true;
-    if (matchSection) matchSection.classList.remove('d-none');
+    matchSection?.classList.remove('d-none');
     document.getElementById('fifa-match').value = data.matchName || "";
   } else {
     document.getElementById('stream-no').checked = true;
-    if (matchSection) matchSection.classList.add('d-none');
+    matchSection?.classList.add('d-none');
   }
 
-  const createTabTrigger = document.getElementById('create-tab');
-  if (createTabTrigger) {
-    window.bootstrap.Tab.getOrCreateInstance(createTabTrigger).show();
-  }
+  window.bootstrap.Tab.getOrCreateInstance(document.getElementById('create-tab')).show();
 
   selectedAddress = data.address;
   document.getElementById("address").value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
 
-  setTimeout(() => {
-    setSelectedLocation(data.location.lng, data.location.lat);
-  }, 150);
+  setTimeout(() => setSelectedLocation(data.location.lng, data.location.lat), 150);
 
   const submitBtn = document.querySelector('#event-form button[type="submit"]');
   if (submitBtn) {
@@ -263,7 +256,7 @@ if (eventForm) {
   eventForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
-    if (!user || !selectedLngLat) { alert("Select a location!"); return; }
+    if (!user || !selectedLngLat) { alert("Select a location on the map!"); return; }
 
     const isStreaming = document.getElementById('stream-yes').checked;
     const combinedData = {
@@ -277,7 +270,7 @@ if (eventForm) {
       matchName: isStreaming ? document.getElementById('fifa-match').value : "N/A",
       address: selectedAddress,
       location: { lat: selectedLngLat[1], lng: selectedLngLat[0] },
-      tags: currentTags, // SAVE THE ARRAY OF CHIPS
+      tags: currentTags,
       last_updated: serverTimestamp()
     };
 
@@ -289,16 +282,15 @@ if (eventForm) {
         await addDoc(collection(db, "events"), combinedData);
       }
 
-      // Reset Form and Tags UI
       eventForm.reset();
       currentTags = [];
       renderChips();
+      document.getElementById('match-section').classList.add('d-none');
 
       const submitBtn = eventForm.querySelector('button[type="submit"]');
       submitBtn.textContent = "Save Event";
       submitBtn.classList.replace('btn-primary', 'btn-success');
 
-      document.getElementById('match-section').classList.add('d-none');
       if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
       window.bootstrap.Tab.getOrCreateInstance(document.getElementById('all-tab')).show();
       fetchEvents(false);
@@ -316,11 +308,11 @@ function createEventCard(docId, data, isOwner = false) {
     : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
   div.innerHTML = `
-    <button class="btn btn-link float-end p-0 fav-btn" title="Favorite">
+    <button class="btn btn-link float-end p-0 fav-btn" title="Favourite">
       <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
     </button>
     ${badge}
-    <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled"}</h2>
+    <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled Venue"}</h2>
     <p class="mb-1 text-primary small"><strong>🕒 ${data.time}</strong></p>
     <p class="mb-2 text-muted">${data.description || ""}</p>
     
@@ -332,7 +324,7 @@ function createEventCard(docId, data, isOwner = false) {
       ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
       ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
     </div>
-    <small class="text-muted d-block border-top pt-2 mt-2">${data.address || "Address TBD"}</small>
+    <small class="text-muted d-block border-top pt-2 mt-2">📍 ${data.address || "Address TBD"}</small>
   `;
 
   const iconEl = div.querySelector(`#icon-${docId}`);
@@ -350,6 +342,7 @@ function createEventCard(docId, data, isOwner = false) {
   if (isOwner) {
     const actionDiv = document.createElement("div");
     actionDiv.className = "mt-3 pt-2 border-top d-flex gap-2";
+
     const editBtn = document.createElement("button");
     editBtn.className = "btn btn-sm btn-outline-primary";
     editBtn.textContent = "Edit";
@@ -389,7 +382,7 @@ async function fetchEvents(filterByUser = false) {
     const snapshot = await getDocs(q);
     container.innerHTML = snapshot.empty ? "No upcoming events found." : "";
     snapshot.forEach(docSnap => container.appendChild(createEventCard(docSnap.id, docSnap.data(), filterByUser)));
-  } catch (error) { console.error(error); }
+  } catch (error) { console.error("Fetch Error:", error); }
 }
 
 async function fetchFavorites() {
@@ -416,7 +409,7 @@ async function fetchFavorites() {
     });
   } catch (error) {
     console.error("Fetch Favorites Error:", error);
-    container.innerHTML = "Error loading favorites.";
+    container.innerHTML = "Error loading favourites.";
   }
 }
 
