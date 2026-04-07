@@ -1,25 +1,21 @@
-# Elmo Hikes
+# Rally
 
 ## Overview
 
-Elmo Hikes is a client-side JavaScript web application that helps users discover and explore hiking trails. The app displays a curated list of hike trails, each with details such as name, location, difficulty, and an image. Users can browse the list and mark their favorite trails for easy access later.
-
-Developed for the COMP 1800 course, this project applies User-Centred Design practices and agile project management, and demonstrates integration with Firebase backend services for storing user favorites.
+Rally is a community-driven platform for soccer fans in Vancouver. We solve the 'where is the game on?' problem by mapping out exactly which local venues are streaming FIFA matches. Users can check a venue's stream availability, create watch-party events, and coordinate with other fans so no one ever misses a kickoff.
 
 ---
 
 ## Features
 
-- Browse a list of curated hiking trails with images and details
-- Mark and unmark trails as favorites
-- View a personalized list of favorite hikes
-- Responsive design for desktop and mobile
-
+**Live Venue Mapping:** Instantly see which restaurants and pubs are actively streaming matches.
+* **Community Events:** Users can create and join watch-party events at participating venues.
+* **Status Transparency:** Clear indicators for participating vs. non-participating venues to save fans from a wasted trip.
 ---
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **Backend**: Firebase for hosting
 - **Database**: Firestore
@@ -37,9 +33,10 @@ To run the application locally:
 
 Once the application is running:
 
-1.  Browse the list of hiking trails displayed on the main page.
-2.  Click the heart icon (or similar) to mark a trail as a favorite.
-3.  View your favorite hikes in the favorites section.
+1. Sign Up/Login to access the full features of the app.
+2. Browse Venues on the main page to see which pubs are streaming the next FIFA match.
+3. Create an Event at a participating venue to invite other fans to join your table.
+4. Edit Profile in the account section to update your display name, email, or password.
 
 ---
 
