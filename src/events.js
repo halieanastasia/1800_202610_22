@@ -21,16 +21,76 @@ let selectedMarker = null;
 let selectedLngLat = null;
 let selectedAddress = null;
 let editingDocId = null;
+let currentTags = []; // Stores the active tags for the form
+
+// --- Initialization & UI Listeners ---
+window.addEventListener("DOMContentLoaded", () => {
+  // Initialize Geocoder
+  addAddressSearch();
+
+  const tagInput = document.getElementById('tag-input');
+  const tagContainer = document.getElementById('tag-container');
+
+  if (tagInput && tagContainer) {
+    tagContainer.addEventListener('click', () => tagInput.focus());
+
+    tagInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+
+        // Lowercase and trim whitespace
+        const val = tagInput.value.trim().toLowerCase().replace(',', '');
+
+        // Prevent duplicates and empty tags
+        if (val && !currentTags.includes(val)) {
+          currentTags.push(val);
+          renderChips();
+          tagInput.value = '';
+        } else {
+          tagInput.value = ''; // Clear if it's a duplicate
+        }
+      } else if (e.key === 'Backspace' && tagInput.value === '') {
+        // Remove last tag if backspacing on empty input
+        currentTags.pop();
+        renderChips();
+      }
+    });
+  }
+});
+
+function renderChips() {
+  const tagInput = document.getElementById('tag-input');
+  const tagContainer = document.getElementById('tag-container');
+  if (!tagInput || !tagContainer) return;
+
+  const existingChips = tagContainer.querySelectorAll('.badge');
+  existingChips.forEach(c => c.remove());
+
+  // Create and insert new chips
+  currentTags.forEach((tag, index) => {
+    const span = document.createElement('span');
+    span.className = 'badge bg-success d-flex align-items-center gap-2 p-2 rounded-pill';
+    span.style.fontSize = "0.85rem";
+    span.innerHTML = `
+      ${tag} 
+      <span class="material-icons-outlined" style="font-size:16px; cursor:pointer;" onclick="removeTag(${index})">close</span>
+    `;
+    tagContainer.insertBefore(span, tagInput);
+  });
+}
+
+// Global removal function for the "X" button
+window.removeTag = (index) => {
+  currentTags.splice(index, 1);
+  renderChips();
+};
 
 // --- Map Initialization ---
 function initFormMap() {
   if (formMap) return;
 
   const container = document.getElementById("formMap");
-  if (!container) {
-    console.warn("Target container 'formMap' not found in DOM yet.");
-    return;
-  }
+  if (!container) return;
 
   formMap = new maplibregl.Map({
     container: "formMap",
@@ -42,7 +102,7 @@ function initFormMap() {
   formMap.addControl(new maplibregl.NavigationControl(), "top-right");
 }
 
-// --- UI & Tab Listeners ---
+// --- Tab Listeners ---
 const createTab = document.getElementById('create-tab');
 if (createTab) {
   createTab.addEventListener('shown.bs.tab', () => {
@@ -60,29 +120,7 @@ if (myTab) myTab.addEventListener('shown.bs.tab', () => fetchEvents(true));
 const favTab = document.getElementById('fav-tab');
 if (favTab) favTab.addEventListener('shown.bs.tab', fetchFavorites);
 
-const streamingRadios = document.getElementsByName('isStreaming');
-if (streamingRadios.length > 0) {
-  streamingRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      const matchSection = document.getElementById('match-section');
-      if (matchSection) {
-        if (e.target.value === 'true') {
-          matchSection.classList.remove('d-none');
-        } else {
-          matchSection.classList.add('d-none');
-          const matchInput = document.getElementById('fifa-match');
-          if (matchInput) matchInput.value = "";
-        }
-      }
-    });
-  });
-}
-
 // --- Geocoder Logic ---
-window.addEventListener("DOMContentLoaded", () => {
-  addAddressSearch();
-});
-
 function addAddressSearch() {
   const container = document.getElementById("addressSearch");
   if (!container) return;
@@ -117,7 +155,7 @@ function addAddressSearch() {
 
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
-    placeholder: "Search for a bar or restaurant...",
+    placeholder: "Search for location...",
     minLength: 2,
     showResultsWhileTyping: true,
     popup: false,
@@ -138,7 +176,6 @@ function addAddressSearch() {
 
 function setSelectedLocation(lng, lat) {
   if (!formMap) initFormMap();
-
   if (selectedMarker) {
     selectedMarker.setLngLat([lng, lat]);
   } else {
@@ -147,13 +184,10 @@ function setSelectedLocation(lng, lat) {
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
-// --- Favorites Logic ---
+// --- Favourites Logic ---
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
-  if (!user) {
-    alert("Please log in to favorite events!");
-    return;
-  }
+  if (!user) { alert("Please log in to favourite events!"); return; }
 
   const bookmarkId = `${user.uid}_${eventId}`;
   const bookmarkRef = doc(db, "bookmarks", bookmarkId);
@@ -164,11 +198,7 @@ async function toggleBookmark(eventId, iconElement) {
     iconElement.innerText = "favorite_border";
     iconElement.classList.remove("text-danger");
   } else {
-    await setDoc(bookmarkRef, {
-      userId: user.uid,
-      eventId: eventId,
-      timestamp: serverTimestamp(),
-    });
+    await setDoc(bookmarkRef, { userId: user.uid, eventId: eventId, timestamp: serverTimestamp() });
     iconElement.innerText = "favorite";
     iconElement.classList.add("text-danger");
   }
@@ -180,9 +210,7 @@ async function deleteEvent(id) {
     try {
       await deleteDoc(doc(db, "events", id));
       fetchEvents(true);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) { console.error(error); }
   }
 }
 
@@ -194,6 +222,10 @@ function startEdit(id, data) {
   document.getElementById("event-time").value = data.time || "";
   document.getElementById("kids-friendly").checked = data.isKidsFriendly || false;
   document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
+
+  // Load and sanitize tags for the interactive input
+  currentTags = [...new Set((data.tags || []).map(t => t.toLowerCase().trim()))];
+  renderChips();
 
   const matchSection = document.getElementById('match-section');
   if (data.isStreaming) {
@@ -207,8 +239,7 @@ function startEdit(id, data) {
 
   const createTabTrigger = document.getElementById('create-tab');
   if (createTabTrigger) {
-    const tabInstance = window.bootstrap.Tab.getOrCreateInstance(createTabTrigger);
-    tabInstance.show();
+    window.bootstrap.Tab.getOrCreateInstance(createTabTrigger).show();
   }
 
   selectedAddress = data.address;
@@ -246,6 +277,7 @@ if (eventForm) {
       matchName: isStreaming ? document.getElementById('fifa-match').value : "N/A",
       address: selectedAddress,
       location: { lat: selectedLngLat[1], lng: selectedLngLat[0] },
+      tags: currentTags, // SAVE THE ARRAY OF CHIPS
       last_updated: serverTimestamp()
     };
 
@@ -256,7 +288,12 @@ if (eventForm) {
       } else {
         await addDoc(collection(db, "events"), combinedData);
       }
+
+      // Reset Form and Tags UI
       eventForm.reset();
+      currentTags = [];
+      renderChips();
+
       const submitBtn = eventForm.querySelector('button[type="submit"]');
       submitBtn.textContent = "Save Event";
       submitBtn.classList.replace('btn-primary', 'btn-success');
@@ -286,6 +323,11 @@ function createEventCard(docId, data, isOwner = false) {
     <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled"}</h2>
     <p class="mb-1 text-primary small"><strong>🕒 ${data.time}</strong></p>
     <p class="mb-2 text-muted">${data.description || ""}</p>
+    
+    <div class="mb-2 d-flex flex-wrap gap-1">
+      ${data.tags ? data.tags.map(t => `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">#${t}</span>`).join('') : ''}
+    </div>
+
     <div class="mb-2">
       ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
       ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
@@ -296,10 +338,7 @@ function createEventCard(docId, data, isOwner = false) {
   const iconEl = div.querySelector(`#icon-${docId}`);
   if (auth.currentUser) {
     getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(snap => {
-      if (snap.exists()) {
-        iconEl.innerText = "favorite";
-        iconEl.classList.add("text-danger");
-      }
+      if (snap.exists()) { iconEl.innerText = "favorite"; iconEl.classList.add("text-danger"); }
     });
   }
 
@@ -328,6 +367,7 @@ function createEventCard(docId, data, isOwner = false) {
   return div;
 }
 
+// --- Fetch Functions ---
 async function fetchEvents(filterByUser = false) {
   const containerId = filterByUser ? "my-results-list" : "results-list";
   const container = document.getElementById(containerId);
@@ -356,14 +396,14 @@ async function fetchFavorites() {
   const user = auth.currentUser;
   const container = document.getElementById("fav-results-list");
   if (!user || !container) return;
-  container.innerHTML = "Loading Favorites...";
+  container.innerHTML = "Loading Favourites...";
 
   try {
     const q = query(collection(db, "bookmarks"), where("userId", "==", user.uid));
     const snap = await getDocs(q);
 
     if (snap.empty) {
-      container.innerHTML = "<p class='text-muted'>No favorites found.</p>";
+      container.innerHTML = "<p class='text-muted'>No favourites found.</p>";
       return;
     }
 
@@ -380,4 +420,5 @@ async function fetchFavorites() {
   }
 }
 
+// Initial Run
 fetchEvents(false);
