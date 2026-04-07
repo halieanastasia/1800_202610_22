@@ -724,16 +724,148 @@ textarea {
 }
 
 /***********************************************************/
-/*********************** Top Filter Layout *****************/
+/************************Hidden Filter/ Search**************/
 /***********************************************************/
-.map-layout {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 92px);
+
+#map-filter-popup {
+  display: none;
+  padding: 2%;
+
+  background-color: var(--darkgreen);
+
+  /* TODO Trying to figure out how to make the filter by tags show*/
+  max-height: 55vh;
+  min-height: 25vh;
+  /* position: absolute; */
+}
+
+#popups-container {
+  overflow-y: auto; /* allow scrolling bottom popups container */
+}
+body {
+  overflow: hidden; /* prevent scrolling everything except popups container */
+}
+
+/* #map-body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+#map-container {
+  grid-row: 1;
+}
+#navbar-placeholder {
+  grid-row: 2;
+} */
+
+#search-result-popup {
+  display: none;
+  grid-row: 3 / span 1;
+  padding: 2%;
+  background-color: var(--darkgreen);
+}
+
+#map-search-bar {
+  position: absolute;
+  /* top: 20px; */
+  z-index: 10;
+  width: 95%;
+  margin: 5%;
+}
+
+/*Temporary for testing*/
+#event-search-input {
+  /* position: absolute;
+  top: 20px; */
+  left: 10%;
+  z-index: 10;
+  width: 60%;
+
+  border: 2px solid var(--lightgreen);
+  border-radius: 10px;
+  background-color: var(--cream);
+  color: var(--darkgreen);
+}
+
+#event-search-input:focus {
+  outline: none;
+  border: 2px solid var(--darkgreen);
+
+  background-color: var(--cream);
+  color: var(--darkgreen);
+}
+
+#search-button {
+  /*position: absolute;
+  top: 20px;*/
+  left: 5%;
+  z-index: 10;
+  min-width: 30px;
+  border-radius: 0px;
+  padding: 1px;
+}
+
+#filter-button,
+#reset-button {
+  left: 5%;
+  z-index: 10;
+  min-width: 30px;
+  border-radius: 0px;
+  padding: 1px;
+}
+
+/*
+TODO
+Make navbar sticky
+Reorder everything and make things normal heights
+Find out where the map goes when filters are opened
+*/
+
+/***********************************************************/
+/************************Map CSS****************************/
+/***********************************************************/
+#map-body {
+  height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
+
+#map-container {
+  display: grid;
+  height: 100%;
+
+  grid-template-rows: 1fr auto auto auto;
+  position: relative;
+}
+
+.map-navbar {
+  grid-row: 4 / span 1;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  grid-row: 1 / span 1;
+  width: 100%;
+  height: auto;
+  min-height: 500px;
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+}
+
+.maplibregl-popup {
+  z-index: 1000;
+}
+
+/***********************************************************/
+/*********************** Top Filter Layout *****************/
+/***********************************************************/
 
 .map-sidebar {
   background-color: var(--darkgreen);
@@ -747,12 +879,6 @@ textarea {
   flex-grow: 1;
   position: relative;
   width: 100%;
-}
-
-#map {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
 }
 
 .map-sidebar .page-title,

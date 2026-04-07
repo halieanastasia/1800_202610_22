@@ -20,11 +20,7 @@ const state = {
 
 const elements = {
   eventSearchInput: document.getElementById("event-search-input"),
-  // placeSearchInput: document.getElementById("place-search-input"),
-  // searchBtn: document.getElementById("search-btn"),
-  // useMyLocationBtn: document.getElementById("use-my-location-btn"),
-  resetBtn: document.getElementById("reset-btn"),
-  // distanceHelperText: document.getElementById("distance-helper-text"),
+  resetBtn: document.getElementById("reset-button"),
   tagFilterContainer: document.getElementById("tag-filter-container"),
   tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
   toggleTagBtn: document.getElementById("toggle-tag-btn"),
@@ -32,7 +28,6 @@ const elements = {
   resultsList: document.getElementById("results-list"),
   resultsCount: document.getElementById("results-count"),
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
-  // distanceRangeInput: document.getElementById("distance-range-input"),
 };
 
 function normalizeTags(tags) {
@@ -102,34 +97,6 @@ function getActiveDistanceCenter() {
   return null;
 }
 
-// TODO probably remove
-// async function patchExistingEventTags() {
-//   const snapshot = await getDocs(collection(db, "events"));
-
-//   //TODO  It should be being read from the collection!????
-//   const tagsByRestaurantName = {
-//     "Trattoria by Italian Kitchen": ["italian", "pasta", "casual", "burnaby"],
-//     "Chambar Restaurant": ["belgian", "seafood", "downtown", "fine dining"],
-//     Nightingale: ["bar", "cocktails", "modern canadian", "downtown"],
-//   };
-
-//   const updates = snapshot.docs.map(async (restaurantDoc) => {
-//     const data = restaurantDoc.data();
-//     const currentTags = normalizeTags(data.tags);
-
-//     if (currentTags.length > 0) return;
-
-//     const suggestedTags = tagsByRestaurantName[data.name];
-//     if (!suggestedTags) return;
-
-//     await updateDoc(doc(db, "events", restaurantDoc.id), {
-//       tags: suggestedTags,
-//     });
-//   });
-
-//   await Promise.all(updates);
-// }
-
 async function getEvents() {
   const snapshot = await getDocs(collection(db, "events"));
 
@@ -185,11 +152,6 @@ function renderMarkers(events) {
       )
       .addTo(state.map);
 
-    // FIX removing redirection
-    // markerEl.addEventListener("click", () => {
-    //   openRestaurantDetails(event);
-    // });
-
     // FIX adding these to make the markers open a pop up on hover
     markerEl.addEventListener("mouseenter", () => marker.togglePopup());
     markerEl.addEventListener("mouseleave", () => marker.togglePopup());
@@ -232,6 +194,17 @@ function setTagPanelOpen(isOpen) {
   state.isTagPanelOpen = isOpen;
   elements.tagFilterWrapper.classList.toggle("collapsed", !isOpen);
   elements.tagToggleIcon.textContent = isOpen ? "▲" : "▼";
+
+  // const searchResultPopup = document.getElementById("search-result-popup");
+  // searchResultPopup.style.display = isOpen ? "block" : "none";
+  const tagHotfix = document.getElementById("tag-position-hotfix");
+  if (isOpen) {
+    tagHotfix.style.display = "block";
+    tagHotfix.style.height = "85px";
+  } else {
+    tagHotfix.style.display = "none";
+    tagHotfix.style.height = "0px";
+  }
 }
 
 function updateQuickDistanceButtons() {
@@ -300,16 +273,10 @@ function renderResults(events) {
     elements.eventSearchInput.value.trim() ||
     state.selectedTag !== "all" ||
     state.distanceRadiusKm > 0;
-  // elements.placeSearchInput.value.trim() ||
+
   // if the user is filtering display, if they are not hide
   searchResultPopup.style.display = isFiltering ? "block" : "none";
 }
-
-//TODO remove this if it doesn't get used
-// function openEventDetails(event) {
-//   localStorage.setItem("selectedEvent", JSON.stringify(event));
-//   window.location.href = "./event.html";
-// }
 
 function updateSearchCenterMarker() {
   if (state.searchCenterMarker) {
@@ -324,12 +291,6 @@ function updateSearchCenterMarker() {
 
   state.searchCenterMarker = new maplibregl.Marker({ element: el })
     .setLngLat([state.searchCenter.lng, state.searchCenter.lat])
-    // TODO remove? I dont think we need this
-    // .setPopup(
-    //   new maplibregl.Popup({ offset: 18 }).setText(
-    //     state.searchCenter.placeName || "Search location",
-    //   ),
-    // )
     .addTo(state.map);
 }
 
@@ -351,14 +312,6 @@ function fitMapToVisibleResults(events) {
     hasPoints = true;
   });
 
-  // if (hasPoints) {
-  //   state.map.fitBounds(bounds, {
-  //     padding: 80,
-  //     duration: 700,
-  //     maxZoom: 14,
-  //   });
-  // }
-
   // TODO Might be unnecessary but it looks bad if the map zooms in too much
   if (!hasPoints) return;
 
@@ -378,8 +331,6 @@ function fitMapToVisibleResults(events) {
 
 function updateMapAfterFilter(events) {
   const activeCenter = getActiveDistanceCenter();
-
-  //if (!activeCenter && events.length === 0) return;
 
   if (state.distanceRadiusKm > 0 && activeCenter && events.length > 0) {
     fitMapToVisibleResults(events);
@@ -440,23 +391,6 @@ function getEventsWithComputedDistance() {
   });
 }
 
-// function updateHelperText() {
-//   const activeCenter = getActiveDistanceCenter();
-
-//   if (!activeCenter) {
-//     elements.distanceHelperText.textContent =
-//       "Click “Use My Location” to enable distance-based filtering.";
-//     return;
-//   }
-
-//   if (state.distanceRadiusKm > 0) {
-//     elements.distanceHelperText.textContent = `Showing events within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
-//   } else {
-//     elements.distanceHelperText.textContent =
-//       "Choose a quick distance filter to narrow results, or press Reset to clear filters.";
-//   }
-// }
-
 function applyFilters() {
   const eventQuery = elements.eventSearchInput.value.trim().toLowerCase();
 
@@ -506,7 +440,6 @@ function applyFilters() {
   state.filteredEvents = filtered;
   renderMarkers(filtered);
   renderResults(filtered);
-  // updateHelperText();
   updateQuickDistanceButtons();
 
   requestAnimationFrame(() => {
@@ -516,8 +449,6 @@ function applyFilters() {
 
 function handleReset() {
   elements.eventSearchInput.value = "";
-  // elements.placeSearchInput.value = "";
-  // elements.distanceRangeInput.value = "1";
 
   state.selectedTag = "all";
   state.distanceRadiusKm = 0;
@@ -529,21 +460,7 @@ function handleReset() {
   document.getElementById("search-result-popup").style.display = "none";
 }
 
-// function handleShowAll() {
-//   state.distanceRadiusKm = 0;
-//   updateQuickDistanceButtons();
-//   updateHelperText();
-//   applyFilters();
-// }
-
 function attachEvents() {
-  // elements.useMyLocationBtn.addEventListener("click", () => {
-  //   state.sourceMode = "user";
-  //   state.distanceRadiusKm = 1;
-  //   updateQuickDistanceButtons();
-  //   addUserLocationToMap(true);
-  // });
-
   elements.resetBtn.addEventListener("click", handleReset);
 
   elements.toggleTagBtn.addEventListener("click", () => {
@@ -551,29 +468,6 @@ function attachEvents() {
   });
 
   elements.eventSearchInput.addEventListener("input", applyFilters);
-
-  // function syncDistanceFromInput() {
-  //   // const radiusValue = Number(elements.distanceRangeInput.value);
-
-  //   if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
-  //     state.distanceRadiusKm = 0;
-  //     return;
-  //   }
-
-  //   state.distanceRadiusKm = radiusValue;
-  // }
-
-  // elements.distanceRangeInput.addEventListener("input", () => {
-  //   syncDistanceFromInput();
-  //   applyFilters();
-  // });
-
-  // elements.placeSearchInput.addEventListener("keydown", async (event) => {
-  //   if (event.key === "Enter") {
-  //     event.preventDefault();
-  //     // await handleSearch();
-  //   }
-  // });
 
   elements.quickDistanceButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -610,8 +504,6 @@ function addUserLocationToMap(applyAfterSuccess = false) {
 
       if (applyAfterSuccess) {
         applyFilters();
-      } else {
-        // updateHelperText();
       }
     },
     (error) => {
@@ -666,8 +558,6 @@ async function initializeMapPage() {
       // HotFix for map pins not displaying on load
       handleReset();
 
-      //TODO I don't think the filters need to be applied on load
-      //applyFilters();
       addUserLocationToMap(false);
     } catch (error) {
       console.error("Failed to load event data:", error);
@@ -680,10 +570,6 @@ async function initializeMapPage() {
   attachEvents();
 }
 initializeMapPage();
-
-// function displayFilterPopup() {
-//   document.getElementById("map-filter-popup").style.display = "block";
-// }
 
 function toggleFilterPopup() {
   const popup = document.getElementById("map-filter-popup");
