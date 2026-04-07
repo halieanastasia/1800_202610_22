@@ -708,12 +708,13 @@ textarea {
 /***********************************************************/
 /************************Hidden Filter/ Search**************/
 /***********************************************************/
-#map-filter-popup {
-  display: none;
-}
 
 #map-filter-popup {
+  display: none;
+  position: fixed;
   padding: 2%;
+  background-color: var(--darkgreen);
+  max-height: 200px;
 }
 
 #search-result-popup {
@@ -779,14 +780,12 @@ Find out where the map goes when filters are opened
 */
 
 /***********************************************************/
-/************************Map Page V2**********************/
-/***********************************************************/
-/***********************************************************/
 /************************Map CSS****************************/
 /***********************************************************/
 #map-body {
   height: 100vh;
   margin: 0;
+  padding: 0;
 }
 
 #map-container {
@@ -795,10 +794,6 @@ Find out where the map goes when filters are opened
 
   grid-template-rows: 1fr auto auto auto;
   position: relative;
-}
-
-#map-filter-popup {
-  background-color: var(--darkgreen);
 }
 
 .map-navbar {
@@ -823,27 +818,6 @@ Find out where the map goes when filters are opened
   z-index: 1;
 }
 
-.map-sidebar {
-  background-color: var(--darkgreen);
-  color: var(--cream);
-  padding: 20px;
-  overflow-y: auto;
-  position: relative;
-  z-index: 20;
-}
-
-.map-sidebar * {
-  position: relative;
-  z-index: 21;
-}
-
-.map-section {
-  min-height: calc(100vh - 80px);
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-}
-
 .maplibregl-popup {
   z-index: 1000;
 }
@@ -851,14 +825,6 @@ Find out where the map goes when filters are opened
 /***********************************************************/
 /*********************** Top Filter Layout *****************/
 /***********************************************************/
-.map-layout {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 92px);
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
 
 .map-sidebar {
   background-color: var(--darkgreen);
@@ -872,12 +838,6 @@ Find out where the map goes when filters are opened
   flex-grow: 1;
   position: relative;
   width: 100%;
-}
-
-#map {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
 }
 
 .map-sidebar .page-title,
