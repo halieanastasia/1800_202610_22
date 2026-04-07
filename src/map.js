@@ -10,6 +10,8 @@ const state = {
   markers: [],
   userMarker: null,
   userLngLat: null,
+  searchCenterMarker: null,
+  searchCenter: null,
   selectedTag: "all",
   distanceRadiusKm: 0,
   sourceMode: "auto", // auto | user
@@ -19,7 +21,7 @@ const state = {
 const elements = {
   eventSearchInput: document.getElementById("event-search-input"),
   placeSearchInput: document.getElementById("place-search-input"),
-  searchBtn: document.getElementById("search-btn"),
+  // searchBtn: document.getElementById("search-btn"),
   useMyLocationBtn: document.getElementById("use-my-location-btn"),
   resetBtn: document.getElementById("reset-btn"),
   distanceHelperText: document.getElementById("distance-helper-text"),
@@ -30,7 +32,7 @@ const elements = {
   resultsList: document.getElementById("results-list"),
   resultsCount: document.getElementById("results-count"),
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
-  distanceRangeInput: document.getElementById("distance-range-input"),
+  // distanceRangeInput: document.getElementById("distance-range-input"),
 };
 
 function normalizeTags(tags) {
@@ -74,9 +76,9 @@ function distanceKm(lng1, lat1, lng2, lat2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
-    Math.cos(toRadians(lat2)) *
-    Math.sin(dLng / 2) *
-    Math.sin(dLng / 2);
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
@@ -254,8 +256,8 @@ function buildEventCard(event) {
   const tagsHtml =
     event.tagsArray.length > 0
       ? event.tagsArray
-        .map((tag) => `<span class="event-tag">${tag}</span>`)
-        .join("")
+          .map((tag) => `<span class="event-tag">${tag}</span>`)
+          .join("")
       : `<span class="event-tag">No tags</span>`;
 
   const distanceText =
@@ -532,12 +534,12 @@ function handleReset() {
   document.getElementById("search-result-popup").style.display = "none";
 }
 
-function handleShowAll() {
-  state.distanceRadiusKm = 0;
-  updateQuickDistanceButtons();
-  updateHelperText();
-  applyFilters();
-}
+// function handleShowAll() {
+//   state.distanceRadiusKm = 0;
+//   updateQuickDistanceButtons();
+//   updateHelperText();
+//   applyFilters();
+// }
 
 function attachEvents() {
   elements.useMyLocationBtn.addEventListener("click", () => {
@@ -555,15 +557,26 @@ function attachEvents() {
 
   elements.eventSearchInput.addEventListener("input", applyFilters);
 
+  function syncDistanceFromInput() {
+    const radiusValue = Number(elements.distanceRangeInput.value);
+
+    if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
+      state.distanceRadiusKm = 0;
+      return;
+    }
+
+    state.distanceRadiusKm = radiusValue;
+  }
+
   elements.distanceRangeInput.addEventListener("input", () => {
-    //syncDistanceFromInput();
+    syncDistanceFromInput();
     applyFilters();
   });
 
   elements.placeSearchInput.addEventListener("keydown", async (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      await handleSearch();
+      // await handleSearch();
     }
   });
 
