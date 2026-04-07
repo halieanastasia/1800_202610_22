@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="comp1800 team 22" content="Event map page" />
     <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="icon" type="image/x-icon" href="/images/map.png" />
   </head>
 
   <body id="map-body">
@@ -25,32 +26,36 @@
         </button>
 
         <!--Reset Pop Up Button-->
-        <button id="reset-btn" class="btn btn-outline-light" type="button">
+        <button id="reset-button" class="btn btn-primary" type="button">
           Reset
         </button>
       </div>
 
-      <!--Filter Pop Up-->
-      <div id="map-filter-popup">
-        <div class="tag-panel">
-          <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
-            Filter by tag
-            <span id="tag-toggle-icon">▼</span>
-          </button>
+      <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
+      <div id="popups-container">
+        <!--Filter Pop Up-->
+        <div id="map-filter-popup">
+          <div class="tag-panel">
+            <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
+              Filter by tag
+              <span id="tag-toggle-icon">▼</span>
+            </button>
 
-          <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
-            <div id="tag-filter-container" class="tag-filter-container"></div>
+            <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
+              <div id="tag-filter-container" class="tag-filter-container"></div>
+            </div>
           </div>
+          <div id="tag-position-hotfix"></div>
         </div>
-      </div>
 
-      <!--Results Pop Up-->
-      <div id="search-result-popup">
-        <div class="results-header">
-          <h2 class="results-title">Results</h2>
-          <span id="results-count" class="results-count">0 events</span>
+        <!--Results Pop Up-->
+        <div id="search-result-popup">
+          <div class="results-header">
+            <h2 class="results-title">Results</h2>
+            <span id="results-count" class="results-count">0 events</span>
+          </div>
+          <div id="results-list" class="results-list"></div>
         </div>
-        <div id="results-list" class="results-list"></div>
       </div>
 
       <div id="map"></div>

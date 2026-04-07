@@ -20,7 +20,7 @@ const state = {
 
 const elements = {
   eventSearchInput: document.getElementById("event-search-input"),
-  resetBtn: document.getElementById("reset-btn"),
+  resetBtn: document.getElementById("reset-button"),
   tagFilterContainer: document.getElementById("tag-filter-container"),
   tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
   toggleTagBtn: document.getElementById("toggle-tag-btn"),
@@ -194,6 +194,17 @@ function setTagPanelOpen(isOpen) {
   state.isTagPanelOpen = isOpen;
   elements.tagFilterWrapper.classList.toggle("collapsed", !isOpen);
   elements.tagToggleIcon.textContent = isOpen ? "▲" : "▼";
+
+  // const searchResultPopup = document.getElementById("search-result-popup");
+  // searchResultPopup.style.display = isOpen ? "block" : "none";
+  const tagHotfix = document.getElementById("tag-position-hotfix");
+  if (isOpen) {
+    tagHotfix.style.display = "block";
+    tagHotfix.style.height = "85px";
+  } else {
+    tagHotfix.style.display = "none";
+    tagHotfix.style.height = "0px";
+  }
 }
 
 function updateQuickDistanceButtons() {

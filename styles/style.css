@@ -729,11 +729,33 @@ textarea {
 
 #map-filter-popup {
   display: none;
-  position: fixed;
   padding: 2%;
+
   background-color: var(--darkgreen);
-  max-height: 200px;
+
+  /* TODO Trying to figure out how to make the filter by tags show*/
+  max-height: 55vh;
+  min-height: 25vh;
+  /* position: absolute; */
 }
+
+#popups-container {
+  overflow-y: auto; /* allow scrolling bottom popups container */
+}
+body {
+  overflow: hidden; /* prevent scrolling everything except popups container */
+}
+
+/* #map-body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+#map-container {
+  grid-row: 1;
+}
+#navbar-placeholder {
+  grid-row: 2;
+} */
 
 #search-result-popup {
   display: none;
@@ -782,7 +804,8 @@ textarea {
   padding: 1px;
 }
 
-#filter-button {
+#filter-button,
+#reset-button {
   left: 5%;
   z-index: 10;
   min-width: 30px;
