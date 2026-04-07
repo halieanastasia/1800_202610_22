@@ -57,6 +57,7 @@ body {
 /************************Nav Bar CSS************************/
 /***********************************************************/
 #navbar-placeholder {
+  height: 10vh;
   position: fixed;
   left: 0;
   right: 0;
@@ -743,7 +744,7 @@ textarea {
   overflow-y: auto; /* allow scrolling bottom popups container */
 }
 body {
-  overflow: hidden; /* prevent scrolling everything except popups container */
+  /* overflow: hidden; /* prevent scrolling everything except popups container */
 }
 
 /* #map-body {
@@ -831,7 +832,7 @@ Find out where the map goes when filters are opened
 
 #map-container {
   display: grid;
-  height: 100%;
+  height: 90vh;
 
   grid-template-rows: 1fr auto auto auto;
   position: relative;
@@ -931,6 +932,11 @@ Find out where the map goes when filters are opened
   position: relative;
   z-index: 1;
   overflow: hidden;
+}
+
+#event-content {
+  margin: 0;
+  height: 90vh;
 }
 
 .event-card {
