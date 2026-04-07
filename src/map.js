@@ -20,11 +20,11 @@ const state = {
 
 const elements = {
   eventSearchInput: document.getElementById("event-search-input"),
-  placeSearchInput: document.getElementById("place-search-input"),
+  // placeSearchInput: document.getElementById("place-search-input"),
   // searchBtn: document.getElementById("search-btn"),
-  useMyLocationBtn: document.getElementById("use-my-location-btn"),
+  // useMyLocationBtn: document.getElementById("use-my-location-btn"),
   resetBtn: document.getElementById("reset-btn"),
-  distanceHelperText: document.getElementById("distance-helper-text"),
+  // distanceHelperText: document.getElementById("distance-helper-text"),
   tagFilterContainer: document.getElementById("tag-filter-container"),
   tagFilterWrapper: document.getElementById("tag-filter-wrapper"),
   toggleTagBtn: document.getElementById("toggle-tag-btn"),
@@ -51,10 +51,6 @@ function normalizeTags(tags) {
 function getEventCoords(event) {
   if (event?.location?.lat != null && event?.location?.lng != null) {
     return [Number(event.location.lng), Number(event.location.lat)];
-  }
-
-  if (event?.lat != null && event?.lng != null) {
-    return [Number(event.lng), Number(event.lat)];
   }
 
   if (event?.lat != null && event?.lng != null) {
@@ -302,19 +298,18 @@ function renderResults(events) {
   // FIX trying to have results only appear when user is actively using the filer/ search function
   const isFiltering =
     elements.eventSearchInput.value.trim() ||
-    elements.placeSearchInput.value.trim() ||
     state.selectedTag !== "all" ||
     state.distanceRadiusKm > 0;
-
+  // elements.placeSearchInput.value.trim() ||
   // if the user is filtering display, if they are not hide
   searchResultPopup.style.display = isFiltering ? "block" : "none";
 }
 
 //TODO remove this if it doesn't get used
-function openEventDetails(event) {
-  localStorage.setItem("selectedEvent", JSON.stringify(event));
-  window.location.href = "./event.html";
-}
+// function openEventDetails(event) {
+//   localStorage.setItem("selectedEvent", JSON.stringify(event));
+//   window.location.href = "./event.html";
+// }
 
 function updateSearchCenterMarker() {
   if (state.searchCenterMarker) {
@@ -445,22 +440,22 @@ function getEventsWithComputedDistance() {
   });
 }
 
-function updateHelperText() {
-  const activeCenter = getActiveDistanceCenter();
+// function updateHelperText() {
+//   const activeCenter = getActiveDistanceCenter();
 
-  if (!activeCenter) {
-    elements.distanceHelperText.textContent =
-      "Click “Use My Location” to enable distance-based filtering.";
-    return;
-  }
+//   if (!activeCenter) {
+//     elements.distanceHelperText.textContent =
+//       "Click “Use My Location” to enable distance-based filtering.";
+//     return;
+//   }
 
-  if (state.distanceRadiusKm > 0) {
-    elements.distanceHelperText.textContent = `Showing events within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
-  } else {
-    elements.distanceHelperText.textContent =
-      "Choose a quick distance filter to narrow results, or press Reset to clear filters.";
-  }
-}
+//   if (state.distanceRadiusKm > 0) {
+//     elements.distanceHelperText.textContent = `Showing events within ${state.distanceRadiusKm} km of ${activeCenter.label}.`;
+//   } else {
+//     elements.distanceHelperText.textContent =
+//       "Choose a quick distance filter to narrow results, or press Reset to clear filters.";
+//   }
+// }
 
 function applyFilters() {
   const eventQuery = elements.eventSearchInput.value.trim().toLowerCase();
@@ -511,7 +506,7 @@ function applyFilters() {
   state.filteredEvents = filtered;
   renderMarkers(filtered);
   renderResults(filtered);
-  updateHelperText();
+  // updateHelperText();
   updateQuickDistanceButtons();
 
   requestAnimationFrame(() => {
@@ -521,7 +516,7 @@ function applyFilters() {
 
 function handleReset() {
   elements.eventSearchInput.value = "";
-  elements.placeSearchInput.value = "";
+  // elements.placeSearchInput.value = "";
   // elements.distanceRangeInput.value = "1";
 
   state.selectedTag = "all";
@@ -542,12 +537,12 @@ function handleReset() {
 // }
 
 function attachEvents() {
-  elements.useMyLocationBtn.addEventListener("click", () => {
-    state.sourceMode = "user";
-    state.distanceRadiusKm = 1;
-    updateQuickDistanceButtons();
-    addUserLocationToMap(true);
-  });
+  // elements.useMyLocationBtn.addEventListener("click", () => {
+  //   state.sourceMode = "user";
+  //   state.distanceRadiusKm = 1;
+  //   updateQuickDistanceButtons();
+  //   addUserLocationToMap(true);
+  // });
 
   elements.resetBtn.addEventListener("click", handleReset);
 
@@ -557,28 +552,28 @@ function attachEvents() {
 
   elements.eventSearchInput.addEventListener("input", applyFilters);
 
-  function syncDistanceFromInput() {
-    // const radiusValue = Number(elements.distanceRangeInput.value);
+  // function syncDistanceFromInput() {
+  //   // const radiusValue = Number(elements.distanceRangeInput.value);
 
-    if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
-      state.distanceRadiusKm = 0;
-      return;
-    }
+  //   if (!Number.isFinite(radiusValue) || radiusValue < 1 || radiusValue > 50) {
+  //     state.distanceRadiusKm = 0;
+  //     return;
+  //   }
 
-    state.distanceRadiusKm = radiusValue;
-  }
+  //   state.distanceRadiusKm = radiusValue;
+  // }
 
   // elements.distanceRangeInput.addEventListener("input", () => {
   //   syncDistanceFromInput();
   //   applyFilters();
   // });
 
-  elements.placeSearchInput.addEventListener("keydown", async (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      // await handleSearch();
-    }
-  });
+  // elements.placeSearchInput.addEventListener("keydown", async (event) => {
+  //   if (event.key === "Enter") {
+  //     event.preventDefault();
+  //     // await handleSearch();
+  //   }
+  // });
 
   elements.quickDistanceButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -616,7 +611,7 @@ function addUserLocationToMap(applyAfterSuccess = false) {
       if (applyAfterSuccess) {
         applyFilters();
       } else {
-        updateHelperText();
+        // updateHelperText();
       }
     },
     (error) => {
