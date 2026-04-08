@@ -46,10 +46,11 @@ async function handleEditToggle() {
 
     const currentName = nameSpan.textContent;
     nameSpan.innerHTML = `
-      <input type="text" id="name-input" class="form-control d-inline-block w-auto" 
-             value="${currentName}" 
-             style="text-align: center; font-size: inherit; font-weight: bold; border-bottom: 2px solid #143a2f;">
-    `;
+  <input type="text" id="name-input" 
+         class="form-control d-block w-100 mx-auto" 
+         value="${currentName}" 
+         style="text-align: center; font-size: 1.5rem; font-weight: bold; max-width: 300px;">
+`;
 
     editProfileBtn.textContent = "Save Changes";
     editProfileBtn.classList.replace("btn-success", "btn-success");

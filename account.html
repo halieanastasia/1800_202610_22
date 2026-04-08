@@ -17,13 +17,14 @@
 
         <h2 class="mb-4">My Account</h2>
 
-        <div class="bg-white text-dark p-5 rounded shadow-sm border">
-          <h1 class="display-5 fw-bold">
-            Welcome, <span id="name-goes-here">friend</span>
+        <div class="bg-white text-dark p-4 p-md-5 rounded shadow-sm border mx-auto" style="max-width: 500px;">
+          <h1 class="display-6 fw-bold text-center">
+            Welcome, <span id="name-goes-here" class="d-inline-block text-break">friend</span>
           </h1>
+
           <hr class="my-4">
 
-          <div class="d-flex justify-content-center gap-3">
+          <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4">
             <button type="button" class="btn btn-success px-4" id="edit-profile-btn">
               Edit Profile
             </button>
@@ -33,14 +34,24 @@
           </div>
 
           <div id="security-section" class="d-none text-start mt-4 border-top pt-3">
-            <label class="small fw-bold text-muted">Email Address</label>
-            <div class="input-group mb-3">
-              <input type="email" id="acc-email" class="form-control" readonly>
-              <button class="btn btn-outline-secondary" id="edit-email-btn">Change</button>
+
+            <div class="mb-3">
+              <label class="small fw-bold text-muted mb-1">Email Address</label>
+              <div class="input-group">
+                <input type="email" id="acc-email" class="form-control" readonly>
+                <button class="btn btn-outline-secondary" id="edit-email-btn">Change</button>
+              </div>
             </div>
 
-            <label class="small fw-bold text-muted d-block mb-2">Password</label>
-            <button class="btn btn-outline-secondary" id="edit-pass-btn">Change</button>
+            <div class="mb-3">
+              <label class="small fw-bold text-muted mb-1">Security</label>
+              <div>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="edit-pass-btn">
+                  Change Password
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
