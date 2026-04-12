@@ -176,18 +176,13 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  color: var(--darkgreen) !important;
 }
 
 .event-container {
-  background: rgb(186, 120, 120);
+  background: white;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
-}
-
-.event-card {
-  background: var(--cream) !important;
 }
 
 .event-img img {
@@ -208,29 +203,6 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--darkgreen);
-}
-
-.text-muted {
-  color: var(--mediumgreen) !important;
-}
-
-.bg-danger {
-  color: var(--lightgreen) !important;
-  background: var(--darkgreen) !important;
-}
-
-.bg-secondary {
-  background-color: var(--mediumgreen) !important;
-}
-
-.badge.bg-light {
-  background-color: var(--mediumgreen) !important;
-  color: var(--lightgreen) !important;
-  border-color: var(--border-green) !important;
-}
-
-.text-primary {
-  color: var(--darkgreen) !important;
 }
 
 .back-btn {
@@ -851,6 +823,7 @@ textarea {
 #map-container {
   display: grid;
   height: 90vh;
+
   grid-template-rows: 1fr auto auto auto;
   position: relative;
 }
@@ -951,56 +924,15 @@ textarea {
   overflow: hidden;
 }
 
-/**************************************
-Event Page
-**************************************/
-#event-body {
-  background-color: var(--lightgreen);
-}
-
 #event-content {
   margin: 0;
   height: 90vh;
 }
 
-#event-main {
-  padding: 5%;
-  background-color: var(--mediumgreen);
-  border-radius: 10px;
-}
-
-.nav-tabs .nav-link {
-  color: var(--darkgreen);
-  background-color: var(--lightgreen);
-  border: 1px solid var(--mediumgreen);
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  font-weight: 600;
-}
-
-.nav-tabs .nav-link:hover {
-  background-color: var(--lightgreen);
-  border-color: var(--mediumgreen);
-  color: var(--darkgreen);
-}
-
-.nav-tabs .nav-link.active {
-  background-color: var(--cream);
-  color: var(--darkgreen);
-  border: 1px solid var(--border-green);
-  border-bottom-color: var(--cream); /* blends into content */
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.nav-tabs {
-  border-bottom: none;
-}
-
 .event-card {
-  background: var(--lightgreen);
+  background: var(--cream);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 14px;
   margin-bottom: 12px;
   color: var(--darkgreen);
   border: 1px solid var(--border-green);
@@ -1016,8 +948,6 @@ Event Page
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
-  color: var(--darkgreen);
-  text-decoration: none;
 }
 
 .edit-btn {
@@ -1140,5 +1070,5 @@ Event Page
 }
 
 .fav-btn .text-danger {
-  color: var(--mediumgreen) !important;
+  color: #dc3545 !important;
 }

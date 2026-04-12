@@ -3,9 +3,7 @@
 /***********************************************************/
 :root {
   --cream: #fffef0;
-  --creamTransparent: rgba(255, 254, 240, 0.75);
   --lightgreen: #b3d3bb;
-  --mediumgreen: #538065;
   --darkgreen: #143a2f;
   --darkgreen-2: #1c4d3d;
   --soft-green: #dce9df;
@@ -151,7 +149,6 @@ body {
   background: var(--darkgreen);
   color: var(--lightgreen);
   border: 4px solid var(--darkgreen);
-  border-radius: 10%;
   padding: 16px 40px;
   border-radius: 999px;
   font-size: 1.25rem;
@@ -176,18 +173,13 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  color: var(--darkgreen) !important;
 }
 
 .event-container {
-  background: rgb(186, 120, 120);
+  background: white;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
-}
-
-.event-card {
-  background: var(--cream) !important;
 }
 
 .event-img img {
@@ -208,29 +200,6 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--darkgreen);
-}
-
-.text-muted {
-  color: var(--mediumgreen) !important;
-}
-
-.bg-danger {
-  color: var(--lightgreen) !important;
-  background: var(--darkgreen) !important;
-}
-
-.bg-secondary {
-  background-color: var(--mediumgreen) !important;
-}
-
-.badge.bg-light {
-  background-color: var(--mediumgreen) !important;
-  color: var(--lightgreen) !important;
-  border-color: var(--border-green) !important;
-}
-
-.text-primary {
-  color: var(--darkgreen) !important;
 }
 
 .back-btn {
@@ -758,75 +727,72 @@ textarea {
 /***********************************************************/
 /************************Hidden Filter/ Search**************/
 /***********************************************************/
+
+#map-filter-popup {
+  display: none;
+  padding: 2%;
+
+  background-color: var(--darkgreen);
+
+  /* TODO Trying to figure out how to make the filter by tags show*/
+  max-height: 55vh;
+  min-height: 25vh;
+  /* position: absolute; */
+}
+
 #popups-container {
   overflow-y: auto; /* allow scrolling bottom popups container */
-  max-height: 80vh;
 }
+body {
+  /* overflow: hidden; /* prevent scrolling everything except popups container */
+}
+
+/* #map-body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+#map-container {
+  grid-row: 1;
+}
+#navbar-placeholder {
+  grid-row: 2;
+} */
 
 #search-result-popup {
   display: none;
   grid-row: 3 / span 1;
   padding: 2%;
   background-color: var(--darkgreen);
-
-  max-height: 80vh;
-}
-
-#map-filter-popup {
-  display: none;
-  padding: 2%;
-  background-color: var(--darkgreen);
-
-  max-height: 80vh;
 }
 
 #map-search-bar {
   position: absolute;
+  /* top: 20px; */
   z-index: 10;
   width: 95%;
   margin: 5%;
 }
 
+/*Temporary for testing*/
 #event-search-input {
+  /* position: absolute;
+  top: 20px; */
   left: 10%;
   z-index: 10;
   width: 60%;
 
   border: 2px solid var(--lightgreen);
   border-radius: 10px;
-  background-color: var(--creamTransparent);
+  background-color: var(--cream);
   color: var(--darkgreen);
 }
 
 #event-search-input:focus {
   outline: none;
-  border: 2px solid var(--mediumgreen);
-}
+  border: 2px solid var(--darkgreen);
 
-#event-search-input::placeholder {
-  color: var(--mediumgreen);
-}
-
-#filter-button,
-#reset-button {
-  z-index: 10;
-  min-width: 30px;
-  padding: 6px 14px;
-  font-family: "Intro Rust", serif;
-  font-size: 1rem;
-  font-weight: 600;
-  background-color: var(--creamTransparent);
-  color: var(--mediumgreen);
-  border: 2px solid var(--lightgreen);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-#filter-button:hover,
-#reset-button:hover {
-  background-color: var(--darkgreen);
-  color: var(--lightgreen);
+  background-color: var(--cream);
+  color: var(--darkgreen);
 }
 
 #search-button {
@@ -838,6 +804,22 @@ textarea {
   border-radius: 0px;
   padding: 1px;
 }
+
+#filter-button,
+#reset-button {
+  left: 5%;
+  z-index: 10;
+  min-width: 30px;
+  border-radius: 0px;
+  padding: 1px;
+}
+
+/*
+TODO
+Make navbar sticky
+Reorder everything and make things normal heights
+Find out where the map goes when filters are opened
+*/
 
 /***********************************************************/
 /************************Map CSS****************************/
@@ -851,6 +833,7 @@ textarea {
 #map-container {
   display: grid;
   height: 90vh;
+
   grid-template-rows: 1fr auto auto auto;
   position: relative;
 }
@@ -866,7 +849,7 @@ textarea {
   grid-row: 1 / span 1;
   width: 100%;
   height: auto;
-  min-height: 400px;
+  min-height: 500px;
 }
 
 .map-layout {
@@ -951,56 +934,15 @@ textarea {
   overflow: hidden;
 }
 
-/**************************************
-Event Page
-**************************************/
-#event-body {
-  background-color: var(--lightgreen);
-}
-
 #event-content {
   margin: 0;
   height: 90vh;
 }
 
-#event-main {
-  padding: 5%;
-  background-color: var(--mediumgreen);
-  border-radius: 10px;
-}
-
-.nav-tabs .nav-link {
-  color: var(--darkgreen);
-  background-color: var(--lightgreen);
-  border: 1px solid var(--mediumgreen);
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  font-weight: 600;
-}
-
-.nav-tabs .nav-link:hover {
-  background-color: var(--lightgreen);
-  border-color: var(--mediumgreen);
-  color: var(--darkgreen);
-}
-
-.nav-tabs .nav-link.active {
-  background-color: var(--cream);
-  color: var(--darkgreen);
-  border: 1px solid var(--border-green);
-  border-bottom-color: var(--cream); /* blends into content */
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.nav-tabs {
-  border-bottom: none;
-}
-
 .event-card {
-  background: var(--lightgreen);
+  background: var(--cream);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 14px;
   margin-bottom: 12px;
   color: var(--darkgreen);
   border: 1px solid var(--border-green);
@@ -1016,8 +958,6 @@ Event Page
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
-  color: var(--darkgreen);
-  text-decoration: none;
 }
 
 .edit-btn {
@@ -1140,5 +1080,5 @@ Event Page
 }
 
 .fav-btn .text-danger {
-  color: var(--mediumgreen) !important;
+  color: #dc3545 !important;
 }
