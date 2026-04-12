@@ -197,14 +197,14 @@ function setTagPanelOpen(isOpen) {
 
   // const searchResultPopup = document.getElementById("search-result-popup");
   // searchResultPopup.style.display = isOpen ? "block" : "none";
-  const tagHotfix = document.getElementById("tag-position-hotfix");
-  if (isOpen) {
-    tagHotfix.style.display = "block";
-    tagHotfix.style.height = "85px";
-  } else {
-    tagHotfix.style.display = "none";
-    tagHotfix.style.height = "0px";
-  }
+  // const tagHotfix = document.getElementById("tag-position-hotfix");
+  // if (isOpen) {
+  //   tagHotfix.style.display = "block";
+  //   tagHotfix.style.height = "85px";
+  // } else {
+  //   tagHotfix.style.display = "none";
+  //   tagHotfix.style.height = "0px";
+  // }
 }
 
 function updateQuickDistanceButtons() {

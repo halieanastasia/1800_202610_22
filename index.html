@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/images/map.png" />
   </head>
 
-  <body id="map-body">
+  <body id="map-body" class="">
     <div id="map-container">
       <div id="map-search-bar">
         <!--Event searchbar-->
@@ -17,7 +17,7 @@
           id="event-search-input"
           type="text"
           class="search-input"
-          placeholder="Search for a event"
+          placeholder="Search for an event"
         />
 
         <!--Filter Pop Up Button-->
@@ -33,6 +33,14 @@
 
       <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
       <div id="popups-container">
+        <!--Results Pop Up-->
+        <div id="search-result-popup">
+          <div class="results-header">
+            <h2 class="results-title">Results</h2>
+            <span id="results-count" class="results-count">0 events</span>
+          </div>
+          <div id="results-list" class="results-list"></div>
+        </div>
         <!--Filter Pop Up-->
         <div id="map-filter-popup">
           <div class="tag-panel">
@@ -45,16 +53,6 @@
               <div id="tag-filter-container" class="tag-filter-container"></div>
             </div>
           </div>
-          <div id="tag-position-hotfix"></div>
-        </div>
-
-        <!--Results Pop Up-->
-        <div id="search-result-popup">
-          <div class="results-header">
-            <h2 class="results-title">Results</h2>
-            <span id="results-count" class="results-count">0 events</span>
-          </div>
-          <div id="results-list" class="results-list"></div>
         </div>
       </div>
 

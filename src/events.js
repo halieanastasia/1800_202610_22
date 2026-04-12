@@ -28,38 +28,38 @@ window.addEventListener("DOMContentLoaded", () => {
   addAddressSearch();
 
   // --- 1. FIFA Match Toggle Logic ---
-  const streamYes = document.getElementById('stream-yes');
-  const streamNo = document.getElementById('stream-no');
-  const matchSection = document.getElementById('match-section');
+  const streamYes = document.getElementById("stream-yes");
+  const streamNo = document.getElementById("stream-no");
+  const matchSection = document.getElementById("match-section");
 
   if (streamYes && streamNo && matchSection) {
-    streamYes.addEventListener('change', () => {
-      if (streamYes.checked) matchSection.classList.remove('d-none');
+    streamYes.addEventListener("change", () => {
+      if (streamYes.checked) matchSection.classList.remove("d-none");
     });
-    streamNo.addEventListener('change', () => {
-      if (streamNo.checked) matchSection.classList.add('d-none');
+    streamNo.addEventListener("change", () => {
+      if (streamNo.checked) matchSection.classList.add("d-none");
     });
   }
 
   // --- 2. Tag Input Logic ---
-  const tagInput = document.getElementById('tag-input');
-  const tagContainer = document.getElementById('tag-container');
+  const tagInput = document.getElementById("tag-input");
+  const tagContainer = document.getElementById("tag-container");
 
   if (tagInput && tagContainer) {
-    tagContainer.addEventListener('click', () => tagInput.focus());
+    tagContainer.addEventListener("click", () => tagInput.focus());
 
-    tagInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ',') {
+    tagInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === ",") {
         e.preventDefault();
-        const val = tagInput.value.trim().toLowerCase().replace(',', '');
+        const val = tagInput.value.trim().toLowerCase().replace(",", "");
         if (val && !currentTags.includes(val)) {
           currentTags.push(val);
           renderChips();
-          tagInput.value = '';
+          tagInput.value = "";
         } else {
-          tagInput.value = '';
+          tagInput.value = "";
         }
-      } else if (e.key === 'Backspace' && tagInput.value === '') {
+      } else if (e.key === "Backspace" && tagInput.value === "") {
         currentTags.pop();
         renderChips();
       }
@@ -68,16 +68,17 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderChips() {
-  const tagInput = document.getElementById('tag-input');
-  const tagContainer = document.getElementById('tag-container');
+  const tagInput = document.getElementById("tag-input");
+  const tagContainer = document.getElementById("tag-container");
   if (!tagInput || !tagContainer) return;
 
-  const existingChips = tagContainer.querySelectorAll('.badge');
-  existingChips.forEach(c => c.remove());
+  const existingChips = tagContainer.querySelectorAll(".badge");
+  existingChips.forEach((c) => c.remove());
 
   currentTags.forEach((tag, index) => {
-    const span = document.createElement('span');
-    span.className = 'badge bg-success d-flex align-items-center gap-2 p-2 rounded-pill';
+    const span = document.createElement("span");
+    span.className =
+      "badge bg-success d-flex align-items-center gap-2 p-2 rounded-pill";
     span.style.fontSize = "0.85rem";
     span.innerHTML = `
       ${tag} 
@@ -102,28 +103,28 @@ function initFormMap() {
     container: "formMap",
     style: `https://api.maptiler.com/maps/streets/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
     center: [-123.0016, 49.2532],
-    zoom: 10
+    zoom: 10,
   });
   formMap.addControl(new maplibregl.NavigationControl(), "top-right");
 }
 
 // --- Tab Listeners ---
-const createTab = document.getElementById('create-tab');
+const createTab = document.getElementById("create-tab");
 if (createTab) {
-  createTab.addEventListener('shown.bs.tab', () => {
+  createTab.addEventListener("shown.bs.tab", () => {
     initFormMap();
     if (formMap) formMap.resize();
   });
 }
 
-const allTab = document.getElementById('all-tab');
-if (allTab) allTab.addEventListener('shown.bs.tab', () => fetchEvents(false));
+const allTab = document.getElementById("all-tab");
+if (allTab) allTab.addEventListener("shown.bs.tab", () => fetchEvents(false));
 
-const myTab = document.getElementById('my-tab');
-if (myTab) myTab.addEventListener('shown.bs.tab', () => fetchEvents(true));
+const myTab = document.getElementById("my-tab");
+if (myTab) myTab.addEventListener("shown.bs.tab", () => fetchEvents(true));
 
-const favTab = document.getElementById('fav-tab');
-if (favTab) favTab.addEventListener('shown.bs.tab', fetchFavorites);
+const favTab = document.getElementById("fav-tab");
+if (favTab) favTab.addEventListener("shown.bs.tab", fetchFavorites);
 
 // --- Geocoder Logic ---
 function addAddressSearch() {
@@ -135,7 +136,9 @@ function addAddressSearch() {
     forwardGeocode: async (config) => {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
       try {
-        const response = await fetch(url, { headers: { "User-Agent": "Rally-App-Winston" } });
+        const response = await fetch(url, {
+          headers: { "User-Agent": "Rally-App-Winston" },
+        });
         const geojson = await response.json();
         return {
           features: geojson.features.map((f) => ({
@@ -150,10 +153,10 @@ function addAddressSearch() {
         console.error("Geocoding failed", err);
         return { features: [] };
       }
-    }
+    },
   };
 
-  if (typeof MaplibreGeocoder === 'undefined') return;
+  if (typeof MaplibreGeocoder === "undefined") return;
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
     placeholder: "Search for location...",
@@ -177,7 +180,9 @@ function setSelectedLocation(lng, lat) {
   if (selectedMarker) {
     selectedMarker.setLngLat([lng, lat]);
   } else {
-    selectedMarker = new maplibregl.Marker().setLngLat([lng, lat]).addTo(formMap);
+    selectedMarker = new maplibregl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(formMap);
   }
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
@@ -185,7 +190,10 @@ function setSelectedLocation(lng, lat) {
 // --- Favourites Logic ---
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
-  if (!user) { alert("Please log in to favourite events!"); return; }
+  if (!user) {
+    alert("Please log in to favourite events!");
+    return;
+  }
 
   const bookmarkId = `${user.uid}_${eventId}`;
   const bookmarkRef = doc(db, "bookmarks", bookmarkId);
@@ -196,7 +204,11 @@ async function toggleBookmark(eventId, iconElement) {
     iconElement.innerText = "favorite_border";
     iconElement.classList.remove("text-danger");
   } else {
-    await setDoc(bookmarkRef, { userId: user.uid, eventId: eventId, timestamp: serverTimestamp() });
+    await setDoc(bookmarkRef, {
+      userId: user.uid,
+      eventId: eventId,
+      timestamp: serverTimestamp(),
+    });
     iconElement.innerText = "favorite";
     iconElement.classList.add("text-danger");
   }
@@ -208,70 +220,85 @@ async function deleteEvent(id) {
     try {
       await deleteDoc(doc(db, "events", id));
       fetchEvents(true);
-    } catch (error) { console.error(error); }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
 function startEdit(id, data) {
   editingDocId = id;
-  const matchSection = document.getElementById('match-section');
+  const matchSection = document.getElementById("match-section");
 
   document.getElementById("event-name").value = data.name || "";
   document.getElementById("event-desc").value = data.description || "";
   document.getElementById("event-time").value = data.time || "";
-  document.getElementById("kids-friendly").checked = data.isKidsFriendly || false;
+  document.getElementById("kids-friendly").checked =
+    data.isKidsFriendly || false;
   document.getElementById("pet-friendly").checked = data.isPetFriendly || false;
 
-  currentTags = [...new Set((data.tags || []).map(t => t.toLowerCase().trim()))];
+  currentTags = [
+    ...new Set((data.tags || []).map((t) => t.toLowerCase().trim())),
+  ];
   renderChips();
 
   // Sync FIFA Match section on Edit
   if (data.isStreaming) {
-    document.getElementById('stream-yes').checked = true;
-    matchSection?.classList.remove('d-none');
-    document.getElementById('fifa-match').value = data.matchName || "";
+    document.getElementById("stream-yes").checked = true;
+    matchSection?.classList.remove("d-none");
+    document.getElementById("fifa-match").value = data.matchName || "";
   } else {
-    document.getElementById('stream-no').checked = true;
-    matchSection?.classList.add('d-none');
+    document.getElementById("stream-no").checked = true;
+    matchSection?.classList.add("d-none");
   }
 
-  window.bootstrap.Tab.getOrCreateInstance(document.getElementById('create-tab')).show();
+  window.bootstrap.Tab.getOrCreateInstance(
+    document.getElementById("create-tab"),
+  ).show();
 
   selectedAddress = data.address;
   document.getElementById("address").value = data.address || "";
   selectedLngLat = [data.location.lng, data.location.lat];
 
-  setTimeout(() => setSelectedLocation(data.location.lng, data.location.lat), 150);
+  setTimeout(
+    () => setSelectedLocation(data.location.lng, data.location.lat),
+    150,
+  );
 
   const submitBtn = document.querySelector('#event-form button[type="submit"]');
   if (submitBtn) {
     submitBtn.textContent = "Update Event";
-    submitBtn.classList.replace('btn-success', 'btn-primary');
+    submitBtn.classList.replace("btn-success", "btn-primary");
   }
 }
 
 // --- Form Submission ---
-const eventForm = document.getElementById('event-form');
+const eventForm = document.getElementById("event-form");
 if (eventForm) {
-  eventForm.addEventListener('submit', async (e) => {
+  eventForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
-    if (!user || !selectedLngLat) { alert("Select a location on the map!"); return; }
+    if (!user || !selectedLngLat) {
+      alert("Select a location on the map!");
+      return;
+    }
 
-    const isStreaming = document.getElementById('stream-yes').checked;
+    const isStreaming = document.getElementById("stream-yes").checked;
     const combinedData = {
       owner: user.uid,
-      name: document.getElementById('event-name').value,
-      description: document.getElementById('event-desc').value,
-      time: document.getElementById('event-time').value,
-      isKidsFriendly: document.getElementById('kids-friendly').checked,
-      isPetFriendly: document.getElementById('pet-friendly').checked,
+      name: document.getElementById("event-name").value,
+      description: document.getElementById("event-desc").value,
+      time: document.getElementById("event-time").value,
+      isKidsFriendly: document.getElementById("kids-friendly").checked,
+      isPetFriendly: document.getElementById("pet-friendly").checked,
       isStreaming: isStreaming,
-      matchName: isStreaming ? document.getElementById('fifa-match').value : "N/A",
+      matchName: isStreaming
+        ? document.getElementById("fifa-match").value
+        : "N/A",
       address: selectedAddress,
       location: { lat: selectedLngLat[1], lng: selectedLngLat[0] },
       tags: currentTags,
-      last_updated: serverTimestamp()
+      last_updated: serverTimestamp(),
     };
 
     try {
@@ -285,27 +312,36 @@ if (eventForm) {
       eventForm.reset();
       currentTags = [];
       renderChips();
-      document.getElementById('match-section').classList.add('d-none');
+      document.getElementById("match-section").classList.add("d-none");
 
       const submitBtn = eventForm.querySelector('button[type="submit"]');
       submitBtn.textContent = "Save Event";
-      submitBtn.classList.replace('btn-primary', 'btn-success');
+      submitBtn.classList.replace("btn-primary", "btn-success");
 
-      if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
-      window.bootstrap.Tab.getOrCreateInstance(document.getElementById('all-tab')).show();
+      if (selectedMarker) {
+        selectedMarker.remove();
+        selectedMarker = null;
+      }
+      window.bootstrap.Tab.getOrCreateInstance(
+        document.getElementById("all-tab"),
+      ).show();
       fetchEvents(false);
-    } catch (error) { console.error(error); }
+    } catch (error) {
+      console.error(error);
+    }
   });
 }
 
 // --- Data Display ---
 function createEventCard(docId, data, isOwner = false) {
   const div = document.createElement("div");
-  div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-white position-relative";
+  div.className =
+    "event-card mb-3 p-3 border rounded shadow-sm bg-white position-relative";
 
-  const badge = (data.isStreaming && data.matchName !== "N/A")
-    ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+  const badge =
+    data.isStreaming && data.matchName !== "N/A"
+      ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
+      : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
   div.innerHTML = `
     <button class="btn btn-link float-end p-0 fav-btn" title="Favourite">
@@ -317,24 +353,29 @@ function createEventCard(docId, data, isOwner = false) {
     <p class="mb-2 text-muted">${data.description || ""}</p>
     
     <div class="mb-2 d-flex flex-wrap gap-1">
-      ${data.tags ? data.tags.map(t => `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">#${t}</span>`).join('') : ''}
+      ${data.tags ? data.tags.map((t) => `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">#${t}</span>`).join("") : ""}
     </div>
 
     <div class="mb-2">
-      ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ''}
-      ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ''}
+      ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ""}
+      ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ""}
     </div>
     <small class="text-muted d-block border-top pt-2 mt-2">📍 ${data.address || "Address TBD"}</small>
   `;
 
   const iconEl = div.querySelector(`#icon-${docId}`);
   if (auth.currentUser) {
-    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(snap => {
-      if (snap.exists()) { iconEl.innerText = "favorite"; iconEl.classList.add("text-danger"); }
-    });
+    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
+      (snap) => {
+        if (snap.exists()) {
+          iconEl.innerText = "favorite";
+          iconEl.classList.add("text-danger");
+        }
+      },
+    );
   }
 
-  div.querySelector('.fav-btn').onclick = (e) => {
+  div.querySelector(".fav-btn").onclick = (e) => {
     e.stopPropagation();
     toggleBookmark(docId, iconEl);
   };
@@ -373,16 +414,29 @@ async function fetchEvents(filterByUser = false) {
     const eventsRef = collection(db, "events");
     if (filterByUser) {
       const user = auth.currentUser;
-      if (!user) { container.innerHTML = "Login to manage events."; return; }
-      q = query(eventsRef, where("owner", "==", user.uid), orderBy("time", "asc"));
+      if (!user) {
+        container.innerHTML = "Login to manage events.";
+        return;
+      }
+      q = query(
+        eventsRef,
+        where("owner", "==", user.uid),
+        orderBy("time", "asc"),
+      );
     } else {
       q = query(eventsRef, orderBy("time", "asc"));
     }
 
     const snapshot = await getDocs(q);
     container.innerHTML = snapshot.empty ? "No upcoming events found." : "";
-    snapshot.forEach(docSnap => container.appendChild(createEventCard(docSnap.id, docSnap.data(), filterByUser)));
-  } catch (error) { console.error("Fetch Error:", error); }
+    snapshot.forEach((docSnap) =>
+      container.appendChild(
+        createEventCard(docSnap.id, docSnap.data(), filterByUser),
+      ),
+    );
+  } catch (error) {
+    console.error("Fetch Error:", error);
+  }
 }
 
 async function fetchFavorites() {
@@ -392,7 +446,10 @@ async function fetchFavorites() {
   container.innerHTML = "Loading Favourites...";
 
   try {
-    const q = query(collection(db, "bookmarks"), where("userId", "==", user.uid));
+    const q = query(
+      collection(db, "bookmarks"),
+      where("userId", "==", user.uid),
+    );
     const snap = await getDocs(q);
 
     if (snap.empty) {
@@ -404,7 +461,9 @@ async function fetchFavorites() {
     snap.forEach(async (bDoc) => {
       const eventSnap = await getDoc(doc(db, "events", bDoc.data().eventId));
       if (eventSnap.exists()) {
-        container.appendChild(createEventCard(eventSnap.id, eventSnap.data(), false));
+        container.appendChild(
+          createEventCard(eventSnap.id, eventSnap.data(), false),
+        );
       }
     });
   } catch (error) {
