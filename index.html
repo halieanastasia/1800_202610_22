@@ -28,6 +28,14 @@
 
     <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
     <div id="popups-container">
+      <!--Results Pop Up-->
+      <div id="search-result-popup">
+        <div class="results-header">
+          <h2 class="results-title">Results</h2>
+          <span id="results-count" class="results-count">0 events</span>
+        </div>
+        <div id="results-list" class="results-list"></div>
+      </div>
       <!--Filter Pop Up-->
       <div id="map-filter-popup">
         <div class="tag-panel">
@@ -41,15 +49,6 @@
           </div>
         </div>
         <div id="tag-position-hotfix"></div>
-      </div>
-
-      <!--Results Pop Up-->
-      <div id="search-result-popup">
-        <div class="results-header">
-          <h2 class="results-title">Results</h2>
-          <span id="results-count" class="results-count">0 events</span>
-        </div>
-        <div id="results-list" class="results-list"></div>
       </div>
     </div>
 

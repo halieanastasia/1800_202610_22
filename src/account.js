@@ -5,7 +5,7 @@ import {
   logoutUser,
   updateUserProfile,
   updateUserEmail,
-  updateUserPassword
+  updateUserPassword,
 } from "./authentication.js";
 
 // --- DOM Elements ---
@@ -33,7 +33,6 @@ function initAccount() {
   });
 }
 
-
 async function handleEditToggle() {
   const user = auth.currentUser;
   if (!user) return;
@@ -55,7 +54,6 @@ async function handleEditToggle() {
 
     editProfileBtn.textContent = "Save Changes";
     editProfileBtn.classList.replace("btn-success", "btn-success");
-
   } else {
     const nameInput = document.getElementById("name-input");
     const newName = nameInput ? nameInput.value.trim() : "";
@@ -99,7 +97,9 @@ if (editEmailBtn) {
         alert("Email updated! Please log in again with your new email.");
         logoutUser();
       } else if (res.error === "auth/requires-recent-login") {
-        alert("For security, please log out and back in before changing your email.");
+        alert(
+          "For security, please log out and back in before changing your email.",
+        );
       } else {
         alert("Error: " + res.error);
       }
@@ -139,3 +139,4 @@ if (logoutBtn) {
 
 // Run on load
 initAccount();
+requireAuth();

@@ -67,6 +67,11 @@ body {
   z-index: 9999;
 }
 
+a.nav-items,
+button.nav-items {
+  font-weight: 500;
+}
+
 .bottom-navbar {
   background-color: var(--darkgreen);
   border-top: 1px solid rgba(255, 254, 240, 0.12);
@@ -170,7 +175,7 @@ body {
 }
 
 /***********************************************************/
-/********************** Restaurant Page CSS ****************/
+/********************** Event Page CSS ****************/
 /***********************************************************/
 .event-detail-page {
   max-width: 1000px;
