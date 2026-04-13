@@ -2,6 +2,9 @@
   "name": "web_template",
   "version": "1.0.0",
   "type": "module",
+  "css": [
+    "**/*.css"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",

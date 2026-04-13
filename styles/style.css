@@ -677,6 +677,7 @@ body {
 }
 
 @media (max-width: 768px) {
+
   .login-container,
   .signup-container {
     padding: 30px;
@@ -684,6 +685,7 @@ body {
 }
 
 @media (max-width: 480px) {
+
   .login-container,
   .signup-container {
     padding: 25px 20px;
@@ -759,7 +761,8 @@ textarea {
 /************************Hidden Filter/ Search**************/
 /***********************************************************/
 #popups-container {
-  overflow-y: auto; /* allow scrolling bottom popups container */
+  overflow-y: auto;
+  /* allow scrolling bottom popups container */
   max-height: 80vh;
 }
 
@@ -958,9 +961,17 @@ Event Page
   background-color: var(--lightgreen);
 }
 
+body.bg-custom,
+body {
+  background-color: #1a3c31 !important;
+  color: white;
+  /* Optional: makes text readable on the dark green */
+}
+
 #event-content {
+  background-color: #1a3c31;
+  min-height: 100vh;
   margin: 0;
-  height: 90vh;
 }
 
 #event-main {
@@ -988,7 +999,8 @@ Event Page
   background-color: var(--cream);
   color: var(--darkgreen);
   border: 1px solid var(--border-green);
-  border-bottom-color: var(--cream); /* blends into content */
+  border-bottom-color: var(--cream);
+  /* blends into content */
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
@@ -1141,4 +1153,16 @@ Event Page
 
 .fav-btn .text-danger {
   color: var(--mediumgreen) !important;
+}
+
+html,
+body {
+  background-color: #1a3c31 !important;
+  background: #1a3c31 !important;
+  color: var(--cream) !important;
+}
+
+#event-content {
+  background-color: #1a3c31 !important;
+  min-height: 100vh;
 }

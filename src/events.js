@@ -14,6 +14,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import maplibregl from "maplibre-gl";
+import '../styles/style.css';
 
 // --- Global variables ---
 let formMap;

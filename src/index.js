@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import * as bootstrap from "bootstrap";
-import "../styles/style.css";
 import "./navbar.js";
+import "../styles/style.css";
 
 
 const eventForm = document.getElementById('event-form');
