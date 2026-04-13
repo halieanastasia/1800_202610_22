@@ -109,10 +109,27 @@ function initFormMap() {
 
 // --- Tab Listeners ---
 const createTab = document.getElementById("create-tab");
+const createEventPanel = document.getElementById("create-event-panel");
+
 if (createTab) {
   createTab.addEventListener("shown.bs.tab", () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      createEventPanel.innerHTML = `
+        <div class="text-start py-2">
+          <p class="text-custom-cream mt-1">Login to create an event.</p>
+        </div>`;
+      return;
+    }
+
     initFormMap();
-    if (formMap) formMap.resize();
+
+    if (formMap) {
+      setTimeout(() => {
+        formMap.resize();
+      }, 100);
+    }
   });
 }
 
@@ -123,7 +140,11 @@ const myTab = document.getElementById("my-tab");
 if (myTab) myTab.addEventListener("shown.bs.tab", () => fetchEvents(true));
 
 const favTab = document.getElementById("fav-tab");
-if (favTab) favTab.addEventListener("shown.bs.tab", fetchFavorites);
+if (favTab) {
+  favTab.addEventListener("shown.bs.tab", () => {
+    fetchFavorites();
+  });
+}
 
 // --- Geocoder Logic ---
 function addAddressSearch() {
@@ -452,50 +473,43 @@ async function fetchFavorites() {
   const container = document.getElementById("fav-results-list");
   if (!container) return;
 
-  // Show the same spinner used in fetchEvents
   container.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
 
   const user = auth.currentUser;
-
-  // Guard clause for logged-out users
   if (!user) {
-    container.innerHTML = `<p class="text-custom-cream">Login to see your favourites.</p>`;
+    container.innerHTML = `<div class="text-start py-2"><p class="text-custom-cream mt-1">Login to see your favourites.</p></div>`;
     return;
   }
 
   try {
-    // 1. Query the bookmarks collection for this user
-    const bookmarksRef = collection(db, "bookmarks");
     const q = query(
-      bookmarksRef,
+      collection(db, "bookmarks"),
       where("userId", "==", user.uid),
-      orderBy("timestamp", "desc"), // Shows newest bookmarks first
+      orderBy("timestamp", "desc")
     );
 
     const snapshot = await getDocs(q);
+    console.log("Bookmarks Snapshot size:", snapshot.size);
 
-    if (snapshot.empty) {
-      container.innerHTML = `<p class="text-custom-cream">No favourites found.</p>`;
-      return;
-    }
+    container.innerHTML = snapshot.empty ? `<p class="text-custom-cream mt-3">No favourites found.</p>` : "";
 
-    container.innerHTML = ""; // Clear spinner
+    if (snapshot.empty) return;
 
-    // 2. Fetch the actual event data for each bookmark
-    for (const bDoc of snapshot.docs) {
-      const eventId = bDoc.data().eventId;
+    for (const docSnap of snapshot.docs) {
+      const bData = docSnap.data();
+      const eventId = bData.eventId;
       const eventSnap = await getDoc(doc(db, "events", eventId));
 
       if (eventSnap.exists()) {
-        // Pass false for isOwner so edit/delete buttons don't show up here
-        container.appendChild(
-          createEventCard(eventSnap.id, eventSnap.data(), false),
-        );
+        container.appendChild(createEventCard(eventSnap.id, eventSnap.data(), false));
+      } else {
+        console.warn("Cleaning up deleted bookmark:", docSnap.id);
+        await deleteDoc(doc(db, "bookmarks", docSnap.id));
       }
     }
   } catch (error) {
     console.error("Fetch Favourites Error:", error);
-    container.innerHTML = `<p class="text-danger">Error loading favourites. Check console.</p>`;
+    container.innerHTML = `<p class="text-danger mt-3">Error loading favourites.</p>`;
   }
 }
 
