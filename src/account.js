@@ -1,4 +1,4 @@
-import '../styles/style.css';
+import "../styles/style.css";
 import {
   auth,
   onAuthReady,
@@ -6,6 +6,7 @@ import {
   updateUserProfile,
   updateUserEmail,
   updateUserPassword,
+  requireAuth,
 } from "./authentication.js";
 
 // --- DOM Elements ---
