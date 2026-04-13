@@ -8,7 +8,7 @@ import {
   getDoc,
   setDoc,
   deleteDoc,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 
 const state = {
@@ -37,7 +37,6 @@ const elements = {
   resultsCount: document.getElementById("results-count"),
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
 };
-
 
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
@@ -68,7 +67,8 @@ async function toggleBookmark(eventId, iconElement) {
 function buildEventCard(eventData) {
   const docId = eventData.id;
   const card = document.createElement("div");
-  card.className = "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative text-start";
+  card.className =
+    "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative text-start";
 
   // --- Favourite Button (only for logged in users) ---
   const favButtonHtml = auth.currentUser
@@ -77,19 +77,25 @@ function buildEventCard(eventData) {
        </button>`
     : "";
 
-  const badge = eventData.isStreaming && eventData.matchName !== "N/A"
-    ? `<span class="badge bg-danger mb-2">FIFA: ${eventData.matchName}</span>`
-    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+  const badge =
+    eventData.isStreaming && eventData.matchName !== "N/A"
+      ? `<span class="badge bg-danger mb-2">FIFA: ${eventData.matchName}</span>`
+      : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
-  const tagsHtml = eventData.tagsArray.length > 0
-    ? eventData.tagsArray
-      .map((tag) => `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`)
-      .join("")
-    : `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">No tags</span>`;
+  const tagsHtml =
+    eventData.tagsArray.length > 0
+      ? eventData.tagsArray
+          .map(
+            (tag) =>
+              `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`,
+          )
+          .join("")
+      : `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">No tags</span>`;
 
-  const distanceText = typeof eventData.distanceKm === "number"
-    ? `<p class="text-primary small mb-0"><strong>📍 ${eventData.distanceKm.toFixed(2)} km away</strong></p>`
-    : "";
+  const distanceText =
+    typeof eventData.distanceKm === "number"
+      ? `<p class="text-primary small mb-0"><strong>📍 ${eventData.distanceKm.toFixed(2)} km away</strong></p>`
+      : "";
 
   card.innerHTML = `
     ${favButtonHtml} 
@@ -117,13 +123,15 @@ function buildEventCard(eventData) {
   if (auth.currentUser && docId) {
     const iconEl = card.querySelector(`#icon-${docId}`);
 
-    // Check if it's already bookmarked to turn the heart 
-    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then((snap) => {
-      if (snap.exists()) {
-        iconEl.innerText = "favorite";
-        iconEl.classList.add("text-danger");
-      }
-    });
+    // Check if it's already bookmarked to turn the heart
+    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
+      (snap) => {
+        if (snap.exists()) {
+          iconEl.innerText = "favorite";
+          iconEl.classList.add("text-danger");
+        }
+      },
+    );
 
     // Add the click listener
     card.querySelector(".fav-btn").addEventListener("click", (e) => {
@@ -172,9 +180,9 @@ function distanceKm(lng1, lat1, lng2, lat2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
-    Math.cos(toRadians(lat2)) *
-    Math.sin(dLng / 2) *
-    Math.sin(dLng / 2);
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
@@ -228,15 +236,15 @@ function clearMarkers() {
 }
 
 function renderMarkers(events) {
-  state.markers.forEach(m => m.remove());
+  state.markers.forEach((m) => m.remove());
   state.markers = [];
 
-  events.forEach(eventData => {
+  events.forEach((eventData) => {
     const coords = getEventCoords(eventData);
     if (!coords) return;
 
-    const el = document.createElement('div');
-    el.className = 'marker-container';
+    const el = document.createElement("div");
+    el.className = "marker-container";
 
     el.innerHTML = `
       <span class="material-symbols-outlined" 
@@ -246,7 +254,7 @@ function renderMarkers(events) {
 
     const marker = new maplibregl.Marker({
       element: el,
-      anchor: 'center'
+      anchor: "center",
     })
       .setLngLat(coords)
       .setPopup(
@@ -260,7 +268,7 @@ function renderMarkers(events) {
               📍 ${eventData.address || "Address TBD"}
             </small>
           </div>
-        `)
+        `),
       )
       .addTo(state.map);
 
