@@ -334,18 +334,20 @@ if (eventForm) {
 // --- Data Display ---
 function createEventCard(docId, data, isOwner = false) {
   const div = document.createElement("div");
-  div.className =
-    "event-card mb-3 p-3 border rounded shadow-sm bg-white position-relative";
+  div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative";
 
-  const badge =
-    data.isStreaming && data.matchName !== "N/A"
-      ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-      : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+  const favButtonHtml = auth.currentUser
+    ? `<button class="btn btn-link float-end p-0 fav-btn" title="Favourite">
+         <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
+       </button>`
+    : "";
+
+  const badge = data.isStreaming && data.matchName !== "N/A"
+    ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
+    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
   div.innerHTML = `
-    <button class="btn btn-link float-end p-0 fav-btn" title="Favourite">
-      <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
-    </button>
+    ${favButtonHtml}
     ${badge}
     <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled Venue"}</h2>
     <p class="mb-1 text-primary small"><strong>🕒 ${data.time}</strong></p>
@@ -362,22 +364,28 @@ function createEventCard(docId, data, isOwner = false) {
     <small class="text-muted d-block border-top pt-2 mt-2">📍 ${data.address || "Address TBD"}</small>
   `;
 
-  const iconEl = div.querySelector(`#icon-${docId}`);
   if (auth.currentUser) {
+    const iconEl = div.querySelector(`#icon-${docId}`);
+
+    // Check initial bookmark state
     getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
       (snap) => {
-        if (snap.exists()) {
+        if (snap.exists() && iconEl) {
           iconEl.innerText = "favorite";
           iconEl.classList.add("text-danger");
         }
       },
     );
-  }
 
-  div.querySelector(".fav-btn").onclick = (e) => {
-    e.stopPropagation();
-    toggleBookmark(docId, iconEl);
-  };
+    // Attach click listener
+    const favBtn = div.querySelector(".fav-btn");
+    if (favBtn) {
+      favBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleBookmark(docId, iconEl);
+      };
+    }
+  }
 
   if (isOwner) {
     const actionDiv = document.createElement("div");
@@ -439,35 +447,53 @@ async function fetchEvents(filterByUser = false) {
 }
 
 async function fetchFavorites() {
-  const user = auth.currentUser;
   const container = document.getElementById("fav-results-list");
-  if (!user || !container) return;
-  container.innerHTML = "Loading Favourites...";
+  if (!container) return;
+
+  // Show the same spinner used in fetchEvents
+  container.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
+
+  const user = auth.currentUser;
+
+  // Guard clause for logged-out users
+  if (!user) {
+    container.innerHTML = `<p class="text-custom-cream">Login to see your favourites.</p>`;
+    return;
+  }
 
   try {
+    // 1. Query the bookmarks collection for this user
+    const bookmarksRef = collection(db, "bookmarks");
     const q = query(
-      collection(db, "bookmarks"),
+      bookmarksRef,
       where("userId", "==", user.uid),
+      orderBy("timestamp", "desc") // Shows newest bookmarks first
     );
-    const snap = await getDocs(q);
 
-    if (snap.empty) {
-      container.innerHTML = "<p class='text-muted'>No favourites found.</p>";
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      container.innerHTML = `<p class="text-custom-cream">No favourites found.</p>`;
       return;
     }
 
-    container.innerHTML = "";
-    snap.forEach(async (bDoc) => {
-      const eventSnap = await getDoc(doc(db, "events", bDoc.data().eventId));
+    container.innerHTML = ""; // Clear spinner
+
+    // 2. Fetch the actual event data for each bookmark
+    for (const bDoc of snapshot.docs) {
+      const eventId = bDoc.data().eventId;
+      const eventSnap = await getDoc(doc(db, "events", eventId));
+
       if (eventSnap.exists()) {
+        // Pass false for isOwner so edit/delete buttons don't show up here
         container.appendChild(
-          createEventCard(eventSnap.id, eventSnap.data(), false),
+          createEventCard(eventSnap.id, eventSnap.data(), false)
         );
       }
-    });
+    }
   } catch (error) {
-    console.error("Fetch Favorites Error:", error);
-    container.innerHTML = "Error loading favourites.";
+    console.error("Fetch Favourites Error:", error);
+    container.innerHTML = `<p class="text-danger">Error loading favourites. Check console.</p>`;
   }
 }
 
