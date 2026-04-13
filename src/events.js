@@ -14,7 +14,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import maplibregl from "maplibre-gl";
-import '../styles/style.css';
+import "../styles/style.css";
 
 // --- Global variables ---
 let formMap;
@@ -334,7 +334,8 @@ if (eventForm) {
 // --- Data Display ---
 function createEventCard(docId, data, isOwner = false) {
   const div = document.createElement("div");
-  div.className = "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative";
+  div.className =
+    "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative";
 
   const favButtonHtml = auth.currentUser
     ? `<button class="btn btn-link float-end p-0 fav-btn" title="Favourite">
@@ -342,9 +343,10 @@ function createEventCard(docId, data, isOwner = false) {
        </button>`
     : "";
 
-  const badge = data.isStreaming && data.matchName !== "N/A"
-    ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
-    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+  const badge =
+    data.isStreaming && data.matchName !== "N/A"
+      ? `<span class="badge bg-danger mb-2">FIFA: ${data.matchName}</span>`
+      : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
 
   div.innerHTML = `
     ${favButtonHtml}
@@ -467,7 +469,7 @@ async function fetchFavorites() {
     const q = query(
       bookmarksRef,
       where("userId", "==", user.uid),
-      orderBy("timestamp", "desc") // Shows newest bookmarks first
+      orderBy("timestamp", "desc"), // Shows newest bookmarks first
     );
 
     const snapshot = await getDocs(q);
@@ -487,7 +489,7 @@ async function fetchFavorites() {
       if (eventSnap.exists()) {
         // Pass false for isOwner so edit/delete buttons don't show up here
         container.appendChild(
-          createEventCard(eventSnap.id, eventSnap.data(), false)
+          createEventCard(eventSnap.id, eventSnap.data(), false),
         );
       }
     }
