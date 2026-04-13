@@ -228,38 +228,41 @@ function clearMarkers() {
 }
 
 function renderMarkers(events) {
-  clearMarkers();
+  state.markers.forEach(m => m.remove());
+  state.markers = [];
 
-  events.forEach((event) => {
-    const coords = getEventCoords(event);
+  events.forEach(eventData => {
+    const coords = getEventCoords(eventData);
+    if (!coords) return;
 
-    if (!coords) {
-      console.warn("No valid coordinates for event:", event.name, event);
-      return;
-    }
+    const el = document.createElement('div');
+    el.className = 'marker-container';
 
-    const markerEl = createMarkerElement();
-    markerEl.title = event.name || "Event";
+    el.innerHTML = `
+      <span class="material-symbols-outlined" 
+            style="font-size: 30px; color: var(--mediumgreen); display: block; font-variation-settings: 'FILL' 1, 'wght' 400, 'grad' 0, 'opsz' 48;">
+        nearby
+      </span>`;
 
     const marker = new maplibregl.Marker({
-      element: markerEl,
-      anchor: "center",
+      element: el,
+      anchor: 'center'
     })
       .setLngLat(coords)
-      // TODO Edit popup here
       .setPopup(
-        new maplibregl.Popup({ offset: 18 }).setHTML(`
-          <div style="min-width: 180px;">
-            <strong>${event.name || "Event"}</strong><br />
-            <small>${event.address || event.city || ""}</small>
+        new maplibregl.Popup({ offset: 15 }).setHTML(`
+          <div style="color: #212529; min-width: 150px; line-height: 1.4;">
+            <strong style="display: block; font-size: 1.25rem; color: #1a3c31;">
+              ${eventData.name || "Event"}
+            </strong>
+            ${eventData.description ? `<p style="margin: 4px 0; font-size: 1.125rem; color: #495057;">${eventData.description}</p>` : ""}
+            <small style="display: block; font-size: 0.75rem; color: #6c757d; margin-top: 4px;">
+              📍 ${eventData.address || "Address TBD"}
+            </small>
           </div>
-        `),
+        `)
       )
       .addTo(state.map);
-
-    // FIX adding these to make the markers open a pop up on hover
-    markerEl.addEventListener("mouseenter", () => marker.togglePopup());
-    markerEl.addEventListener("mouseleave", () => marker.togglePopup());
 
     state.markers.push(marker);
   });
