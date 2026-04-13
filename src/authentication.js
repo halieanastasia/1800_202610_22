@@ -1,16 +1,16 @@
 // src/authentication.js
 import { auth } from "./firebase.js";
 // Also need db if you are using Firestore in signup
-// import { db } from "./firebase.js"; 
+// import { db } from "./firebase.js";
 
 import {
-  signInWithEmailAndPassword,      // For Login
+  signInWithEmailAndPassword, // For Login
   createUserWithEmailAndPassword, // For Signup
-  updateProfile,                  // For Name
-  updateEmail,                    // For Email
-  updatePassword,                 // For Password
-  onAuthStateChanged,             // For Auth state
-  signOut                         // For Logout
+  updateProfile, // For Name
+  updateEmail, // For Email
+  updatePassword, // For Password
+  onAuthStateChanged, // For Auth state
+  signOut, // For Logout
 } from "firebase/auth";
 
 // Export auth so account.js can use it
@@ -27,14 +27,18 @@ export async function loginUser(email, password) {
 // signupUser
 // -------------------------------------------------------------
 export async function signupUser(name, email, password) {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
   const user = userCredential.user;
 
   // Update the user's profile with the display name
   await updateProfile(user, { displayName: name });
 
-  // Note: If you want to use Firestore (setDoc), 
-  // you must import { doc, setDoc } from "firebase/firestore" 
+  // Note: If you want to use Firestore (setDoc),
+  // you must import { doc, setDoc } from "firebase/firestore"
   // and import 'db' from your firebase.js at the top.
 
   return user;
@@ -44,9 +48,11 @@ export async function signupUser(name, email, password) {
 // logoutUser
 // -------------------------------------------------------------
 export function logoutUser() {
-  signOut(auth).then(() => {
-    window.location.href = "index.html";
-  }).catch(err => console.error(err));
+  signOut(auth)
+    .then(() => {
+      window.location.href = "index.html";
+    })
+    .catch((err) => console.error(err));
 }
 
 // -------------------------------------------------------------
@@ -110,3 +116,12 @@ export function authErrorMessage(error) {
   };
   return map[code] || "Something went wrong. Please try again.";
 }
+
+export function requireAuth() {
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "./login-halie.html";
+    }
+  });
+}
+// requireAuth();

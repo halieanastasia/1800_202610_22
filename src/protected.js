@@ -1,3 +1,3 @@
-import { requireAuth } from "./authGuard.js";
+import { requireAuth } from "./authentication.js";
 
-requireAuth();
+// requireAuth();
