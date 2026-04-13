@@ -28,7 +28,6 @@ let currentTags = [];
 window.addEventListener("DOMContentLoaded", () => {
   addAddressSearch();
 
-  // --- 1. FIFA Match Toggle Logic ---
   const streamYes = document.getElementById("stream-yes");
   const streamNo = document.getElementById("stream-no");
   const matchSection = document.getElementById("match-section");
@@ -42,7 +41,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- 2. Tag Input Logic ---
   const tagInput = document.getElementById("tag-input");
   const tagContainer = document.getElementById("tag-container");
 

@@ -7,13 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="comp1800 team 22" content="Event map page" />
   <link rel="icon" type="image/x-icon" href="/assets/map-p37EPEl9.png" />
-  <script type="module" crossorigin src="/assets/navbar-DxYs8JBL.js"></script>
-  <script type="module" crossorigin src="/assets/index-BQLJczvZ.js"></script>
-  <script type="module" crossorigin src="/assets/maplibre-gl-BpdRktMQ.js"></script>
-  <script type="module" crossorigin src="/assets/map-BdTDSldj.js"></script>
-  <script type="module" crossorigin src="/assets/events-h_VjEKq7.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/navbar-C0I4jBNW.css">
-  <link rel="stylesheet" crossorigin href="/assets/map-DwUhsmFz.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+
+  <script type="module" crossorigin src="/assets/index-n6QS2vlw.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/navbar-Bks62tU1.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-DanydRjC.js">
+  <link rel="modulepreload" crossorigin href="/assets/events-6fvihI3V.js">
+  <link rel="stylesheet" crossorigin href="/assets/navbar-BAAnqTWF.css">
+  <link rel="stylesheet" crossorigin href="/assets/index-DwUhsmFz.css">
 </head>
 
 <body id="map-body">
@@ -35,6 +36,14 @@
 
     <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
     <div id="popups-container">
+      <!--Results Pop Up-->
+      <div id="search-result-popup">
+        <div class="results-header">
+          <h2 class="results-title">Results</h2>
+          <span id="results-count" class="results-count">0 events</span>
+        </div>
+        <div id="results-list" class="results-list"></div>
+      </div>
       <!--Filter Pop Up-->
       <div id="map-filter-popup">
         <div class="tag-panel">
@@ -48,15 +57,6 @@
           </div>
         </div>
         <div id="tag-position-hotfix"></div>
-      </div>
-
-      <!--Results Pop Up-->
-      <div id="search-result-popup">
-        <div class="results-header">
-          <h2 class="results-title">Results</h2>
-          <span id="results-count" class="results-count">0 events</span>
-        </div>
-        <div id="results-list" class="results-list"></div>
       </div>
     </div>
 

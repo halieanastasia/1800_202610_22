@@ -1,7 +1,15 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { db } from "./firebase.js";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { db, auth } from "./firebase.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  serverTimestamp
+} from "firebase/firestore";
 
 const state = {
   map: null,
@@ -29,6 +37,103 @@ const elements = {
   resultsCount: document.getElementById("results-count"),
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
 };
+
+
+async function toggleBookmark(eventId, iconElement) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Please log in to favourite events!");
+    return;
+  }
+
+  const bookmarkId = `${user.uid}_${eventId}`;
+  const bookmarkRef = doc(db, "bookmarks", bookmarkId);
+  const snap = await getDoc(bookmarkRef);
+
+  if (snap.exists()) {
+    await deleteDoc(bookmarkRef);
+    iconElement.innerText = "favorite_border";
+    iconElement.classList.remove("text-danger");
+  } else {
+    await setDoc(bookmarkRef, {
+      userId: user.uid,
+      eventId: eventId,
+      timestamp: serverTimestamp(),
+    });
+    iconElement.innerText = "favorite";
+    iconElement.classList.add("text-danger");
+  }
+}
+
+function buildEventCard(eventData) {
+  const docId = eventData.id;
+  const card = document.createElement("div");
+  card.className = "event-card mb-3 p-3 border rounded shadow-sm bg-custom-cream position-relative text-start";
+
+  // --- Favourite Button (only for logged in users) ---
+  const favButtonHtml = auth.currentUser
+    ? `<button class="btn btn-link float-end p-0 fav-btn" title="Favourite" style="z-index: 10; position: relative;">
+         <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
+       </button>`
+    : "";
+
+  const badge = eventData.isStreaming && eventData.matchName !== "N/A"
+    ? `<span class="badge bg-danger mb-2">FIFA: ${eventData.matchName}</span>`
+    : '<span class="badge bg-secondary mb-2">Regular Stream</span>';
+
+  const tagsHtml = eventData.tagsArray.length > 0
+    ? eventData.tagsArray
+      .map((tag) => `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`)
+      .join("")
+    : `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">No tags</span>`;
+
+  const distanceText = typeof eventData.distanceKm === "number"
+    ? `<p class="text-primary small mb-0"><strong>📍 ${eventData.distanceKm.toFixed(2)} km away</strong></p>`
+    : "";
+
+  card.innerHTML = `
+    ${favButtonHtml} 
+    ${badge}
+    <h2 class="h5 mb-1 fw-bold text-dark">${eventData.name || "Untitled Venue"}</h2>
+    <p class="mb-1 text-muted small"><strong>🕒 ${eventData.time || "Time TBD"}</strong></p>
+    <p class="mb-2 text-muted" style="font-size: 0.9rem;">${eventData.description || ""}</p>
+    
+    <div class="mb-2 d-flex flex-wrap gap-1">
+      ${tagsHtml}
+    </div>
+
+    <div class="mb-2">
+      ${eventData.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ""}
+      ${eventData.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ""}
+    </div>
+
+    <div class="border-top pt-2 mt-2">
+      <small class="text-muted d-block mb-1">📍 ${eventData.address || "Address TBD"}</small>
+      ${distanceText}
+    </div>
+  `;
+
+  // Logic for favourite button (only shows if user is logged in)
+  if (auth.currentUser && docId) {
+    const iconEl = card.querySelector(`#icon-${docId}`);
+
+    // Check if it's already bookmarked to turn the heart 
+    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then((snap) => {
+      if (snap.exists()) {
+        iconEl.innerText = "favorite";
+        iconEl.classList.add("text-danger");
+      }
+    });
+
+    // Add the click listener
+    card.querySelector(".fav-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleBookmark(docId, iconEl);
+    });
+  }
+
+  return card;
+}
 
 function normalizeTags(tags) {
   if (!tags) return [];
@@ -67,9 +172,9 @@ function distanceKm(lng1, lat1, lng2, lat2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+    Math.cos(toRadians(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
@@ -215,40 +320,6 @@ function updateQuickDistanceButtons() {
       state.distanceRadiusKm > 0 && state.distanceRadiusKm === buttonDistance,
     );
   });
-}
-
-function buildEventCard(event) {
-  const card = document.createElement("button");
-  card.type = "button";
-  card.className = "event-card";
-
-  const tagsHtml =
-    event.tagsArray.length > 0
-      ? event.tagsArray
-          .map((tag) => `<span class="event-tag">${tag}</span>`)
-          .join("")
-      : `<span class="event-tag">No tags</span>`;
-
-  const distanceText =
-    typeof event.distanceKm === "number"
-      ? `<p class="event-distance">${event.distanceKm.toFixed(2)} km away</p>`
-      : "";
-
-  card.innerHTML = `
-    <div class="event-card-top">
-      <h3>${event.name || "Event"}</h3>
-    </div>
-    <p class="event-address">${event.address || event.city || "Address not available"}</p>
-    <p class="event-description">${event.description || "No description available."}</p>
-    ${distanceText}
-    <div class="event-tags">${tagsHtml}</div>
-  `;
-  //FIX removing this to prevent map redirection
-  // card.addEventListener("click", () => {
-  //   openRestaurantDetails(event);
-  // });
-
-  return card;
 }
 
 function renderResults(events) {

@@ -10,8 +10,7 @@ export default defineConfig({
             input: {
                 index: resolve(__dirname, "index.html"),
                 login: resolve(__dirname, "login-halie.html"),
-                map: resolve(__dirname, "map.html"),
-                profile: resolve(__dirname, "account.html"),
+                account: resolve(__dirname, "account.html"),
                 event: resolve(__dirname, "event.html"),
             }
         }
