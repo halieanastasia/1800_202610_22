@@ -244,13 +244,7 @@ function renderMarkers(events) {
     if (!coords) return;
 
     const el = document.createElement("div");
-    el.className = "marker-container";
-
-    el.innerHTML = `
-      <span class="material-symbols-outlined" 
-            style="font-size: 30px; color: var(--mediumgreen); display: block; font-variation-settings: 'FILL' 1, 'wght' 400, 'grad' 0, 'opsz' 48;">
-        nearby
-      </span>`;
+    el.className = "event-marker";
 
     const marker = new maplibregl.Marker({
       element: el,
@@ -258,12 +252,16 @@ function renderMarkers(events) {
     })
       .setLngLat(coords)
       .setPopup(
-        new maplibregl.Popup({ offset: 15 }).setHTML(`
+        new maplibregl.Popup({
+          offset: 15,
+          closeButton: false,
+          closeOnClick: false
+        }).setHTML(`
           <div style="color: #212529; min-width: 150px; line-height: 1.4;">
-            <strong style="display: block; font-size: 1.25rem; color: #1a3c31;">
+            <strong style="display: block; font-size: 1rem; color: #1a3c31;">
               ${eventData.name || "Event"}
             </strong>
-            ${eventData.description ? `<p style="margin: 4px 0; font-size: 1.125rem; color: #495057;">${eventData.description}</p>` : ""}
+            ${eventData.description ? `<p style="margin: 4px 0; font-size: 0.85rem; color: #495057;">${eventData.description}</p>` : ""}
             <small style="display: block; font-size: 0.75rem; color: #6c757d; margin-top: 4px;">
               📍 ${eventData.address || "Address TBD"}
             </small>
@@ -271,6 +269,9 @@ function renderMarkers(events) {
         `),
       )
       .addTo(state.map);
+
+    el.addEventListener("mouseenter", () => marker.togglePopup());
+    el.addEventListener("mouseleave", () => marker.togglePopup());
 
     state.markers.push(marker);
   });
@@ -579,7 +580,11 @@ function addUserLocationToMap(applyAfterSuccess = false) {
       const el = document.createElement("div");
       el.className = "user-location-marker";
 
-      state.userMarker = new maplibregl.Marker({ element: el })
+
+      state.userMarker = new maplibregl.Marker({
+        element: el,
+        anchor: 'center'
+      })
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup({ offset: 18 }).setText("Your location"))
         .addTo(state.map);
@@ -590,13 +595,8 @@ function addUserLocationToMap(applyAfterSuccess = false) {
     },
     (error) => {
       console.warn("User location unavailable:", error.message);
-      alert("Could not get your current location.");
     },
-    {
-      enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 60000,
-    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
   );
 }
 
