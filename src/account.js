@@ -139,4 +139,3 @@ if (logoutBtn) {
 
 // Run on load
 initAccount();
-requireAuth();

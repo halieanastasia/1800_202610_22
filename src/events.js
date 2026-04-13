@@ -109,10 +109,27 @@ function initFormMap() {
 
 // --- Tab Listeners ---
 const createTab = document.getElementById("create-tab");
+const createEventPanel = document.getElementById("create-event-panel");
+
 if (createTab) {
   createTab.addEventListener("shown.bs.tab", () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      createEventPanel.innerHTML = `
+        <div class="text-start py-2">
+          <p class="text-custom-cream mt-1">Login to create an event.</p>
+        </div>`;
+      return;
+    }
+
     initFormMap();
-    if (formMap) formMap.resize();
+
+    if (formMap) {
+      setTimeout(() => {
+        formMap.resize();
+      }, 100);
+    }
   });
 }
 
@@ -450,24 +467,21 @@ async function fetchFavorites() {
   const container = document.getElementById("fav-results-list");
   if (!container) return;
 
-  // Show the same spinner used in fetchEvents
   container.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
 
   const user = auth.currentUser;
 
-  // Guard clause for logged-out users
   if (!user) {
-    container.innerHTML = `<p class="text-custom-cream">Login to see your favourites.</p>`;
+    container.innerHTML = "Login to see your favourites.</p>";
     return;
   }
 
   try {
-    // 1. Query the bookmarks collection for this user
     const bookmarksRef = collection(db, "bookmarks");
     const q = query(
       bookmarksRef,
       where("userId", "==", user.uid),
-      orderBy("timestamp", "desc") // Shows newest bookmarks first
+      orderBy("timestamp", "desc")
     );
 
     const snapshot = await getDocs(q);
