@@ -73,7 +73,7 @@ function buildEventCard(eventData) {
   // --- Favourite Button (only for logged in users) ---
   const favButtonHtml = auth.currentUser
     ? `<button class="btn btn-link float-end p-0 fav-btn" title="Favourite" style="z-index: 10; position: relative;">
-         <span class="material-icons-outlined mt-1" id="icon-${docId}">favorite_border</span>
+         <span class="material-symbols-outlined mt-1" id="icon-${docId}">favorite_border</span>
        </button>`
     : "";
 
@@ -85,11 +85,11 @@ function buildEventCard(eventData) {
   const tagsHtml =
     eventData.tagsArray.length > 0
       ? eventData.tagsArray
-          .map(
-            (tag) =>
-              `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`,
-          )
-          .join("")
+        .map(
+          (tag) =>
+            `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`,
+        )
+        .join("")
       : `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">No tags</span>`;
 
   const distanceText =
@@ -122,22 +122,28 @@ function buildEventCard(eventData) {
   // Logic for favourite button (only shows if user is logged in)
   if (auth.currentUser && docId) {
     const iconEl = card.querySelector(`#icon-${docId}`);
+    const favBtn = card.querySelector(".fav-btn");
 
-    // Check if it's already bookmarked to turn the heart
-    getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
-      (snap) => {
-        if (snap.exists()) {
+    if (favBtn) {
+      // Check initial state
+      getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then((snap) => {
+        if (snap.exists() && iconEl) {
           iconEl.innerText = "favorite";
           iconEl.classList.add("text-danger");
         }
-      },
-    );
+      });
 
-    // Add the click listener
-    card.querySelector(".fav-btn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleBookmark(docId, iconEl);
-    });
+      // Click listener
+      favBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Stops the click from reaching the map or the card background
+
+        console.log("Heart clicked!"); // DEBUG: Check if this shows in F12 console
+
+        const iconEl = e.currentTarget.querySelector('span');
+        await toggleBookmark(docId, iconEl);
+      }, { capture: true }); // 'capture: true' ensures we catch the click first
+    }
   }
 
   return card;
@@ -180,9 +186,9 @@ function distanceKm(lng1, lat1, lng2, lat2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+    Math.cos(toRadians(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
