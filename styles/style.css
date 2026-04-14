@@ -1150,6 +1150,14 @@ body {
   direction: ltr;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "liga";
+  font-variation-settings: 'FILL' 0;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.material-symbols-outlined.text-danger {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'grad' 0, 'opsz' 48 !important;
+  color: var(--mediumgreen) !important;
 }
 
 .fav-btn,
