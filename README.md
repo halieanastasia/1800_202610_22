@@ -8,9 +8,10 @@ Rally is a community-driven platform for soccer fans in Vancouver. We solve the 
 
 ## Features
 
-**Live Venue Mapping:** Instantly see which restaurants and pubs are actively streaming matches.
-* **Community Events:** Users can create and join watch-party events at participating venues.
-* **Status Transparency:** Clear indicators for participating vs. non-participating venues to save fans from a wasted trip.
+**Live Venue Mapping:** Instantly see which restaurants, pubs and other venues are actively streaming matches.
+**Community Events:** Users can create and join watch-party events at participating venues.
+**Status Transparency:** Clear indicators for participating vs. non-participating venues to save fans from a wasted trip.
+**Quick Navigation** Users can favourite events and quickly navigate to the listing in their favourites tab.
 ---
 
 ## Technologies Used
@@ -43,16 +44,37 @@ Once the application is running:
 ## Project Structure
 
 ```
-elmo-hikes/
+1800_202610_22/
+├── .firebase/
+├── dist/
+├── node_modules/
 ├── src/
-│   ├── main.js
+│   ├── account.js
+│   ├── authentication.js
+│   ├── authGuard.js
+│   ├── events.js
+│   ├── firebase.js
+│   ├── index.js
+│   ├── loginSignup.js
+│   ├── map.js
+│   ├── navbar.js
+│   ├── protected.js
 ├── styles/
 │   └── style.css
-├── public/
+├── account.html
+├── .env
+├── event.html
+├── firebase.json
+├── .firebaserc
+├── .gitignore
 ├── images/
 ├── index.html
+├── login-halie.html
+├── package-lock.html
 ├── package.json
 ├── README.md
+├── vite.config.js
+
 ```
 
 ---
@@ -66,9 +88,11 @@ elmo-hikes/
 
 ## Acknowledgments
 
-- Trail data and images are for demonstration purposes only.
-- Code snippets were adapted from resources such as [Stack Overflow](https://stackoverflow.com/) and [MDN Web Docs](https://developer.mozilla.org/).
-- Icons sourced from [FontAwesome](https://fontawesome.com/) and images from [Unsplash](https://unsplash.com/).
+- Code snippets were adapted from resources such as [1800 Tech Tips (202610)](https://bcit-cst.notion.site/1800-Tech-Tips-202610-3176dfaf038a80109784ffdf607e595c?pvs=21) 
+- Some code snippets were analyzed, rewritten and used with the assistance of generative AI sources such as [Gemini] (https://gemini.google.com/), [ChatGPT] (https://chatgpt.com/), [Claude] (https://claude.ai)
+- Map API sourced from [MapLibre] (https://maplibre.org/)
+- Icons sourced from [Google Fonts](https://fonts.google.com/)
+- We would like to thank Carly Orr for her invaluable input and guiding us to where we are now.
 
 ---
 
@@ -76,14 +100,18 @@ elmo-hikes/
 
 ### Limitations
 
-- Limited trail details (e.g., no live trail conditions).
+- Limited filter functions.
+- Limited user account features.
 - Accessibility features can be further improved.
+- Not a lot of exposure to the name of the app.
 
 ### Future Work
 
-- Implement map view and trailhead directions.
-- Add filtering and sorting options (e.g., by difficulty, distance).
-- Create a dark mode for better usability in low-light conditions.
+- Add more filtering and sorting options (e.g., by time, distance).
+- Make listings clickable and sends the user to its respective location.
+- Give more information about the event locations (e.g. hours, phone number, etc.)
+- Add a central location for the app title.
+- Allows users to collaborate with each other
 
 ---
 

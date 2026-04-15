@@ -147,6 +147,8 @@ if (favTab) {
 }
 
 // --- Geocoder Logic ---
+let lastSearchTime = 0;
+
 function addAddressSearch() {
   const container = document.getElementById("addressSearch");
   if (!container) return;
@@ -154,11 +156,29 @@ function addAddressSearch() {
 
   const geocoderApi = {
     forwardGeocode: async (config) => {
+      // rate limit to 1 request per 1.5 seconds
+      const now = Date.now();
+      if (now - lastSearchTime < 1500) {
+        console.warn("Searching too fast, skipping request...");
+        return { features: [] };
+      }
+
+      lastSearchTime = now;
+
+      if (config.query.length < 3) return { features: [] };
+
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
+
       try {
         const response = await fetch(url, {
-          headers: { "User-Agent": "Rally-App-Winston" },
+          headers: { "User-Agent": "Rally-App-BBY22" },
         });
+
+        if (response.status === 429) {
+          console.error("Nominatim Rate Limit Hit (429)");
+          return { features: [] };
+        }
+
         const geojson = await response.json();
         return {
           features: geojson.features.map((f) => ({
@@ -180,7 +200,8 @@ function addAddressSearch() {
   const geocoder = new MaplibreGeocoder(geocoderApi, {
     maplibregl: maplibregl,
     placeholder: "Search for location...",
-    minLength: 2,
+    minLength: 3,
+    debounce: 800,
     showResultsWhileTyping: true,
   });
 
@@ -477,7 +498,7 @@ async function fetchFavorites() {
 
   const user = auth.currentUser;
   if (!user) {
-    container.innerHTML = `<div class="text-start py-2"><p class="text-custom-cream mt-1">Login to see your favourites.</p></div>`;
+    container.innerHTML = "Login to see your favourites.";
     return;
   }
 
