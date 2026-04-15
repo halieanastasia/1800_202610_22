@@ -85,23 +85,27 @@ function buildEventCard(eventData) {
   const tagsHtml =
     eventData.tagsArray.length > 0
       ? eventData.tagsArray
-        .map(
-          (tag) =>
-            `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`,
-        )
-        .join("")
+          .map(
+            (tag) =>
+              `<span class="badge rounded-pill bg-light text-dark border me-1" style="font-size:0.75rem;">#${tag}</span>`,
+          )
+          .join("")
       : `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">No tags</span>`;
 
   const distanceText =
     typeof eventData.distanceKm === "number"
-      ? `<p class="text-primary small mb-0"><strong>📍 ${eventData.distanceKm.toFixed(2)} km away</strong></p>`
+      ? `<p class="text-primary small mb-0">
+           <strong>
+             ${eventData.distanceKm.toFixed(2)} km away
+           </strong>
+          </p>`
       : "";
 
   card.innerHTML = `
     ${favButtonHtml} 
     ${badge}
     <h2 class="h5 mb-1 fw-bold text-dark">${eventData.name || "Untitled Venue"}</h2>
-    <p class="mb-1 text-muted small"><strong>🕒 ${eventData.time || "Time TBD"}</strong></p>
+    <p class="mb-1 text-muted small"><strong>🕒 ${new Date(eventData.time).toLocaleString() || "Time TBD"}</strong></p>
     <p class="mb-2 text-muted" style="font-size: 0.9rem;">${eventData.description || ""}</p>
     
     <div class="mb-2 d-flex flex-wrap gap-1">
@@ -114,7 +118,10 @@ function buildEventCard(eventData) {
     </div>
 
     <div class="border-top pt-2 mt-2">
-      <small class="text-muted d-block mb-1">📍 ${eventData.address || "Address TBD"}</small>
+      <small class="text-muted d-block mb-1">
+        <img src="/images/event-marker.png" alt="location" width="12" height="12" style="vertical-align: center; margin-right: 0px;">
+        ${eventData.address || "Address TBD"}
+      </small>
       ${distanceText}
     </div>
   `;
@@ -126,23 +133,29 @@ function buildEventCard(eventData) {
 
     if (favBtn) {
       // Check initial state
-      getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then((snap) => {
-        if (snap.exists() && iconEl) {
-          iconEl.innerText = "favorite";
-          iconEl.classList.add("text-danger");
-        }
-      });
+      getDoc(doc(db, "bookmarks", `${auth.currentUser.uid}_${docId}`)).then(
+        (snap) => {
+          if (snap.exists() && iconEl) {
+            iconEl.innerText = "favorite";
+            iconEl.classList.add("text-danger");
+          }
+        },
+      );
 
       // Click listener
-      favBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        e.stopPropagation(); // Stops the click from reaching the map or the card background
+      favBtn.addEventListener(
+        "click",
+        async (e) => {
+          e.preventDefault();
+          e.stopPropagation(); // Stops the click from reaching the map or the card background
 
-        console.log("Heart clicked!"); // DEBUG: Check if this shows in F12 console
+          console.log("Heart clicked!"); // DEBUG: Check if this shows in F12 console
 
-        const iconEl = e.currentTarget.querySelector('span');
-        await toggleBookmark(docId, iconEl);
-      }, { capture: true }); // 'capture: true' ensures we catch the click first
+          const iconEl = e.currentTarget.querySelector("span");
+          await toggleBookmark(docId, iconEl);
+        },
+        { capture: true },
+      ); // 'capture: true' ensures we catch the click first
     }
   }
 
@@ -186,9 +199,9 @@ function distanceKm(lng1, lat1, lng2, lat2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
-    Math.cos(toRadians(lat2)) *
-    Math.sin(dLng / 2) *
-    Math.sin(dLng / 2);
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return earthRadiusKm * c;
@@ -240,7 +253,7 @@ function clearMarkers() {
   state.markers.forEach((marker) => marker.remove());
   state.markers = [];
 }
-
+location;
 function renderMarkers(events) {
   state.markers.forEach((m) => m.remove());
   state.markers = [];
@@ -249,8 +262,11 @@ function renderMarkers(events) {
     const coords = getEventCoords(eventData);
     if (!coords) return;
 
-    const el = document.createElement("div");
-    el.className = "event-marker";
+    const el = document.createElement("img");
+    el.src = "/images/event-marker.png";
+    el.style.width = "32px";
+    el.style.height = "32px";
+    el.style.cursor = "pointer";
 
     const marker = new maplibregl.Marker({
       element: el,
@@ -261,7 +277,7 @@ function renderMarkers(events) {
         new maplibregl.Popup({
           offset: 15,
           closeButton: false,
-          closeOnClick: false
+          closeOnClick: false,
         }).setHTML(`
           <div style="color: #212529; min-width: 150px; line-height: 1.4;">
             <strong style="display: block; font-size: 1rem; color: #1a3c31;">
@@ -269,7 +285,8 @@ function renderMarkers(events) {
             </strong>
             ${eventData.description ? `<p style="margin: 4px 0; font-size: 0.85rem; color: #495057;">${eventData.description}</p>` : ""}
             <small style="display: block; font-size: 0.75rem; color: #6c757d; margin-top: 4px;">
-              📍 ${eventData.address || "Address TBD"}
+              <img src="/images/event-marker.png" alt="location" width="12" height="12" style="vertical-align: center; margin-right: 0px;">      
+              ${eventData.address || "Address TBD"}
             </small>
           </div>
         `),
@@ -583,13 +600,17 @@ function addUserLocationToMap(applyAfterSuccess = false) {
         state.userMarker.remove();
       }
 
-      const el = document.createElement("div");
-      el.className = "user-location-marker";
-
+      //   const el = document.createElement("div");
+      //   el.className = "user-location-marker";
+      const el = document.createElement("img");
+      el.src = "/images/user-marker.png";
+      el.style.width = "32px";
+      el.style.height = "32px";
+      el.style.cursor = "pointer";
 
       state.userMarker = new maplibregl.Marker({
         element: el,
-        anchor: 'center'
+        anchor: "center",
       })
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup({ offset: 18 }).setText("Your location"))
@@ -602,7 +623,7 @@ function addUserLocationToMap(applyAfterSuccess = false) {
     (error) => {
       console.warn("User location unavailable:", error.message);
     },
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 },
   );
 }
 

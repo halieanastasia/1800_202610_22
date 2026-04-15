@@ -146,6 +146,82 @@ if (favTab) {
   });
 }
 
+// function addAddressSearch() {
+  // const container = document.getElementById("addressSearch");
+  // if (!container) return;
+  // container.innerHTML = "";
+
+  // // only send query once user has stopped typing
+  // let debounceTimer;
+  // function debounce(fn, delay) {
+    // return (...args) => {
+      // console.log("Start timer!");
+      // clearTimeout(debounceTimer);
+      // return new Promise((resolve) => {
+        // debounceTimer = setTimeout(() => resolve(fn(...args)), delay);
+      // });
+    // };
+  // }
+
+  // // track last query, don't send a new query if user just hit the control key, shift key, etc
+  // let lastQuery = "";
+  // let pauseBeforeRequest = 500; // pause miliseconds after user stops typing;
+  // const geocoderApi = {
+    // forwardGeocode: debounce(async (config) => {
+      // // prevent non-character keys from firing a query
+      // const trimmed = config.query.trim();
+      // if (trimmed === lastQuery) return { features: [] };
+      // lastQuery = trimmed;
+
+      // const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
+    // //   const url = `/nominatim/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
+      // try {
+        // const response = await fetch(url, {
+          // headers: { "User-Agent": "Rally-App-Winston" },
+        // });
+
+									  
+														  
+								  
+		 
+
+        // const geojson = await response.json();
+        // return {
+          // features: geojson.features.map((f) => ({
+            // type: "Feature",
+            // geometry: f.geometry,
+            // place_name: f.properties.display_name,
+            // center: f.geometry.coordinates,
+            // properties: f.properties,
+          // })),
+        // };
+      // } catch (err) {
+        // console.error("Geocoding failed", err);
+        // return { features: [] };
+      // }
+    // }, pauseBeforeRequest),
+  // };
+
+  // if (typeof MaplibreGeocoder === "undefined") return;
+  // const geocoder = new MaplibreGeocoder(geocoderApi, {
+    // maplibregl: maplibregl,
+    // placeholder: "Search for location...",
+    // minLength: 2,
+				  
+    // showResultsWhileTyping: true,
+  // });
+
+  // container.appendChild(geocoder.onAdd());
+  // geocoder.on("result", (e) => {
+    // const [lng, lat] = e.result.center;
+    // selectedLngLat = [lng, lat];
+    // selectedAddress = e.result.place_name;
+    // const addrInput = document.getElementById("address");
+    // if (addrInput) addrInput.value = selectedAddress;
+    // setSelectedLocation(lng, lat);
+  // });  
+// }
+
 // --- Geocoder Logic ---
 let lastSearchTime = 0;
 
@@ -394,9 +470,9 @@ function createEventCard(docId, data, isOwner = false) {
     ${favButtonHtml}
     ${badge}
     <h2 class="h4 mb-1 fw-bold text-dark">${data.name || "Untitled Venue"}</h2>
-    <p class="mb-1 text-primary small"><strong>🕒 ${data.time}</strong></p>
+    <p class="mb-1 text-primary small"><strong>🕒 ${new Date(data.time).toLocaleString()}</strong></p>
     <p class="mb-2 text-muted">${data.description || ""}</p>
-    
+
     <div class="mb-2 d-flex flex-wrap gap-1">
       ${data.tags ? data.tags.map((t) => `<span class="badge rounded-pill bg-light text-dark border" style="font-size:0.75rem;">#${t}</span>`).join("") : ""}
     </div>
@@ -405,7 +481,10 @@ function createEventCard(docId, data, isOwner = false) {
       ${data.isKidsFriendly ? '<span class="badge bg-light text-dark border me-1">Kids OK</span>' : ""}
       ${data.isPetFriendly ? '<span class="badge bg-light text-dark border">Pets OK</span>' : ""}
     </div>
-    <small class="text-muted d-block border-top pt-2 mt-2">📍 ${data.address || "Address TBD"}</small>
+    <small class="text-muted d-block border-top pt-2 mt-2">
+      <img src="/images/event-marker.png" alt="location" width="12" height="12" style="vertical-align: center; margin-right: 0px;">
+       ${data.address || "Address TBD"}
+    </small>
   `;
 
   if (auth.currentUser) {
