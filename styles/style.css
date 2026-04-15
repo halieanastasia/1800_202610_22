@@ -12,6 +12,106 @@
   --soft-green-2: #e8f2ea;
   --border-green: rgba(20, 58, 47, 0.18);
   --shadow-dark: rgba(0, 0, 0, 0.18);
+
+  --bs-dark-rgb: var(--darkgreen);
+}
+
+/* Override bootstrap colors*/
+.card {
+  --bs-card-title-color: var(
+    --darkgreen
+  ); /* Events > Create Event > Event Details */
+  --bs-card-color: var(--darkgreen); /* Events > Create Event > Form labels */
+  --bs-body-color: var(--mediumgreen); /* Events > Create Event > Form text */
+}
+
+.form-control {
+  --bs-card-title-color: var(
+    --darkgreen
+  ); /* Events > Create Event > Event Details */
+  --bs-card-color: var(--darkgreen); /* Events > Create Event > Form labels */
+  --bs-body-color: var(--mediumgreen); /* Events > Create Event > Form text */
+}
+input.mapboxgl-ctrl-geocoder--input,
+#tag-input {
+  /* Events > Create Event > Search Address */
+  /* Events > Create Event > Tags */
+  color: var(--mediumgreen) !important;
+}
+
+/* Override bootstrap button colors for My Events > Delete */
+.btn-outline-danger {
+  --bs-btn-color: var(--mediumgreen);
+  --bs-btn-border-color: var(--mediumgreen);
+  --bs-btn-hover-bg: var(--mediumgreen);
+  --bs-btn-hover-border-color: var(--mediumgreen);
+}
+
+/* Override bootstrap button colors for My Events > Edit */
+.btn-outline-primary {
+  --bs-btn-color: var(--darkgreen);
+  --bs-btn-border-color: var(--darkgreen);
+  --bs-btn-hover-bg: var(--darkgreen);
+  --bs-btn-hover-border-color: var(--darkgreen);
+}
+
+/* Override bootstrap button colors for My Account > Log Out */
+.btn-danger {
+  --bs-btn-color: var(--lightgreen);
+  --bs-btn-hover-bg: var(--mediumgreen);
+  --bs-btn-hover-border-color: var(--mediumgreen);
+  --bs-btn-border-color: var(--mediumgreen);
+  --bs-btn-bg: var(--mediumgreen);
+}
+
+/* Override bootstrap button colors for My Account > Edit Profile */
+.btn-success {
+  --bs-btn-color: var(--lightgreen);
+  --bs-btn-hover-bg: var(--darkgreen);
+  --bs-btn-hover-border-color: var(--darkgreen);
+  --bs-btn-border-color: var(--darkgreen);
+  --bs-btn-bg: var(--darkgreen);
+}
+
+/* Change "My Account" color */
+.col-md-8 > h2 {
+  color: var(--mediumgreen);
+}
+
+/* Change "Welcome, {user}" color */
+.col-md-8 h1.display-6 {
+  color: var(--mediumgreen);
+}
+
+/* Re-styling for events page */
+#eventTabsContent {
+  background-color: var(--mediumgreen);
+}
+/* Re-styling for events page */
+#eventTabs {
+  padding-bottom: 0 !important;
+}
+
+/* Login page background color */
+#login-body {
+  background-color: var(--lightgreen);
+}
+
+#loginSubmit {
+  background-color: var(--darkgreen);
+  color: var(--lightgreen);
+}
+
+#promptSignUp {
+  color: var(--mediumgreen);
+}
+
+#toSignup {
+  color: var(--darkgreen);
+}
+
+#loginView h3 {
+  color: var(--mediumgreen);
 }
 
 /***********************************************************/
@@ -23,7 +123,7 @@
 
 body {
   margin: 0;
-  background-color: var(--darkgreen);
+  /* background-color: var(--darkgreen); */
   color: var(--darkgreen);
   font-family: Arial, sans-serif;
   cursor: default;
@@ -191,9 +291,9 @@ button.nav-items {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 }
 
-.event-card {
+/* .event-card {
   background: var(--cream) !important;
-}
+} */
 
 .event-img img {
   width: 100%;
@@ -682,7 +782,6 @@ button.nav-items {
 }
 
 @media (max-width: 768px) {
-
   .login-container,
   .signup-container {
     padding: 30px;
@@ -690,7 +789,6 @@ button.nav-items {
 }
 
 @media (max-width: 480px) {
-
   .login-container,
   .signup-container {
     padding: 25px 20px;
@@ -972,13 +1070,14 @@ Event Page
 
 body.bg-custom,
 body {
-  background-color: #1a3c31 !important;
+  /* background-color: #1a3c31 !important; */
+  /* background-color: #1a3c31 !important; */
   color: white;
   /* Optional: makes text readable on the dark green */
 }
 
 #event-content {
-  background-color: #1a3c31;
+  /* background-color: #1a3c31; */
   min-height: 100vh;
   margin: 0;
 }
@@ -1019,7 +1118,7 @@ body {
 }
 
 .event-card {
-  background: var(--lightgreen);
+  /* background: var(--lightgreen); */
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 12px;
@@ -1150,13 +1249,17 @@ body {
   direction: ltr;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "liga";
-  font-variation-settings: 'FILL' 0;
+  font-variation-settings: "FILL" 0;
   color: #6c757d;
   transition: all 0.2s ease;
 }
 
 .material-symbols-outlined.text-danger {
-  font-variation-settings: 'FILL' 1, 'wght' 400, 'grad' 0, 'opsz' 48 !important;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "grad" 0,
+    "opsz" 48 !important;
   color: var(--mediumgreen) !important;
 }
 
@@ -1174,12 +1277,13 @@ body {
 
 html,
 body {
-  background-color: #1a3c31 !important;
-  background: #1a3c31 !important;
+  /* background-color: #1a3c31 !important; */
+  /* background: #1a3c31 !important; */
+  background: var(--lightgreen);
   color: var(--cream) !important;
 }
 
 #event-content {
-  background-color: #1a3c31 !important;
+  /* background-color: #1a3c31 !important; */
   min-height: 100vh;
 }
