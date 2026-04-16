@@ -418,7 +418,6 @@ function fitMapToVisibleResults(events) {
     hasPoints = true;
   });
 
-  // TODO Might be unnecessary but it looks bad if the map zooms in too much
   if (!hasPoints) return;
 
   const zoomOptions = {};

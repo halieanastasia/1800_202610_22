@@ -7,8 +7,8 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import '../styles/style.css';
-// TODO: Add SDKs for Firebase products that you want to use
+import "../styles/style.css";
+
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
