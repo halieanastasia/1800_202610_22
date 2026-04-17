@@ -1,3 +1,12 @@
+// -------------------------------------------------------------
+// src/events.js
+// -------------------------------------------------------------
+// Manages the Events page (event.html).
+// Handles fetching and displaying all events, the user's own events,
+// and favourited events. Also manages event creation, editing, deletion,
+// bookmarking, tag input, and the location search/map for event forms.
+// -------------------------------------------------------------
+
 import { db, auth } from "./firebase.js";
 import {
   collection,
@@ -21,8 +30,8 @@ let formMap;
 let selectedMarker = null;
 let selectedLngLat = null;
 let selectedAddress = null;
-let editingDocId = null;
-let currentTags = [];
+let editingDocId = null; // Tracks the doc ID of the event being edited, or null if creating new
+let currentTags = []; // Array of tag strings for the current create/edit form
 
 // --- Initialization & UI Listeners ---
 window.addEventListener("DOMContentLoaded", () => {
@@ -66,6 +75,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// --- Render Tag Chips in the DOM ---
 function renderChips() {
   const tagInput = document.getElementById("tag-input");
   const tagContainer = document.getElementById("tag-container");
@@ -146,82 +156,6 @@ if (favTab) {
   });
 }
 
-// function addAddressSearch() {
-  // const container = document.getElementById("addressSearch");
-  // if (!container) return;
-  // container.innerHTML = "";
-
-  // // only send query once user has stopped typing
-  // let debounceTimer;
-  // function debounce(fn, delay) {
-    // return (...args) => {
-      // console.log("Start timer!");
-      // clearTimeout(debounceTimer);
-      // return new Promise((resolve) => {
-        // debounceTimer = setTimeout(() => resolve(fn(...args)), delay);
-      // });
-    // };
-  // }
-
-  // // track last query, don't send a new query if user just hit the control key, shift key, etc
-  // let lastQuery = "";
-  // let pauseBeforeRequest = 500; // pause miliseconds after user stops typing;
-  // const geocoderApi = {
-    // forwardGeocode: debounce(async (config) => {
-      // // prevent non-character keys from firing a query
-      // const trimmed = config.query.trim();
-      // if (trimmed === lastQuery) return { features: [] };
-      // lastQuery = trimmed;
-
-      // const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
-    // //   const url = `/nominatim/search?q=${encodeURIComponent(config.query)}&format=geojson&limit=5`;
-      // try {
-        // const response = await fetch(url, {
-          // headers: { "User-Agent": "Rally-App-Winston" },
-        // });
-
-									  
-														  
-								  
-		 
-
-        // const geojson = await response.json();
-        // return {
-          // features: geojson.features.map((f) => ({
-            // type: "Feature",
-            // geometry: f.geometry,
-            // place_name: f.properties.display_name,
-            // center: f.geometry.coordinates,
-            // properties: f.properties,
-          // })),
-        // };
-      // } catch (err) {
-        // console.error("Geocoding failed", err);
-        // return { features: [] };
-      // }
-    // }, pauseBeforeRequest),
-  // };
-
-  // if (typeof MaplibreGeocoder === "undefined") return;
-  // const geocoder = new MaplibreGeocoder(geocoderApi, {
-    // maplibregl: maplibregl,
-    // placeholder: "Search for location...",
-    // minLength: 2,
-				  
-    // showResultsWhileTyping: true,
-  // });
-
-  // container.appendChild(geocoder.onAdd());
-  // geocoder.on("result", (e) => {
-    // const [lng, lat] = e.result.center;
-    // selectedLngLat = [lng, lat];
-    // selectedAddress = e.result.place_name;
-    // const addrInput = document.getElementById("address");
-    // if (addrInput) addrInput.value = selectedAddress;
-    // setSelectedLocation(lng, lat);
-  // });  
-// }
-
 // --- Geocoder Logic ---
 let lastSearchTime = 0;
 
@@ -292,6 +226,7 @@ function addAddressSearch() {
   });
 }
 
+// --- Location Selection ---
 function setSelectedLocation(lng, lat) {
   if (!formMap) initFormMap();
   if (selectedMarker) {
@@ -304,7 +239,7 @@ function setSelectedLocation(lng, lat) {
   formMap.flyTo({ center: [lng, lat], zoom: 15 });
 }
 
-// --- Favourites Logic ---
+// --- Favourites ---
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
   if (!user) {
@@ -449,7 +384,9 @@ if (eventForm) {
   });
 }
 
-// --- Data Display ---
+// --- Event Card Builder ---
+// Builds and returns a DOM card element for a single event.
+// docId: Firestore document ID; data: event field data; isOwner: show edit/delete controls
 function createEventCard(docId, data, isOwner = false) {
   const div = document.createElement("div");
   div.className =
@@ -585,13 +522,15 @@ async function fetchFavorites() {
     const q = query(
       collection(db, "bookmarks"),
       where("userId", "==", user.uid),
-      orderBy("timestamp", "desc")
+      orderBy("timestamp", "desc"),
     );
 
     const snapshot = await getDocs(q);
     console.log("Bookmarks Snapshot size:", snapshot.size);
 
-    container.innerHTML = snapshot.empty ? `<p class="text-custom-cream mt-3">No favourites found.</p>` : "";
+    container.innerHTML = snapshot.empty
+      ? `<p class="text-custom-cream mt-3">No favourites found.</p>`
+      : "";
 
     if (snapshot.empty) return;
 
@@ -601,7 +540,9 @@ async function fetchFavorites() {
       const eventSnap = await getDoc(doc(db, "events", eventId));
 
       if (eventSnap.exists()) {
-        container.appendChild(createEventCard(eventSnap.id, eventSnap.data(), false));
+        container.appendChild(
+          createEventCard(eventSnap.id, eventSnap.data(), false),
+        );
       } else {
         console.warn("Cleaning up deleted bookmark:", docSnap.id);
         await deleteDoc(doc(db, "bookmarks", docSnap.id));

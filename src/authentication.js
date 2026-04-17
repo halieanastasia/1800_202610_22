@@ -1,7 +1,12 @@
+// -------------------------------------------------------------
 // src/authentication.js
+// -------------------------------------------------------------
+// Provides all Firebase Authentication logic for the app.
+// Exports functions for login, signup, logout, profile/email/password updates,
+// auth state monitoring, and user-friendly error messages.
+// -------------------------------------------------------------
+
 import { auth } from "./firebase.js";
-// Also need db if you are using Firestore in signup
-// import { db } from "./firebase.js";
 
 import {
   signInWithEmailAndPassword, // For Login
@@ -16,16 +21,12 @@ import {
 // Export auth so account.js can use it
 export { auth };
 
-// -------------------------------------------------------------
-// loginUser
-// -------------------------------------------------------------
+// --- Use email & password to authenticate user ---
 export async function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password);
 }
 
-// -------------------------------------------------------------
-// signupUser
-// -------------------------------------------------------------
+// --- Create firebase usere with provided credentials ---
 export async function signupUser(name, email, password) {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
@@ -36,17 +37,10 @@ export async function signupUser(name, email, password) {
 
   // Update the user's profile with the display name
   await updateProfile(user, { displayName: name });
-
-  // Note: If you want to use Firestore (setDoc),
-  // you must import { doc, setDoc } from "firebase/firestore"
-  // and import 'db' from your firebase.js at the top.
-
   return user;
 }
 
-// -------------------------------------------------------------
-// logoutUser
-// -------------------------------------------------------------
+// --- Log out user ---
 export function logoutUser() {
   signOut(auth)
     .then(() => {
@@ -55,9 +49,7 @@ export function logoutUser() {
     .catch((err) => console.error(err));
 }
 
-// -------------------------------------------------------------
-// updateUserProfile
-// -------------------------------------------------------------
+// --- Change user display name ---
 export async function updateUserProfile(newName) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "No user" };
@@ -69,6 +61,7 @@ export async function updateUserProfile(newName) {
   }
 }
 
+// --- Change user email ---
 export async function updateUserEmail(newEmail) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "No user" };
@@ -80,6 +73,7 @@ export async function updateUserEmail(newEmail) {
   }
 }
 
+// --- Change user password ---
 export async function updateUserPassword(newPassword) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "No user" };
@@ -91,16 +85,12 @@ export async function updateUserPassword(newPassword) {
   }
 }
 
-// -------------------------------------------------------------
-// onAuthReady
-// -------------------------------------------------------------
+// --- Delay callback until auth resolves ---
 export function onAuthReady(callback) {
   onAuthStateChanged(auth, (user) => callback(user));
 }
 
-// -------------------------------------------------------------
-// authErrorMessage
-// -------------------------------------------------------------
+// --- Maps Firebase error codes to user-friendly messages ---
 export function authErrorMessage(error) {
   const code = (error?.code || "").toLowerCase();
   const map = {
@@ -117,6 +107,7 @@ export function authErrorMessage(error) {
   return map[code] || "Something went wrong. Please try again.";
 }
 
+// --- Redirect to login if auth fails ---
 export function requireAuth() {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -124,4 +115,3 @@ export function requireAuth() {
     }
   });
 }
-// requireAuth();

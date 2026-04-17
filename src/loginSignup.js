@@ -1,21 +1,17 @@
 // -------------------------------------------------------------
 // src/loginSignup.js
 // -------------------------------------------------------------
-// Part of the COMP1800 Projects 1 Course (BCIT).
-// Starter code provided for students to use and adapt.
-// Manages the login/signup form behaviour and redirects.
+// Manages the login and signup form UI on the login page (login-halie.html).
+// Handles toggling between Login and Signup views, form validation,
+// and redirects to the main page after successful authentication.
+// This code was adapted from part of the COMP1800 Projects 1 Course (BCIT).
+// Starter code that was provided for student use and adaptation.
 // -------------------------------------------------------------
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import "../styles/style.css";
 import { loginUser, signupUser, authErrorMessage } from "./authentication.js";
-
-import { auth } from "/src/firebase.js";
-
-// --- Login and Signup Page ---
-// Handles toggling between Login/Signup views and form submits
-// using plain DOM APIs for simplicity and maintainability.
 
 function initAuthUI() {
   // --- DOM Elements ---
@@ -26,7 +22,7 @@ function initAuthUI() {
   const toLoginBtn = document.getElementById("toLogin");
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
-  const redirectUrl = "index.html";
+  const redirectUrl = "index.html"; // Redirect target after successful login or signup
 
   // --- Helper Functions ---
   // Toggle element visibility
@@ -87,10 +83,6 @@ function initAuthUI() {
     setSubmitDisabled(loginForm, true);
     try {
       await loginUser(email, password);
-
-      // console.log("Auth'd user:" + auth.currentUser);
-      // alert("Auth'd user:" + auth.currentUser);
-
       location.href = redirectUrl;
     } catch (err) {
       showError(authErrorMessage(err));
@@ -101,7 +93,6 @@ function initAuthUI() {
   });
 
   // Signup form submit
-  // signup-form?.addEventListener("submit", async (e) => {
   signupForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     hideError();
@@ -116,7 +107,6 @@ function initAuthUI() {
     try {
       await signupUser(name, email, password);
       location.href = redirectUrl;
-      alert("Signing up!");
     } catch (err) {
       showError(authErrorMessage(err));
       console.error(err);

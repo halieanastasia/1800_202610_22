@@ -1,72 +1,95 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <title>Rally - Account</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/assets/map-p37EPEl9.png" />
+    <script type="module" crossorigin src="/assets/account-D5PetqFu.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/navbar-DEgkZOT8.js">
+    <link rel="modulepreload" crossorigin href="/assets/index-MZUGDl-N.js">
+    <link rel="modulepreload" crossorigin href="/assets/authentication-THo67HLa.js">
+    <link rel="stylesheet" crossorigin href="/assets/navbar-BBTOwg-C.css">
+  </head>
 
-<head>
-  <title>Account</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="/assets/map-p37EPEl9.png" />
-  <script type="module" crossorigin src="/assets/account-CgQOPlyf.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/navbar-DEgkZOT8.js">
-  <link rel="modulepreload" crossorigin href="/assets/index-MZUGDl-N.js">
-  <link rel="modulepreload" crossorigin href="/assets/authentication-THo67HLa.js">
-  <link rel="stylesheet" crossorigin href="/assets/navbar-BBTOwg-C.css">
-</head>
+  <body>
+    <div id="navbar-placeholder"></div>
 
-<body>
-  <div id="navbar-placeholder"></div>
+    <main class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h2 class="mb-4">My Account</h2>
 
-  <main class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8 text-center">
+          <div
+            class="text-dark p-4 p-md-5 rounded shadow-sm border mx-auto"
+            style="max-width: 500px; background-color: var(--cream)"
+          >
+            <h1 class="display-6 fw-bold text-center">
+              Welcome,
+              <span id="name-goes-here" class="d-inline-block text-break"
+                >friend</span
+              >
+            </h1>
 
-        <h2 class="mb-4">My Account</h2>
+            <hr class="my-4" />
 
-        <div class="text-dark p-4 p-md-5 rounded shadow-sm border mx-auto"
-          style="max-width: 500px; background-color: var(--cream);">
-          <h1 class="display-6 fw-bold text-center">
-            Welcome, <span id="name-goes-here" class="d-inline-block text-break">friend</span>
-          </h1>
-
-          <hr class="my-4">
-
-          <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4">
-            <button type="button" class="btn btn-success px-4" id="edit-profile-btn">
-              Edit Profile
-            </button>
-            <button type="button" class="btn btn-danger px-4" id="logout-button">
-              Log Out
-            </button>
-          </div>
-
-          <div id="security-section" class="d-none text-start mt-4 border-top pt-3">
-
-            <div class="mb-3">
-              <label class="small fw-bold text-muted mb-1">Email Address</label>
-              <div class="input-group">
-                <input type="email" id="acc-email" class="form-control" readonly>
-                <button class="btn btn-outline-secondary" id="edit-email-btn">Change</button>
-              </div>
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4"
+            >
+              <button
+                type="button"
+                class="btn btn-success px-4"
+                id="edit-profile-btn"
+              >
+                Edit Profile
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger px-4"
+                id="logout-button"
+              >
+                Log Out
+              </button>
             </div>
 
-            <div class="mb-3">
-              <label class="small fw-bold text-muted mb-1">Security</label>
-              <div>
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="edit-pass-btn">
-                  Change Password
-                </button>
+            <div
+              id="security-section"
+              class="d-none text-start mt-4 border-top pt-3"
+            >
+              <div class="mb-3">
+                <label class="small fw-bold text-muted mb-1"
+                  >Email Address</label
+                >
+                <div class="input-group">
+                  <input
+                    type="email"
+                    id="acc-email"
+                    class="form-control"
+                    readonly
+                  />
+                  <button class="btn btn-outline-secondary" id="edit-email-btn">
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="small fw-bold text-muted mb-1">Security</label>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    id="edit-pass-btn"
+                  >
+                    Change Password
+                  </button>
+                </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-    </div>
-
-    </div>
-    </div>
-  </main>
+    </main>
 
-</body>
-
+  </body>
 </html>

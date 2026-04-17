@@ -1,3 +1,12 @@
+// -------------------------------------------------------------
+// src/account.js
+// -------------------------------------------------------------
+// Manages the account page (account.html).
+// Displays the current user's name and email, and handles
+// editing the display name, changing email/password, and logging out.
+// Redirects to the home page if no user is logged in.
+// -------------------------------------------------------------
+
 import "../styles/style.css";
 import {
   auth,
@@ -6,7 +15,6 @@ import {
   updateUserProfile,
   updateUserEmail,
   updateUserPassword,
-  requireAuth,
 } from "./authentication.js";
 
 // --- DOM Elements ---
@@ -20,6 +28,8 @@ const logoutBtn = document.getElementById("logout-button");
 // --- Global State ---
 let isEditing = false;
 
+// Initializes the account page once auth state is resolved.
+// Redirects to index if no user is logged in.
 function initAccount() {
   onAuthReady((user) => {
     if (!user) {
@@ -54,7 +64,6 @@ async function handleEditToggle() {
 `;
 
     editProfileBtn.textContent = "Save Changes";
-    editProfileBtn.classList.replace("btn-success", "btn-success");
   } else {
     const nameInput = document.getElementById("name-input");
     const newName = nameInput ? nameInput.value.trim() : "";
@@ -79,15 +88,14 @@ async function handleEditToggle() {
       securitySection.classList.add("d-none");
     }
 
-    // 3. Reset Button UI
+    // Reset Button UI
     editProfileBtn.disabled = false;
     editProfileBtn.textContent = "Edit Profile";
-    editProfileBtn.classList.replace("btn-success", "btn-success");
     isEditing = false;
   }
 }
 
-// Handle Email Change
+// --- Email Change ---
 const editEmailBtn = document.getElementById("edit-email-btn");
 if (editEmailBtn) {
   editEmailBtn.addEventListener("click", async () => {
@@ -108,7 +116,7 @@ if (editEmailBtn) {
   });
 }
 
-// Handle Password Change
+// --- Password Change ---
 const passBtn = document.getElementById("edit-pass-btn");
 if (passBtn) {
   passBtn.addEventListener("click", async () => {
@@ -123,9 +131,7 @@ if (passBtn) {
   });
 }
 
-/**
- * Event Listeners
- */
+// --- Event Listeners ---
 if (editProfileBtn) {
   editProfileBtn.addEventListener("click", handleEditToggle);
 }
@@ -138,5 +144,5 @@ if (logoutBtn) {
   });
 }
 
-// Run on load
+// --- Run on Load ---
 initAccount();
