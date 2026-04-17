@@ -1,67 +1,72 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <title>Rally - Home</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="comp1800 team 22" content="Event map page" />
+    <link rel="icon" type="image/x-icon" href="/images/map.png" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
 
-<head>
-  <title>Rally</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="comp1800 team 22" content="Event map page" />
-  <link rel="icon" type="image/x-icon" href="/images/map.png" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-</head>
+  <body id="map-body">
+    <div id="map-container">
+      <div id="map-search-bar">
+        <!--Event searchbar-->
+        <input
+          id="event-search-input"
+          type="text"
+          class="search-input"
+          placeholder="Search for a event"
+        />
 
-<body id="map-body">
-  <div id="map-container">
-    <div id="map-search-bar">
-      <!--Event searchbar-->
-      <input id="event-search-input" type="text" class="search-input" placeholder="Search for a event" />
+        <!--Filter Pop Up Button-->
+        <button id="filter-button" class="btn btn-primary" type="button">
+          Filters
+        </button>
 
-      <!--Filter Pop Up Button-->
-      <button id="filter-button" class="btn btn-primary" type="button">
-        Filters
-      </button>
-
-      <!--Reset Pop Up Button-->
-      <button id="reset-button" class="btn btn-primary" type="button">
-        Reset
-      </button>
-    </div>
-
-    <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
-    <div id="popups-container">
-      <!--Results Pop Up-->
-      <div id="search-result-popup">
-        <div class="results-header">
-          <h2 class="results-title">Results</h2>
-          <span id="results-count" class="results-count">0 events</span>
-        </div>
-        <div id="results-list" class="results-list"></div>
+        <!--Reset Pop Up Button-->
+        <button id="reset-button" class="btn btn-primary" type="button">
+          Reset
+        </button>
       </div>
-      <!--Filter Pop Up-->
-      <div id="map-filter-popup">
-        <div class="tag-panel">
-          <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
-            Filter by tag
-            <span id="tag-toggle-icon">▼</span>
-          </button>
 
-          <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
-            <div id="tag-filter-container" class="tag-filter-container"></div>
+      <!--Added popups-container w/ overflow-y:auto so popups can scroll-->
+      <div id="popups-container">
+        <!--Results Pop Up-->
+        <div id="search-result-popup">
+          <div class="results-header">
+            <h2 class="results-title">Results</h2>
+            <span id="results-count" class="results-count">0 events</span>
           </div>
+          <div id="results-list" class="results-list"></div>
         </div>
-        <div id="tag-position-hotfix"></div>
+        <!--Filter Pop Up-->
+        <div id="map-filter-popup">
+          <div class="tag-panel">
+            <button id="toggle-tag-btn" class="tag-toggle-btn" type="button">
+              Filter by tag
+              <span id="tag-toggle-icon">▼</span>
+            </button>
+
+            <div id="tag-filter-wrapper" class="tag-filter-wrapper collapsed">
+              <div id="tag-filter-container" class="tag-filter-container"></div>
+            </div>
+          </div>
+          <div id="tag-position-hotfix"></div>
+        </div>
       </div>
+
+      <div id="map"></div>
     </div>
+    <div id="navbar-placeholder" class="map-navbar"></div>
 
-    <div id="map"></div>
-  </div>
-  <div id="navbar-placeholder" class="map-navbar"></div>
-
-  <script type="module" src="./src/index.js"></script>
-  <script type="module" src="./src/map.js"></script>
-  <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
-  <script type="module" src="./src/events.js"></script>
-</body>
-
+    <script type="module" src="./src/index.js"></script>
+    <script type="module" src="./src/map.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
+    <script type="module" src="./src/events.js"></script>
+  </body>
 </html>

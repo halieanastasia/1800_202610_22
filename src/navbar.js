@@ -1,5 +1,15 @@
+// -------------------------------------------------------------
+// src/navbar.js
+// -------------------------------------------------------------
+// Builds and injects the bottom navigation bar into every page.
+// Highlights the active nav item based on the current URL, and
+// routes the account button to either the account or login page
+// depending on whether the user is logged in.
+// -------------------------------------------------------------
+
 import { getCurrentUser, authReady } from "./firebase.js";
 
+// Determines which nav item should be marked active based on the current page URL.
 function getActivePage() {
   const path = window.location.pathname.toLowerCase();
 
@@ -33,6 +43,8 @@ function getActivePage() {
   return "";
 }
 
+// Builds and returns the bottom navigation bar HTML string.
+// Marks the active page and adjusts the account button label based on login state.
 function renderNavbar(isLoggedIn) {
   const activePage = getActivePage();
 
@@ -84,6 +96,7 @@ function renderNavbar(isLoggedIn) {
   `;
 }
 
+// Inserts the rendered navbar into the DOM after auth state is resolved.
 async function loadNavbar() {
   document.querySelectorAll("site-navbar").forEach((el) => el.remove());
 

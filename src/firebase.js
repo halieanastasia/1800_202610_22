@@ -1,3 +1,11 @@
+// -------------------------------------------------------------
+// src/firebase.js
+// -------------------------------------------------------------
+// Initializes the Firebase app, Firestore database, and Auth service.
+// Exports a shared auth instance, db, and an authReady promise that resolves
+// once Firebase has determined the current user's login state.
+// -------------------------------------------------------------
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {
@@ -9,9 +17,7 @@ import {
 import { getFirestore } from "firebase/firestore";
 import "../styles/style.css";
 
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Our web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -30,7 +36,6 @@ const _auth = getAuth(app);
 // else they will stay logged in
 setPersistence(_auth, browserLocalPersistence);
 
-// Resolve auth state once on load
 let currentUser = null;
 let resolveAuthReady;
 

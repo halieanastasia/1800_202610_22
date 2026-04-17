@@ -1,3 +1,12 @@
+// -------------------------------------------------------------
+// src/map.js
+// -------------------------------------------------------------
+// Manages the interactive map on the main page (index.html).
+// Handles fetching events from Firestore, rendering map markers,
+// and filtering events by keyword search, tag, and distance radius.
+// Also manages user geolocation and bookmark toggling from the map view.
+// -------------------------------------------------------------
+
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { db, auth } from "./firebase.js";
@@ -11,6 +20,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
+// Application state for the map page
 const state = {
   map: null,
   events: [],
@@ -26,6 +36,7 @@ const state = {
   isTagPanelOpen: false,
 };
 
+// Cached DOM element references
 const elements = {
   eventSearchInput: document.getElementById("event-search-input"),
   resetBtn: document.getElementById("reset-button"),
@@ -38,6 +49,7 @@ const elements = {
   quickDistanceButtons: document.querySelectorAll(".quick-distance-btn"),
 };
 
+// --- Bookmark / Favourite Logic ---
 async function toggleBookmark(eventId, iconElement) {
   const user = auth.currentUser;
   if (!user) {
@@ -64,6 +76,7 @@ async function toggleBookmark(eventId, iconElement) {
   }
 }
 
+// --- Event Card Builder ---
 function buildEventCard(eventData) {
   const docId = eventData.id;
   const card = document.createElement("div");
@@ -162,6 +175,7 @@ function buildEventCard(eventData) {
   return card;
 }
 
+// --- Tag & Coordinate Utilities ---
 function normalizeTags(tags) {
   if (!tags) return [];
 
@@ -191,6 +205,7 @@ function toRadians(value) {
   return (value * Math.PI) / 180;
 }
 
+// --- Distance Calculation ---
 function distanceKm(lng1, lat1, lng2, lat2) {
   const earthRadiusKm = 6371;
   const dLat = toRadians(lat2 - lat1);
@@ -229,6 +244,7 @@ function getActiveDistanceCenter() {
   return null;
 }
 
+// --- Event Data Fetching ---
 async function getEvents() {
   const snapshot = await getDocs(collection(db, "events"));
 
@@ -243,6 +259,7 @@ async function getEvents() {
   });
 }
 
+// --- Marker Rendering ---
 function createMarkerElement() {
   const el = document.createElement("div");
   el.className = "event-marker";
@@ -253,7 +270,7 @@ function clearMarkers() {
   state.markers.forEach((marker) => marker.remove());
   state.markers = [];
 }
-location;
+
 function renderMarkers(events) {
   state.markers.forEach((m) => m.remove());
   state.markers = [];
@@ -300,6 +317,7 @@ function renderMarkers(events) {
   });
 }
 
+// --- Tag Filter UI ---
 function renderTagButtons(events) {
   const tagSet = new Set();
 
@@ -334,17 +352,6 @@ function setTagPanelOpen(isOpen) {
   state.isTagPanelOpen = isOpen;
   elements.tagFilterWrapper.classList.toggle("collapsed", !isOpen);
   elements.tagToggleIcon.textContent = isOpen ? "▲" : "▼";
-
-  // const searchResultPopup = document.getElementById("search-result-popup");
-  // searchResultPopup.style.display = isOpen ? "block" : "none";
-  // const tagHotfix = document.getElementById("tag-position-hotfix");
-  // if (isOpen) {
-  //   tagHotfix.style.display = "block";
-  //   tagHotfix.style.height = "85px";
-  // } else {
-  //   tagHotfix.style.display = "none";
-  //   tagHotfix.style.height = "0px";
-  // }
 }
 
 function updateQuickDistanceButtons() {
@@ -357,6 +364,7 @@ function updateQuickDistanceButtons() {
   });
 }
 
+// --- Results Rendering ---
 function renderResults(events) {
   elements.resultsList.innerHTML = "";
   elements.resultsCount.textContent = `${events.length} event${events.length === 1 ? "" : "s"}`;
@@ -434,6 +442,7 @@ function fitMapToVisibleResults(events) {
   });
 }
 
+// --- Filter Logic ---
 function updateMapAfterFilter(events) {
   const activeCenter = getActiveDistanceCenter();
 
@@ -599,8 +608,6 @@ function addUserLocationToMap(applyAfterSuccess = false) {
         state.userMarker.remove();
       }
 
-      //   const el = document.createElement("div");
-      //   el.className = "user-location-marker";
       const el = document.createElement("img");
       el.src = "/images/user-marker.png";
       el.style.width = "32px";
@@ -644,6 +651,7 @@ function registerMissingImageFallback() {
   });
 }
 
+// --- Map Initialization ---
 async function initializeMapPage() {
   state.map = new maplibregl.Map({
     container: "map",
