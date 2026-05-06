@@ -12,6 +12,7 @@ Rally is a community-driven platform for soccer fans in Vancouver. We solve the 
 **Community Events:** Users can create and join watch-party events at participating venues.
 **Status Transparency:** Clear indicators for participating vs. non-participating venues to save fans from a wasted trip.
 **Quick Navigation** Users can favourite events and quickly navigate to the listing in their favourites tab.
+
 ---
 
 ## Technologies Used
@@ -51,14 +52,12 @@ Once the application is running:
 ├── src/
 │   ├── account.js
 │   ├── authentication.js
-│   ├── authGuard.js
 │   ├── events.js
 │   ├── firebase.js
 │   ├── index.js
 │   ├── loginSignup.js
 │   ├── map.js
 │   ├── navbar.js
-│   ├── protected.js
 ├── styles/
 │   └── style.css
 ├── account.html
@@ -88,7 +87,7 @@ Once the application is running:
 
 ## Acknowledgments
 
-- Code snippets were adapted from resources such as [1800 Tech Tips (202610)](https://bcit-cst.notion.site/1800-Tech-Tips-202610-3176dfaf038a80109784ffdf607e595c?pvs=21) 
+- Code snippets were adapted from resources such as [1800 Tech Tips (202610)](https://bcit-cst.notion.site/1800-Tech-Tips-202610-3176dfaf038a80109784ffdf607e595c?pvs=21)
 - Some code snippets were analyzed, rewritten and used with the assistance of generative AI sources such as [Gemini] (https://gemini.google.com/), [ChatGPT] (https://chatgpt.com/), [Claude] (https://claude.ai)
 - Map API sourced from [MapLibre] (https://maplibre.org/)
 - Icons sourced from [Google Fonts](https://fonts.google.com/)

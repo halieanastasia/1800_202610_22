@@ -17,6 +17,7 @@
 }
 
 /* Override bootstrap colors*/
+/* Please leave comments so I can remember how to override bootstrap */
 .card {
   --bs-card-title-color: var(
     --darkgreen
@@ -290,10 +291,6 @@ button.nav-items {
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 }
-
-/* .event-card {
-  background: var(--cream) !important;
-} */
 
 .event-img img {
   width: 100%;
@@ -936,8 +933,6 @@ textarea {
 }
 
 #search-button {
-  /*position: absolute;
-  top: 20px;*/
   left: 5%;
   z-index: 10;
   min-width: 30px;
@@ -1071,14 +1066,10 @@ Event Page
 
 body.bg-custom,
 body {
-  /* background-color: #1a3c31 !important; */
-  /* background-color: #1a3c31 !important; */
   color: white;
-  /* Optional: makes text readable on the dark green */
 }
 
 #event-content {
-  /* background-color: #1a3c31; */
   min-height: 100vh;
   margin: 0;
 }
@@ -1155,38 +1146,6 @@ body {
   border: 1px solid var(--darkgreen);
   border-radius: 10px;
 }
-
-/* #map {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: calc(100vh - 80px);
-}
-
-.maplibregl-map {
-  position: absolute !important;
-  inset: 0;
-}
-
-.maplibregl-canvas-container {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-canvas {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1 !important;
-}
-
-.maplibregl-marker {
-  z-index: 5 !important;
-}
-
-.maplibregl-popup {
-  z-index: 6 !important;
-} */
 
 .maplibregl-ctrl-geocoder {
   min-width: 100% !important;
@@ -1278,13 +1237,10 @@ body {
 
 html,
 body {
-  /* background-color: #1a3c31 !important; */
-  /* background: #1a3c31 !important; */
   background: var(--lightgreen);
   color: var(--cream) !important;
 }
 
 #event-content {
-  /* background-color: #1a3c31 !important; */
   min-height: 100vh;
 }
